@@ -26,6 +26,7 @@ function abpcwa_admin_page() {
             <a href="?page=ai-bulk-page-creator&tab=manual" class="nav-tab <?php echo !isset($_GET['tab']) || $_GET['tab'] == 'manual' ? 'nav-tab-active' : ''; ?>">Manual Creation</a>
             <a href="?page=ai-bulk-page-creator&tab=csv" class="nav-tab <?php echo isset($_GET['tab']) && $_GET['tab'] == 'csv' ? 'nav-tab-active' : ''; ?>">CSV Upload</a>
             <a href="?page=ai-bulk-page-creator&tab=ai" class="nav-tab <?php echo isset($_GET['tab']) && $_GET['tab'] == 'ai' ? 'nav-tab-active' : ''; ?>">Generate with AI</a>
+            <a href="?page=ai-bulk-page-creator&tab=schema" class="nav-tab <?php echo isset($_GET['tab']) && $_GET['tab'] == 'schema' ? 'nav-tab-active' : ''; ?>">Schema Generator</a>
             <a href="?page=ai-bulk-page-creator&tab=menu" class="nav-tab <?php echo isset($_GET['tab']) && $_GET['tab'] == 'menu' ? 'nav-tab-active' : ''; ?>">Menu Generator</a>
             <a href="?page=ai-bulk-page-creator&tab=hierarchy" class="nav-tab <?php echo isset($_GET['tab']) && $_GET['tab'] == 'hierarchy' ? 'nav-tab-active' : ''; ?>">Page Hierarchy</a>
             <a href="?page=ai-bulk-page-creator&tab=settings" class="nav-tab <?php echo isset($_GET['tab']) && $_GET['tab'] == 'settings' ? 'nav-tab-active' : ''; ?>">Settings</a>
@@ -38,6 +39,8 @@ function abpcwa_admin_page() {
             abpcwa_csv_upload_tab();
         } elseif ($tab == 'ai') {
             abpcwa_ai_generation_tab();
+        } elseif ($tab == 'schema') {
+            abpcwa_schema_generator_tab();
         } elseif ($tab == 'menu') {
             abpcwa_menu_generator_tab();
         } elseif ($tab == 'hierarchy') {

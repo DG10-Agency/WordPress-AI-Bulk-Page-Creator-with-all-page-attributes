@@ -76,6 +76,12 @@ function abpcwa_create_pages_manually($titles_str) {
                     abpcwa_set_featured_image($page_id, $featured_image_url);
                 }
 
+                // Generate schema markup for the new page
+                $auto_generate = get_option('abpcwa_auto_schema_generation', true);
+                if ($auto_generate) {
+                    abpcwa_generate_schema_markup($page_id);
+                }
+
                 // Update parent stack
                 $parent_id_stack[$depth] = $page_id;
                 $parent_id_stack = array_slice($parent_id_stack, 0, $depth + 1);

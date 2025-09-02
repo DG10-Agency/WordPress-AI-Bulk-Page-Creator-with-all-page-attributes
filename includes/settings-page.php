@@ -11,6 +11,7 @@ function abpcwa_register_settings() {
     register_setting('abpcwa_settings_group', 'abpcwa_deepseek_api_key');
     register_setting('abpcwa_settings_group', 'abpcwa_brand_color');
     register_setting('abpcwa_settings_group', 'abpcwa_sitemap_url');
+    register_setting('abpcwa_settings_group', 'abpcwa_auto_schema_generation');
 }
 add_action('admin_init', 'abpcwa_register_settings');
 
@@ -83,6 +84,22 @@ function abpcwa_settings_init() {
         'ai-bulk-page-creator',
         'abpcwa_settings_section'
     );
+
+    // Schema settings section
+    add_settings_section(
+        'abpcwa_schema_settings_section',
+        'Schema Settings',
+        'abpcwa_schema_settings_section_callback',
+        'ai-bulk-page-creator'
+    );
+
+    add_settings_field(
+        'abpcwa_auto_schema_generation',
+        'Auto Schema Generation',
+        'abpcwa_auto_schema_generation_callback',
+        'ai-bulk-page-creator',
+        'abpcwa_schema_settings_section'
+    );
 }
 add_action('admin_init', 'abpcwa_settings_init');
 
@@ -136,5 +153,22 @@ function abpcwa_sitemap_url_callback() {
     ?>
     <input type="url" name="abpcwa_sitemap_url" value="<?php echo esc_attr($sitemap_url); ?>" class="regular-text" placeholder="https://yoursite.com/sitemap.xml">
     <p class="description">Enter the URL of your sitemap page. This will be used in the universal bottom menu.</p>
+    <?php
+}
+
+// Schema settings section callback
+function abpcwa_schema_settings_section_callback() {
+    echo '<p>Configure schema.org markup generation settings for your pages.</p>';
+}
+
+// Auto Schema Generation field callback
+function abpcwa_auto_schema_generation_callback() {
+    $auto_generate = get_option('abpcwa_auto_schema_generation', true);
+    ?>
+    <label>
+        <input type="checkbox" name="abpcwa_auto_schema_generation" value="1" <?php checked($auto_generate, true); ?>>
+        Automatically generate schema markup when pages are created or updated
+    </label>
+    <p class="description">When enabled, schema markup will be automatically generated for all pages when they are saved.</p>
     <?php
 }
