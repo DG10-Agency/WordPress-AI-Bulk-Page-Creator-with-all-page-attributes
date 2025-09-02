@@ -693,8 +693,17 @@ Avoid photorealistic images - focus on abstract, brand-aligned graphics that enh
     }
     
     if (!empty($image_url)) {
-        // Use the existing featured image setting function
-        abpcwa_set_featured_image($post_id, $image_url);
+        // Generate SEO-optimized image metadata based on page title
+        $image_title = "Featured Image for " . sanitize_text_field($page_title);
+        
+        // Extract primary keywords from page title for alt text
+        $keywords = abpcwa_extract_primary_keywords($page_title);
+        $image_alt = "Visual representation of " . $keywords . " concept";
+        
+        $image_description = "AI-generated featured image showcasing themes related to " . sanitize_text_field($page_title);
+        
+        // Use the enhanced featured image setting function with metadata
+        abpcwa_set_featured_image($post_id, $image_url, $image_title, $image_alt, $image_description);
         return true;
     }
     
@@ -773,4 +782,25 @@ function abpcwa_process_keywords_csv($file) {
     $keywords = array_unique(array_filter($keywords));
     
     return implode(', ', $keywords);
+}
+
+// Extract primary keywords from page title for SEO optimization
+function abpcwa_extract_primary_keywords($title) {
+    // Remove common stop words and extract meaningful keywords
+    $stop_words = ['the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'a', 'an'];
+    
+    // Clean the title and split into words
+    $words = preg_split('/\s+/', strtolower($title));
+    $words = array_map('trim', $words);
+    
+    // Remove stop words and short words
+    $keywords = array_filter($words, function($word) use ($stop_words) {
+        return !in_array($word, $stop_words) && strlen($word) > 2 && !is_numeric($word);
+    });
+    
+    // Remove duplicates and return the first 3-4 keywords
+    $keywords = array_unique($keywords);
+    $keywords = array_slice($keywords, 0, 4);
+    
+    return implode(' ', $keywords) ?: sanitize_text_field($title);
 }

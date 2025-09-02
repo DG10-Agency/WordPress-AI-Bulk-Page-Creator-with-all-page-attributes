@@ -71,9 +71,14 @@ function abpcwa_create_pages_manually($titles_str) {
 
             if ($page_id) {
                 $created_pages++;
-                // Set featured image
+                // Set featured image with SEO metadata
                 if (!empty($featured_image_url)) {
-                    abpcwa_set_featured_image($page_id, $featured_image_url);
+                    $image_title = "Featured Image for " . sanitize_text_field($title);
+                    $keywords = abpcwa_extract_primary_keywords($title);
+                    $image_alt = "Visual representation of " . $keywords . " concept";
+                    $image_description = "Featured image for " . sanitize_text_field($title) . " page";
+                    
+                    abpcwa_set_featured_image($page_id, $featured_image_url, $image_title, $image_alt, $image_description);
                 }
 
                 // Generate schema markup for the new page
@@ -123,8 +128,8 @@ function abpcwa_generate_seo_slug($title, $max_length = 72) {
     return $slug;
 }
 
-// Set featured image
-function abpcwa_set_featured_image($post_id, $image_url) {
+// Set featured image with SEO metadata
+function abpcwa_set_featured_image($post_id, $image_url, $image_title = '', $image_alt = '', $image_description = '') {
     // Check if the image URL is valid
     if (filter_var($image_url, FILTER_VALIDATE_URL) === FALSE) {
         return;
@@ -149,10 +154,14 @@ function abpcwa_set_featured_image($post_id, $image_url) {
     file_put_contents($file, $image_data);
 
     $wp_filetype = wp_check_filetype($filename, null);
+    
+    // Use provided title or fallback to sanitized filename
+    $attachment_title = !empty($image_title) ? sanitize_text_field($image_title) : sanitize_file_name($filename);
+    
     $attachment = array(
         'post_mime_type' => $wp_filetype['type'],
-        'post_title'     => sanitize_file_name($filename),
-        'post_content'   => '',
+        'post_title'     => $attachment_title,
+        'post_content'   => !empty($image_description) ? sanitize_textarea_field($image_description) : '',
         'post_status'    => 'inherit'
     );
 
@@ -160,5 +169,13 @@ function abpcwa_set_featured_image($post_id, $image_url) {
     require_once(ABSPATH . 'wp-admin/includes/image.php');
     $attach_data = wp_generate_attachment_metadata($attach_id, $file);
     wp_update_attachment_metadata($attach_id, $attach_data);
+    
+    // Set alt text if provided
+    if (!empty($image_alt)) {
+        update_post_meta($attach_id, '_wp_attachment_image_alt', sanitize_text_field($image_alt));
+    }
+    
     set_post_thumbnail($post_id, $attach_id);
+    
+    return $attach_id;
 }

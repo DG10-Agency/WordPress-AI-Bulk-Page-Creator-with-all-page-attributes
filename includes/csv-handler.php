@@ -53,9 +53,14 @@ function abpcwa_create_pages_from_csv($file) {
             $created_pages++;
             $page_map[$post_title] = $page_id; // Map title to ID for future parent lookups
 
-            // Set featured image
+            // Set featured image with SEO metadata
             if (!empty($featured_image_url)) {
-                abpcwa_set_featured_image($page_id, $featured_image_url);
+                $image_title = "Featured Image for " . sanitize_text_field($post_title);
+                $keywords = abpcwa_extract_primary_keywords($post_title);
+                $image_alt = "Visual representation of " . $keywords . " concept";
+                $image_description = "Featured image for " . sanitize_text_field($post_title) . " page";
+                
+                abpcwa_set_featured_image($page_id, $featured_image_url, $image_title, $image_alt, $image_description);
             }
         }
     }
