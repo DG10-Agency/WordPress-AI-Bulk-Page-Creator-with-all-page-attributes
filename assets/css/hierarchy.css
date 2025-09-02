@@ -1,0 +1,116 @@
+/* Hierarchy Visualizer Styles */
+.abpcwa-hierarchy-container {
+    margin: 20px 0;
+}
+
+.abpcwa-hierarchy-header {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+}
+
+.abpcwa-hierarchy-header h2 {
+    margin: 0 0 10px 0;
+    color: #1d2327;
+}
+
+.abpcwa-hierarchy-header .description {
+    margin: 10px 0;
+    font-size: 14px;
+    color: #646970;
+}
+
+.abpcwa-hierarchy-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.abpcwa-hierarchy-controls .button {
+    margin: 0;
+}
+
+.abpcwa-hierarchy-search {
+    margin-bottom: 20px;
+}
+
+.abpcwa-hierarchy-search input {
+    width: 300px;
+    max-width: 100%;
+}
+
+.abpcwa-hierarchy-tree {
+    min-height: 400px;
+    padding: 15px;
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.abpcwa-hierarchy-note {
+    padding: 15px;
+    background: #f0f6fc;
+    border: 1px solid #c5d9ed;
+    border-radius: 4px;
+    color: #2c3338;
+}
+
+.abpcwa-hierarchy-note p {
+    margin: 0;
+    font-size: 14px;
+}
+
+.abpcwa-loading {
+    text-align: center;
+    padding: 40px;
+    color: #646970;
+    font-style: italic;
+}
+
+.abpcwa-error {
+    text-align: center;
+    padding: 40px;
+    color: #d63638;
+    font-weight: 500;
+}
+
+/* jstree customization */
+.jstree-default .jstree-clicked {
+    background: #f0f6fc;
+    box-shadow: none;
+    color: #2271b1;
+}
+
+.jstree-default .jstree-hovered {
+    background: #f6f7f7;
+    box-shadow: none;
+}
+
+.jstree-default .jstree-anchor {
+    font-size: 14px;
+    padding: 0 4px;
+}
+
+.jstree-default .jstree-icon {
+    color: #8c8f94;
+}
+
+.jstree-default .jstree-leaf > .jstree-ocl {
+    background: transparent;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 782px) {
+    .abpcwa-hierarchy-controls {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .abpcwa-hierarchy-search input {
+        width: 100%;
+    }
+}

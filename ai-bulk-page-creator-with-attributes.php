@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 
 define('ABPCWA_PLUGIN_PATH', plugin_dir_path(__FILE__));
 define('ABPCWA_PLUGIN_URL', plugin_dir_url(__FILE__));
-define('ABPCWA_GITHUB_URL', 'https://github.com/your-repo-here'); // <--- UPDATE THIS URL
+define('ABPCWA_GITHUB_URL', 'https://github.com/DG10-Agency/WordPress-AI-Bulk-Page-Creator-with-all-page-attributes'); // <--- UPDATE THIS URL
 
 // Include necessary files
 require_once ABPCWA_PLUGIN_PATH . 'includes/admin-menu.php';
@@ -21,6 +21,7 @@ require_once ABPCWA_PLUGIN_PATH . 'includes/page-creation.php';
 require_once ABPCWA_PLUGIN_PATH . 'includes/csv-handler.php';
 require_once ABPCWA_PLUGIN_PATH . 'includes/settings-page.php';
 require_once ABPCWA_PLUGIN_PATH . 'includes/ai-generator.php';
+require_once ABPCWA_PLUGIN_PATH . 'includes/hierarchy-manager.php';
 
 // Enqueue scripts and styles
 function abpcwa_enqueue_assets() {

@@ -110,6 +110,11 @@ function abpcwa_generate_pages_with_ai($business_type, $business_details, $seo_k
         return;
     }
 
+    // Filter out Privacy Policy page since WordPress creates it automatically
+    $suggested_pages = array_filter($suggested_pages, function($page_line) {
+        return stripos($page_line, 'Privacy Policy') === false;
+    });
+
     echo '<h3>Suggested Pages:</h3>';
     echo '<form method="post" action="">';
     wp_nonce_field('abpcwa_create_suggested_pages');
@@ -240,16 +245,44 @@ Generate a comprehensive list of essential website pages that will establish top
 - Mobile-first content approach
 - Fast-loading, user-friendly page types
 
+## SEO OPTIMIZATION REQUIREMENTS
+- **Page Titles**: Must include primary keywords naturally, be compelling, and accurately describe the page content
+- **Meta Descriptions**: 155-160 characters, include primary keywords naturally, be compelling and encourage click-throughs
+- **Keyword Placement**: Use keywords in titles and descriptions without stuffing - make it sound natural
+- **User Intent**: Match the search intent for each keyword (informational, commercial, navigational)
+
 ## OUTPUT FORMAT
 Return only the list in this exact format:
-[Page Title]:+[Meta Description - 155-160 characters, compelling, includes primary keyword naturally]
+[SEO-optimized Page Title with primary keywords]:+[Meta Description - 155-160 characters, compelling, includes primary keyword naturally]
 
 Use hyphens for nesting (e.g., '-Services:-+[description]' for child pages)
 
-## EXAMPLES OF EXPECTED OUTPUT:
-- Home:+Welcome to [Business Name] - Your trusted partner for [services]. Discover our comprehensive solutions and industry expertise.
-- -Services:-+Explore our professional [services] designed to deliver exceptional results and maximum value for your business.
-- About Us:+Learn about our company story, mission, and the experienced team behind our successful [industry] solutions.
+## CONTEXT-AWARE PAGE SELECTION GUIDELINES:
+- **Analyze the business context** and only suggest pages that make sense for this specific business type
+- **Use common sense**: A portfolio website doesn't need a Pricing page, an e-commerce site does
+- **Consider user intent**: Focus on pages that match what users would actually search for
+- **Semantic relationships**: Create pages that build topical authority through related content clusters
+- **Business model awareness**: Service businesses need different pages than product businesses or informational sites
+
+## FLEXIBLE STRUCTURE PRINCIPLES:
+- **Main Pages**: Use logical hierarchy based on business needs (not fixed templates)
+- **Child Pages**: Only nest when there's a clear semantic relationship
+- **Avoid unnecessary pages**: Don't include pages that don't serve a clear purpose for this business
+- **User-centric**: Focus on what the target audience actually needs to find
+
+## SMART PAGE SELECTION EXAMPLES:
+- **Portfolio Website**: Home, About, Portfolio, Services, Contact, Testimonials, Blog
+- **E-commerce Store**: Home, Shop, Product Categories, About, Contact, FAQ, Shipping, Returns
+- **Service Business**: Home, Services, About, Contact, Testimonials, Blog, FAQ
+- **Informational Site**: Home, Resources, Blog, About, Contact, Glossary, Tutorials
+
+## OUTPUT FORMAT:
+Return only the list in this exact format:
+[SEO-optimized Page Title with primary keywords]:+[Meta Description - 155-160 characters, compelling, includes primary keyword naturally]
+
+Use hyphens for nesting only when there's a clear hierarchical relationship
+
+Focus on creating a website architecture that makes sense for THIS specific business, not a generic template. Use semantic SEO principles and common sense to determine which pages are actually needed.
 
 Focus on creating a complete website architecture that will rank well and convert visitors.";
 
@@ -341,16 +374,44 @@ Generate a comprehensive list of essential website pages that will establish top
 - Mobile-first content approach
 - Fast-loading, user-friendly page types
 
+## SEO OPTIMIZATION REQUIREMENTS
+- **Page Titles**: Must include primary keywords naturally, be compelling, and accurately describe the page content
+- **Meta Descriptions**: 155-160 characters, include primary keywords naturally, be compelling and encourage click-throughs
+- **Keyword Placement**: Use keywords in titles and descriptions without stuffing - make it sound natural
+- **User Intent**: Match the search intent for each keyword (informational, commercial, navigational)
+
 ## OUTPUT FORMAT
 Return only the list in this exact format:
-[Page Title]:+[Meta Description - 155-160 characters, compelling, includes primary keyword naturally]
+[SEO-optimized Page Title with primary keywords]:+[Meta Description - 155-160 characters, compelling, includes primary keyword naturally]
 
 Use hyphens for nesting (e.g., '-Services:-+[description]' for child pages)
 
-## EXAMPLES OF EXPECTED OUTPUT:
-- Home:+Welcome to [Business Name] - Your trusted partner for [services]. Discover our comprehensive solutions and industry expertise.
-- -Services:-+Explore our professional [services] designed to deliver exceptional results and maximum value for your business.
-- About Us:+Learn about our company story, mission, and the experienced team behind our successful [industry] solutions.
+## CONTEXT-AWARE PAGE SELECTION GUIDELINES:
+- **Analyze the business context** and only suggest pages that make sense for this specific business type
+- **Use common sense**: A portfolio website doesn't need a Pricing page, an e-commerce site does
+- **Consider user intent**: Focus on pages that match what users would actually search for
+- **Semantic relationships**: Create pages that build topical authority through related content clusters
+- **Business model awareness**: Service businesses need different pages than product businesses or informational sites
+
+## FLEXIBLE STRUCTURE PRINCIPLES:
+- **Main Pages**: Use logical hierarchy based on business needs (not fixed templates)
+- **Child Pages**: Only nest when there's a clear semantic relationship
+- **Avoid unnecessary pages**: Don't include pages that don't serve a clear purpose for this business
+- **User-centric**: Focus on what the target audience actually needs to find
+
+## SMART PAGE SELECTION EXAMPLES:
+- **Portfolio Website**: Home, About, Portfolio, Services, Contact, Testimonials, Blog
+- **E-commerce Store**: Home, Shop, Product Categories, About, Contact, FAQ, Shipping, Returns
+- **Service Business**: Home, Services, About, Contact, Testimonials, Blog, FAQ
+- **Informational Site**: Home, Resources, Blog, About, Contact, Glossary, Tutorials
+
+## OUTPUT FORMAT:
+Return only the list in this exact format:
+[SEO-optimized Page Title with primary keywords]:+[Meta Description - 155-160 characters, compelling, includes primary keyword naturally]
+
+Use hyphens for nesting only when there's a clear hierarchical relationship
+
+Focus on creating a website architecture that makes sense for THIS specific business, not a generic template. Use semantic SEO principles and common sense to determine which pages are actually needed.
 
 Focus on creating a complete website architecture that will rank well and convert visitors.";
 
@@ -436,16 +497,44 @@ Generate a comprehensive list of essential website pages that will establish top
 - Mobile-first content approach
 - Fast-loading, user-friendly page types
 
+## SEO OPTIMIZATION REQUIREMENTS
+- **Page Titles**: Must include primary keywords naturally, be compelling, and accurately describe the page content
+- **Meta Descriptions**: 155-160 characters, include primary keywords naturally, be compelling and encourage click-throughs
+- **Keyword Placement**: Use keywords in titles and descriptions without stuffing - make it sound natural
+- **User Intent**: Match the search intent for each keyword (informational, commercial, navigational)
+
 ## OUTPUT FORMAT
 Return only the list in this exact format:
-[Page Title]:+[Meta Description - 155-160 characters, compelling, includes primary keyword naturally]
+[SEO-optimized Page Title with primary keywords]:+[Meta Description - 155-160 characters, compelling, includes primary keyword naturally]
 
 Use hyphens for nesting (e.g., '-Services:-+[description]' for child pages)
 
-## EXAMPLES OF EXPECTED OUTPUT:
-- Home:+Welcome to [Business Name] - Your trusted partner for [services]. Discover our comprehensive solutions and industry expertise.
-- -Services:-+Explore our professional [services] designed to deliver exceptional results and maximum value for your business.
-- About Us:+Learn about our company story, mission, and the experienced team behind our successful [industry] solutions.
+## CONTEXT-AWARE PAGE SELECTION GUIDELINES:
+- **Analyze the business context** and only suggest pages that make sense for this specific business type
+- **Use common sense**: A portfolio website doesn't need a Pricing page, an e-commerce site does
+- **Consider user intent**: Focus on pages that match what users would actually search for
+- **Semantic relationships**: Create pages that build topical authority through related content clusters
+- **Business model awareness**: Service businesses need different pages than product businesses or informational sites
+
+## FLEXIBLE STRUCTURE PRINCIPLES:
+- **Main Pages**: Use logical hierarchy based on business needs (not fixed templates)
+- **Child Pages**: Only nest when there's a clear semantic relationship
+- **Avoid unnecessary pages**: Don't include pages that don't serve a clear purpose for this business
+- **User-centric**: Focus on what the target audience actually needs to find
+
+## SMART PAGE SELECTION EXAMPLES:
+- **Portfolio Website**: Home, About, Portfolio, Services, Contact, Testimonials, Blog
+- **E-commerce Store**: Home, Shop, Product Categories, About, Contact, FAQ, Shipping, Returns
+- **Service Business**: Home, Services, About, Contact, Testimonials, Blog, FAQ
+- **Informational Site**: Home, Resources, Blog, About, Contact, Glossary, Tutorials
+
+## OUTPUT FORMAT:
+Return only the list in this exact format:
+[SEO-optimized Page Title with primary keywords]:+[Meta Description - 155-160 characters, compelling, includes primary keyword naturally]
+
+Use hyphens for nesting only when there's a clear hierarchical relationship
+
+Focus on creating a website architecture that makes sense for THIS specific business, not a generic template. Use semantic SEO principles and common sense to determine which pages are actually needed.
 
 Focus on creating a complete website architecture that will rank well and convert visitors.";
 
