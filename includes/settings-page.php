@@ -9,6 +9,7 @@ function abpcwa_register_settings() {
     register_setting('abpcwa_settings_group', 'abpcwa_openai_api_key');
     register_setting('abpcwa_settings_group', 'abpcwa_gemini_api_key');
     register_setting('abpcwa_settings_group', 'abpcwa_deepseek_api_key');
+    register_setting('abpcwa_settings_group', 'abpcwa_brand_color');
 }
 add_action('admin_init', 'abpcwa_register_settings');
 
@@ -65,12 +66,20 @@ function abpcwa_settings_init() {
         'ai-bulk-page-creator',
         'abpcwa_settings_section'
     );
+
+    add_settings_field(
+        'abpcwa_brand_color',
+        'Brand Color',
+        'abpcwa_brand_color_callback',
+        'ai-bulk-page-creator',
+        'abpcwa_settings_section'
+    );
 }
 add_action('admin_init', 'abpcwa_settings_init');
 
 // Section callback
 function abpcwa_settings_section_callback() {
-    echo '<p>Select your preferred AI provider and enter the corresponding API key.</p>';
+    echo '<p>Select your preferred AI provider and enter the corresponding API key. Set your brand color for AI-generated featured images.</p>';
 }
 
 // AI Provider field callback
@@ -101,4 +110,13 @@ function abpcwa_gemini_api_key_callback() {
 function abpcwa_deepseek_api_key_callback() {
     $api_key = get_option('abpcwa_deepseek_api_key');
     echo '<input type="text" name="abpcwa_deepseek_api_key" value="' . esc_attr($api_key) . '" class="regular-text">';
+}
+
+// Brand Color field callback
+function abpcwa_brand_color_callback() {
+    $brand_color = get_option('abpcwa_brand_color', '#4A90E2');
+    ?>
+    <input type="color" name="abpcwa_brand_color" value="<?php echo esc_attr($brand_color); ?>" class="regular-text">
+    <p class="description">Select your brand's primary color. This will be used for AI-generated featured images.</p>
+    <?php
 }
