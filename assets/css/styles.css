@@ -1,0 +1,29 @@
+.dg10-footer-promo {
+    margin-top: 30px;
+    border-top: 1px solid #ddd;
+    padding-top: 15px;
+    text-align: center;
+}
+
+.dg10-footer-promo p {
+    font-size: 12px;
+    color: #666;
+    margin: 0;
+}
+
+.nav-tab-wrapper {
+    margin-bottom: 20px;
+}
+
+.form-table th {
+    width: 150px;
+}
+
+.form-table .large-text {
+    width: 100%;
+}
+
+.form-table .description {
+    font-style: italic;
+    color: #666;
+}
