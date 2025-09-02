@@ -15,7 +15,7 @@ function abpcwa_ai_generation_tab() {
         return; // Stop further processing
     }
     ?>
-    <form method="post" action="">
+    <form method="post" action="" enctype="multipart/form-data">
         <?php wp_nonce_field('abpcwa_ai_generate_pages'); ?>
         <table class="form-table">
             <tr valign="top">
@@ -38,6 +38,13 @@ function abpcwa_ai_generation_tab() {
                 </td>
             </tr>
             <tr valign="top">
+                <th scope="row">Upload Keywords CSV</th>
+                <td>
+                    <input type="file" name="abpcwa_keywords_csv" id="abpcwa_keywords_csv" accept=".csv">
+                    <p class="description">Upload a CSV file with keywords (one keyword per line or comma-separated)</p>
+                </td>
+            </tr>
+            <tr valign="top">
                 <th scope="row">Target Audience</th>
                 <td>
                     <input type="text" name="abpcwa_target_audience" class="regular-text" placeholder="e.g., small businesses, entrepreneurs, local clients">
@@ -53,7 +60,24 @@ function abpcwa_ai_generation_tab() {
         $business_details = sanitize_textarea_field($_POST['abpcwa_business_details']);
         $seo_keywords = sanitize_text_field($_POST['abpcwa_seo_keywords']);
         $target_audience = sanitize_text_field($_POST['abpcwa_target_audience']);
-        abpcwa_generate_pages_with_ai($business_type, $business_details, $seo_keywords, $target_audience);
+        
+        // Process CSV file if uploaded
+        $csv_keywords = '';
+        if (isset($_FILES['abpcwa_keywords_csv']) && !empty($_FILES['abpcwa_keywords_csv']['tmp_name'])) {
+            $csv_keywords = abpcwa_process_keywords_csv($_FILES['abpcwa_keywords_csv']);
+        }
+        
+        // Combine manual keywords and CSV keywords
+        $all_keywords = trim($seo_keywords);
+        if (!empty($csv_keywords)) {
+            if (!empty($all_keywords)) {
+                $all_keywords .= ', ' . $csv_keywords;
+            } else {
+                $all_keywords = $csv_keywords;
+            }
+        }
+        
+        abpcwa_generate_pages_with_ai($business_type, $business_details, $all_keywords, $target_audience);
     }
 }
 
@@ -170,13 +194,64 @@ function abpcwa_get_openai_suggestions($business_type, $business_details, $seo_k
         $seo_context .= "Target Audience: {$target_audience}. ";
     }
     
-    $prompt = "Generate a list of essential website pages for a business. For each page, provide a title and a brief, SEO-optimized meta description (excerpt), separated by ':+'. Use hyphens (-) for nesting child pages. Include standard business and legal pages. 
-    
-    Business Type: {$business_type}. 
-    Details: {$business_details}.
-    {$seo_context}
-    
-    Optimize the meta descriptions for search engines and ensure they include relevant keywords naturally. Return only the list, with each page on a new line.";
+    $prompt = "## ROLE & CONTEXT
+You are an expert SEO strategist and information architect specializing in website structure optimization for maximum search visibility and user experience.
+
+## BUSINESS CONTEXT
+- **Industry**: {$business_type}
+- **Business Details**: {$business_details}
+- **Target Audience**: {$target_audience}
+- **Primary Keywords**: {$seo_keywords}
+
+## TASK OBJECTIVE
+Generate a comprehensive list of essential website pages that will establish topical authority and semantic relevance for this business. For each page, provide:
+1. Page Title (use hyphens '-' for nesting child pages to indicate hierarchy)
+2. SEO-optimized Meta Description (separated by ':+' from the title)
+
+## STRATEGIC REQUIREMENTS
+
+### 1. TOPICAL AUTHORITY ARCHITECTURE
+- Create content clusters around core topics
+- Establish pillar pages with supporting child pages
+- Ensure comprehensive coverage of the business domain
+- Include both commercial and informational intent pages
+
+### 2. SEMANTIC SEO IMPLEMENTATION
+- Use natural language variations of target keywords
+- Incorporate related concepts and entities
+- Build semantic relationships between pages
+- Avoid keyword stuffing - focus on contextual relevance
+
+### 3. EEAT OPTIMIZATION
+- Demonstrate expertise through comprehensive content planning
+- Show authoritativeness by covering all essential business aspects
+- Build trust with transparent, valuable content
+- Include experience-based content where relevant
+
+### 4. USER INTENT MATCHING
+- Commercial intent pages (services, products, pricing)
+- Informational intent pages (guides, resources, FAQs)
+- Navigational intent pages (contact, about, locations)
+- Transactional intent pages (checkout, booking, quotes)
+
+### 5. TECHNICAL SEO CONSIDERATIONS
+- Logical URL structure with proper hierarchy
+- Internal linking opportunities between related pages
+- Mobile-first content approach
+- Fast-loading, user-friendly page types
+
+## OUTPUT FORMAT
+Return only the list in this exact format:
+[Page Title]:+[Meta Description - 155-160 characters, compelling, includes primary keyword naturally]
+
+Use hyphens for nesting (e.g., '-Services:-+[description]' for child pages)
+
+## EXAMPLES OF EXPECTED OUTPUT:
+- Home:+Welcome to [Business Name] - Your trusted partner for [services]. Discover our comprehensive solutions and industry expertise.
+- -Services:-+Explore our professional [services] designed to deliver exceptional results and maximum value for your business.
+- About Us:+Learn about our company story, mission, and the experienced team behind our successful [industry] solutions.
+
+Focus on creating a complete website architecture that will rank well and convert visitors.";
 
     $body = json_encode([
         'model' => 'gpt-3.5-turbo',
@@ -220,13 +295,64 @@ function abpcwa_get_gemini_suggestions($business_type, $business_details, $seo_k
         $seo_context .= "Target Audience: {$target_audience}. ";
     }
     
-    $prompt = "Generate a list of essential website pages for a business. For each page, provide a title and a brief, SEO-optimized meta description (excerpt), separated by ':+'. Use hyphens (-) for nesting child pages. Include standard business and legal pages. 
-    
-    Business Type: {$business_type}. 
-    Details: {$business_details}.
-    {$seo_context}
-    
-    Optimize the meta descriptions for search engines and ensure they include relevant keywords naturally. Return only the list, with each page on a new line.";
+    $prompt = "## ROLE & CONTEXT
+You are an expert SEO strategist and information architect specializing in website structure optimization for maximum search visibility and user experience.
+
+## BUSINESS CONTEXT
+- **Industry**: {$business_type}
+- **Business Details**: {$business_details}
+- **Target Audience**: {$target_audience}
+- **Primary Keywords**: {$seo_keywords}
+
+## TASK OBJECTIVE
+Generate a comprehensive list of essential website pages that will establish topical authority and semantic relevance for this business. For each page, provide:
+1. Page Title (use hyphens '-' for nesting child pages to indicate hierarchy)
+2. SEO-optimized Meta Description (separated by ':+' from the title)
+
+## STRATEGIC REQUIREMENTS
+
+### 1. TOPICAL AUTHORITY ARCHITECTURE
+- Create content clusters around core topics
+- Establish pillar pages with supporting child pages
+- Ensure comprehensive coverage of the business domain
+- Include both commercial and informational intent pages
+
+### 2. SEMANTIC SEO IMPLEMENTATION
+- Use natural language variations of target keywords
+- Incorporate related concepts and entities
+- Build semantic relationships between pages
+- Avoid keyword stuffing - focus on contextual relevance
+
+### 3. EEAT OPTIMIZATION
+- Demonstrate expertise through comprehensive content planning
+- Show authoritativeness by covering all essential business aspects
+- Build trust with transparent, valuable content
+- Include experience-based content where relevant
+
+### 4. USER INTENT MATCHING
+- Commercial intent pages (services, products, pricing)
+- Informational intent pages (guides, resources, FAQs)
+- Navigational intent pages (contact, about, locations)
+- Transactional intent pages (checkout, booking, quotes)
+
+### 5. TECHNICAL SEO CONSIDERATIONS
+- Logical URL structure with proper hierarchy
+- Internal linking opportunities between related pages
+- Mobile-first content approach
+- Fast-loading, user-friendly page types
+
+## OUTPUT FORMAT
+Return only the list in this exact format:
+[Page Title]:+[Meta Description - 155-160 characters, compelling, includes primary keyword naturally]
+
+Use hyphens for nesting (e.g., '-Services:-+[description]' for child pages)
+
+## EXAMPLES OF EXPECTED OUTPUT:
+- Home:+Welcome to [Business Name] - Your trusted partner for [services]. Discover our comprehensive solutions and industry expertise.
+- -Services:-+Explore our professional [services] designed to deliver exceptional results and maximum value for your business.
+- About Us:+Learn about our company story, mission, and the experienced team behind our successful [industry] solutions.
+
+Focus on creating a complete website architecture that will rank well and convert visitors.";
 
     $body = json_encode([
         'contents' => [['parts' => [['text' => $prompt]]]],
@@ -264,13 +390,64 @@ function abpcwa_get_deepseek_suggestions($business_type, $business_details, $seo
         $seo_context .= "Target Audience: {$target_audience}. ";
     }
     
-    $prompt = "Generate a list of essential website pages for a business. For each page, provide a title and a brief, SEO-optimized meta description (excerpt), separated by ':+'. Use hyphens (-) for nesting child pages. Include standard business and legal pages. 
-    
-    Business Type: {$business_type}. 
-    Details: {$business_details}.
-    {$seo_context}
-    
-    Optimize the meta descriptions for search engines and ensure they include relevant keywords naturally. Return only the list, with each page on a new line.";
+    $prompt = "## ROLE & CONTEXT
+You are an expert SEO strategist and information architect specializing in website structure optimization for maximum search visibility and user experience.
+
+## BUSINESS CONTEXT
+- **Industry**: {$business_type}
+- **Business Details**: {$business_details}
+- **Target Audience**: {$target_audience}
+- **Primary Keywords**: {$seo_keywords}
+
+## TASK OBJECTIVE
+Generate a comprehensive list of essential website pages that will establish topical authority and semantic relevance for this business. For each page, provide:
+1. Page Title (use hyphens '-' for nesting child pages to indicate hierarchy)
+2. SEO-optimized Meta Description (separated by ':+' from the title)
+
+## STRATEGIC REQUIREMENTS
+
+### 1. TOPICAL AUTHORITY ARCHITECTURE
+- Create content clusters around core topics
+- Establish pillar pages with supporting child pages
+- Ensure comprehensive coverage of the business domain
+- Include both commercial and informational intent pages
+
+### 2. SEMANTIC SEO IMPLEMENTATION
+- Use natural language variations of target keywords
+- Incorporate related concepts and entities
+- Build semantic relationships between pages
+- Avoid keyword stuffing - focus on contextual relevance
+
+### 3. EEAT OPTIMIZATION
+- Demonstrate expertise through comprehensive content planning
+- Show authoritativeness by covering all essential business aspects
+- Build trust with transparent, valuable content
+- Include experience-based content where relevant
+
+### 4. USER INTENT MATCHING
+- Commercial intent pages (services, products, pricing)
+- Informational intent pages (guides, resources, FAQs)
+- Navigational intent pages (contact, about, locations)
+- Transactional intent pages (checkout, booking, quotes)
+
+### 5. TECHNICAL SEO CONSIDERATIONS
+- Logical URL structure with proper hierarchy
+- Internal linking opportunities between related pages
+- Mobile-first content approach
+- Fast-loading, user-friendly page types
+
+## OUTPUT FORMAT
+Return only the list in this exact format:
+[Page Title]:+[Meta Description - 155-160 characters, compelling, includes primary keyword naturally]
+
+Use hyphens for nesting (e.g., '-Services:-+[description]' for child pages)
+
+## EXAMPLES OF EXPECTED OUTPUT:
+- Home:+Welcome to [Business Name] - Your trusted partner for [services]. Discover our comprehensive solutions and industry expertise.
+- -Services:-+Explore our professional [services] designed to deliver exceptional results and maximum value for your business.
+- About Us:+Learn about our company story, mission, and the experienced team behind our successful [industry] solutions.
+
+Focus on creating a complete website architecture that will rank well and convert visitors.";
 
     $body = json_encode([
         'model' => 'deepseek-chat',
@@ -374,7 +551,36 @@ function abpcwa_generate_and_set_featured_image($post_id, $page_title) {
     }
     
     // Generate image prompt
-    $prompt = "Create a simple, minimalist, abstract background image suitable for a webpage titled '{$page_title}'. The primary color should be '{$brand_color}'.";
+    $prompt = "## IMAGE CREATION BRIEF
+Create a professional featured image for a webpage titled: '{$page_title}'
+
+## STYLE & AESTHETIC REQUIREMENTS
+- **Style**: Modern, minimalist, abstract background
+- **Color Palette**: Primary color: {$brand_color} with complementary tones
+- **Mood**: Professional, clean, engaging but not distracting
+- **Composition**: Balanced, with visual hierarchy that supports text overlay
+
+## TECHNICAL SPECIFICATIONS
+- **Aspect Ratio**: 16:9 (standard for featured images)
+- **Resolution**: High-quality, sharp details
+- **Text Readability**: Design should allow for clear text overlay
+- **Brand Alignment**: Reflect the professional nature of the content
+
+## CREATIVE DIRECTION
+- Use abstract shapes, gradients, or subtle patterns
+- Incorporate the primary color {$brand_color} as the dominant hue
+- Create visual interest without being too busy or distracting
+- Ensure the image works well as a background for white text overlay
+- Maintain a professional, corporate-appropriate aesthetic
+
+## USAGE CONTEXT
+This image will be used as a featured image for a webpage, so it should:
+- Be visually appealing but not overpower the content
+- Work well at various sizes (thumbnail to full-width)
+- Convey professionalism and relevance to the page topic
+- Have adequate contrast for text readability
+
+Avoid photorealistic images - focus on abstract, brand-aligned graphics that enhance the page's professional appearance.";
     
     // Call the appropriate image generation API
     $image_url = '';
@@ -435,4 +641,37 @@ function abpcwa_generate_gemini_image($prompt, $api_key) {
     // This function is a placeholder for future implementation when Gemini releases image generation
     // For now, we'll return empty string to indicate no image generation
     return '';
+}
+
+// Process keywords from CSV file
+function abpcwa_process_keywords_csv($file) {
+    if (!isset($file['tmp_name']) || empty($file['tmp_name'])) {
+        return '';
+    }
+    
+    $keywords = [];
+    $handle = fopen($file['tmp_name'], 'r');
+    
+    if ($handle !== false) {
+        while (($data = fgetcsv($handle)) !== false) {
+            foreach ($data as $cell) {
+                $cell = trim($cell);
+                if (!empty($cell)) {
+                    // Handle both comma-separated values and individual keywords
+                    if (strpos($cell, ',') !== false) {
+                        $split_keywords = array_map('trim', explode(',', $cell));
+                        $keywords = array_merge($keywords, $split_keywords);
+                    } else {
+                        $keywords[] = $cell;
+                    }
+                }
+            }
+        }
+        fclose($handle);
+    }
+    
+    // Remove duplicates and empty values
+    $keywords = array_unique(array_filter($keywords));
+    
+    return implode(', ', $keywords);
 }
