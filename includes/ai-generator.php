@@ -592,8 +592,12 @@ function abpcwa_create_suggested_pages($pages, $generate_images = false) {
 
         $parent_id = ($depth > 0 && isset($parent_id_stack[$depth - 1])) ? $parent_id_stack[$depth - 1] : 0;
 
+        // Generate SEO-optimized slug
+        $post_name = abpcwa_generate_seo_slug($page_title);
+        
         $new_page = array(
             'post_title'   => $page_title,
+            'post_name'    => $post_name,
             'post_content' => '',
             'post_status'  => 'draft',
             'post_type'    => 'page',

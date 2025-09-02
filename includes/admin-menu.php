@@ -68,7 +68,8 @@ function abpcwa_manual_creation_tab() {
                         - Use <code>:+</code> for the page excerpt (meta description).<br>
                         - Use <code>:*</code> for featured image URL.<br>
                         - Use <code>::template=template-name.php</code> for page template.<br>
-                        - Use <code>::status=draft</code> for post status (publish, draft, private, pending).
+                        - Use <code>::status=draft</code> for post status (publish, draft, private, pending).<br>
+                        - <strong>SEO slugs are automatically generated</strong> from page titles (max 72 chars).
                     </p>
                 </td>
             </tr>
@@ -92,8 +93,9 @@ function abpcwa_csv_upload_tab() {
                 <td>
                     <input type="file" name="abpcwa_csv_file" id="abpcwa_csv_file" accept=".csv">
                     <p class="description">
-                        Upload a CSV file with the following columns: <code>post_title</code>, <code>post_parent</code>, <code>meta_description</code>, <code>featured_image</code>, <code>page_template</code>, <code>post_status</code>.
+                        Upload a CSV file with the following columns: <code>post_title</code>, <code>slug</code> (optional), <code>post_parent</code>, <code>meta_description</code>, <code>featured_image</code>, <code>page_template</code>, <code>post_status</code>.
                         <br>The <code>post_parent</code> column should contain the title of the parent page.
+                        <br><code>slug</code> is optional - if empty, SEO-optimized slugs are automatically generated.
                     </p>
                 </td>
             </tr>

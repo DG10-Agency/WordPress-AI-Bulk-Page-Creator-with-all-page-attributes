@@ -53,9 +53,13 @@ function abpcwa_create_pages_manually($titles_str) {
             // Determine parent ID
             $parent_id = ($depth > 0 && isset($parent_id_stack[$depth - 1])) ? $parent_id_stack[$depth - 1] : 0;
 
+            // Generate SEO-optimized slug
+            $post_name = abpcwa_generate_seo_slug($title);
+            
             // Create page
             $new_page = array(
                 'post_title'   => wp_strip_all_tags($title),
+                'post_name'    => $post_name,
                 'post_content' => '',
                 'post_status'  => $post_status,
                 'post_type'    => 'page',
@@ -84,6 +88,33 @@ function abpcwa_create_pages_manually($titles_str) {
     } else {
         echo '<div class="notice notice-warning is-dismissible"><p>No pages were created. Please check your input.</p></div>';
     }
+}
+
+// Generate SEO-optimized slug
+function abpcwa_generate_seo_slug($title, $max_length = 72) {
+    // Convert to lowercase
+    $slug = strtolower($title);
+    
+    // Replace spaces with hyphens
+    $slug = str_replace(' ', '-', $slug);
+    
+    // Remove special characters, keep only alphanumeric and hyphens
+    $slug = preg_replace('/[^a-z0-9\-]/', '', $slug);
+    
+    // Remove multiple consecutive hyphens
+    $slug = preg_replace('/-+/', '-', $slug);
+    
+    // Trim hyphens from beginning and end
+    $slug = trim($slug, '-');
+    
+    // Limit to max length while preserving word boundaries
+    if (strlen($slug) > $max_length) {
+        $slug = substr($slug, 0, $max_length);
+        // Don't end with a hyphen
+        $slug = rtrim($slug, '-');
+    }
+    
+    return $slug;
 }
 
 // Set featured image

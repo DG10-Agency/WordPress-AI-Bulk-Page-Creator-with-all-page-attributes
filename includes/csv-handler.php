@@ -23,6 +23,11 @@ function abpcwa_create_pages_from_csv($file) {
         $featured_image_url = isset($row_data['featured_image']) ? esc_url_raw($row_data['featured_image']) : '';
         $page_template = isset($row_data['page_template']) ? sanitize_text_field($row_data['page_template']) : '';
         $post_status = isset($row_data['post_status']) ? sanitize_text_field($row_data['post_status']) : 'publish';
+        
+        // Use custom slug if provided, otherwise generate SEO-optimized slug
+        $post_name = isset($row_data['slug']) && !empty($row_data['slug']) 
+            ? sanitize_title($row_data['slug'])
+            : abpcwa_generate_seo_slug($post_title);
 
         // Determine parent ID
         $parent_id = 0;
@@ -30,9 +35,11 @@ function abpcwa_create_pages_from_csv($file) {
             $parent_id = $page_map[$post_parent_title];
         }
 
+        
         // Create page
         $new_page = array(
             'post_title'   => $post_title,
+            'post_name'    => $post_name,
             'post_content' => '',
             'post_status'  => $post_status,
             'post_type'    => 'page',
