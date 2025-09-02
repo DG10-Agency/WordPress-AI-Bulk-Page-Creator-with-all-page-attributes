@@ -10,6 +10,7 @@ function abpcwa_register_settings() {
     register_setting('abpcwa_settings_group', 'abpcwa_gemini_api_key');
     register_setting('abpcwa_settings_group', 'abpcwa_deepseek_api_key');
     register_setting('abpcwa_settings_group', 'abpcwa_brand_color');
+    register_setting('abpcwa_settings_group', 'abpcwa_sitemap_url');
 }
 add_action('admin_init', 'abpcwa_register_settings');
 
@@ -74,12 +75,20 @@ function abpcwa_settings_init() {
         'ai-bulk-page-creator',
         'abpcwa_settings_section'
     );
+
+    add_settings_field(
+        'abpcwa_sitemap_url',
+        'Sitemap URL',
+        'abpcwa_sitemap_url_callback',
+        'ai-bulk-page-creator',
+        'abpcwa_settings_section'
+    );
 }
 add_action('admin_init', 'abpcwa_settings_init');
 
 // Section callback
 function abpcwa_settings_section_callback() {
-    echo '<p>Select your preferred AI provider and enter the corresponding API key. Set your brand color for AI-generated featured images.</p>';
+    echo '<p>Select your preferred AI provider and enter the corresponding API key. Set your brand color for AI-generated featured images and configure the sitemap URL for menu generation.</p>';
 }
 
 // AI Provider field callback
@@ -118,5 +127,14 @@ function abpcwa_brand_color_callback() {
     ?>
     <input type="color" name="abpcwa_brand_color" value="<?php echo esc_attr($brand_color); ?>" class="regular-text">
     <p class="description">Select your brand's primary color. This will be used for AI-generated featured images.</p>
+    <?php
+}
+
+// Sitemap URL field callback
+function abpcwa_sitemap_url_callback() {
+    $sitemap_url = get_option('abpcwa_sitemap_url', '');
+    ?>
+    <input type="url" name="abpcwa_sitemap_url" value="<?php echo esc_attr($sitemap_url); ?>" class="regular-text" placeholder="https://yoursite.com/sitemap.xml">
+    <p class="description">Enter the URL of your sitemap page. This will be used in the universal bottom menu.</p>
     <?php
 }

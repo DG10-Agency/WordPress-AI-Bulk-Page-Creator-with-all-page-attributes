@@ -1,0 +1,37 @@
+/* Admin Menu Icon Styling - Fix for oversized logo */
+#toplevel_page_ai-bulk-page-creator .wp-menu-image img {
+    width: 20px !important;
+    height: 20px !important;
+    padding: 6px 0 !important;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+    object-fit: contain;
+}
+
+#toplevel_page_ai-bulk-page-creator:hover .wp-menu-image img,
+#toplevel_page_ai-bulk-page-creator.current .wp-menu-image img {
+    opacity: 1;
+}
+
+/* Force proper sizing for SVG icons */
+#toplevel_page_ai-bulk-page-creator .wp-menu-image {
+    width: 20px !important;
+    height: 20px !important;
+}
+
+#toplevel_page_ai-bulk-page-creator .wp-menu-image:before {
+    content: '' !important;
+    display: none !important;
+}
+
+/* Alternative: Use a dashicon if SVG is problematic */
+.abpcwa-menu-icon-fallback {
+    display: none;
+}
+
+@media screen and (max-width: 782px) {
+    #toplevel_page_ai-bulk-page-creator .wp-menu-image img {
+        width: 16px !important;
+        height: 16px !important;
+    }
+}

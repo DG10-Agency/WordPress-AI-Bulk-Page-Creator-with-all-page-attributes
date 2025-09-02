@@ -22,10 +22,12 @@ require_once ABPCWA_PLUGIN_PATH . 'includes/csv-handler.php';
 require_once ABPCWA_PLUGIN_PATH . 'includes/settings-page.php';
 require_once ABPCWA_PLUGIN_PATH . 'includes/ai-generator.php';
 require_once ABPCWA_PLUGIN_PATH . 'includes/hierarchy-manager.php';
+require_once ABPCWA_PLUGIN_PATH . 'includes/menu-generator.php';
 
 // Enqueue scripts and styles
 function abpcwa_enqueue_assets() {
     wp_enqueue_style('abpcwa-styles', ABPCWA_PLUGIN_URL . 'assets/css/styles.css');
+    wp_enqueue_style('abpcwa-admin-menu', ABPCWA_PLUGIN_URL . 'assets/css/admin-menu.css');
     wp_enqueue_script('abpcwa-scripts', ABPCWA_PLUGIN_URL . 'assets/js/scripts.js', array('jquery'), null, true);
     
     // Localize script with plugin URL
