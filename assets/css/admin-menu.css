@@ -1,37 +1,37 @@
-/* Admin Menu Icon Styling - Fix for oversized logo */
-#toplevel_page_ai-bulk-page-creator .wp-menu-image img {
+/* Center the plugin icon in the WordPress admin menu */
+#adminmenu #toplevel_page_ai-bulk-page-creator .wp-menu-image {
+    width: 36px !important;
+    height: 34px !important;
+    position: relative !important;
+    display: grid !important;
+    place-items: center !important; /* perfectly center both axes */
+}
+
+/* Ensure the SVG/img itself is centered and sized like core icons */
+#adminmenu #toplevel_page_ai-bulk-page-creator .wp-menu-image img,
+#adminmenu #toplevel_page_ai-bulk-page-creator .wp-menu-image svg {
     width: 20px !important;
     height: 20px !important;
-    padding: 6px 0 !important;
-    opacity: 0.8;
-    transition: opacity 0.3s ease;
-    object-fit: contain;
+    display: block !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    object-fit: contain !important;
+    /* reset any absolute positioning that might push it left */
+    position: static !important;
+    left: auto !important;
+    top: auto !important;
+    transform: none !important;
+    opacity: 0.9;
+    transition: opacity 0.2s ease-in-out;
 }
 
-#toplevel_page_ai-bulk-page-creator:hover .wp-menu-image img,
-#toplevel_page_ai-bulk-page-creator.current .wp-menu-image img {
-    opacity: 1;
+#adminmenu #toplevel_page_ai-bulk-page-creator:hover .wp-menu-image img,
+#adminmenu #toplevel_page_ai-bulk-page-creator.current .wp-menu-image img {
+    opacity: 1 !important;
 }
 
-/* Force proper sizing for SVG icons */
-#toplevel_page_ai-bulk-page-creator .wp-menu-image {
-    width: 20px !important;
-    height: 20px !important;
-}
-
-#toplevel_page_ai-bulk-page-creator .wp-menu-image:before {
-    content: '' !important;
+/* Remove the default dashicon pseudo-element so only our SVG shows */
+#adminmenu #toplevel_page_ai-bulk-page-creator .wp-menu-image:before {
+    content: none !important;
     display: none !important;
-}
-
-/* Alternative: Use a dashicon if SVG is problematic */
-.abpcwa-menu-icon-fallback {
-    display: none;
-}
-
-@media screen and (max-width: 782px) {
-    #toplevel_page_ai-bulk-page-creator .wp-menu-image img {
-        width: 16px !important;
-        height: 16px !important;
-    }
 }
