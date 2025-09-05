@@ -3,15 +3,15 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
-// Register settings
+// Register settings with sanitization callbacks
 function abpcwa_register_settings() {
-    register_setting('abpcwa_settings_group', 'abpcwa_ai_provider');
-    register_setting('abpcwa_settings_group', 'abpcwa_openai_api_key');
-    register_setting('abpcwa_settings_group', 'abpcwa_gemini_api_key');
-    register_setting('abpcwa_settings_group', 'abpcwa_deepseek_api_key');
-    register_setting('abpcwa_settings_group', 'abpcwa_brand_color');
-    register_setting('abpcwa_settings_group', 'abpcwa_sitemap_url');
-    register_setting('abpcwa_settings_group', 'abpcwa_auto_schema_generation');
+    register_setting('abpcwa_settings_group', 'abpcwa_ai_provider', 'sanitize_key');
+    register_setting('abpcwa_settings_group', 'abpcwa_openai_api_key', 'sanitize_text_field');
+    register_setting('abpcwa_settings_group', 'abpcwa_gemini_api_key', 'sanitize_text_field');
+    register_setting('abpcwa_settings_group', 'abpcwa_deepseek_api_key', 'sanitize_text_field');
+    register_setting('abpcwa_settings_group', 'abpcwa_brand_color', 'sanitize_hex_color');
+    register_setting('abpcwa_settings_group', 'abpcwa_sitemap_url', 'esc_url_raw');
+    register_setting('abpcwa_settings_group', 'abpcwa_auto_schema_generation', 'absint');
 }
 add_action('admin_init', 'abpcwa_register_settings');
 

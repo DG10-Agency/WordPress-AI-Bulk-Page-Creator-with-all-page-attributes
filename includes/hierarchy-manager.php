@@ -111,7 +111,9 @@ function abpcwa_enqueue_hierarchy_assets($hook) {
         return;
     }
 
-    if (isset($_GET['tab']) && $_GET['tab'] === 'hierarchy') {
+    $active_tab = isset($_GET['tab']) ? sanitize_key($_GET['tab']) : 'manual';
+
+    if ($active_tab === 'hierarchy') {
         // Enqueue jsTree
         wp_enqueue_style('jstree', 'https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.15/themes/default/style.min.css');
         wp_enqueue_script('jstree', 'https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.15/jstree.min.js', array('jquery'), '3.3.15', true);

@@ -5,6 +5,10 @@ if (!defined('ABSPATH')) {
 
 // Create pages from manual input
 function abpcwa_create_pages_manually($titles_str) {
+    if (!current_user_can('publish_pages')) {
+        wp_die(esc_html__('You do not have sufficient permissions to create pages.', 'abpcwa'));
+    }
+
     $titles = explode("\n", sanitize_textarea_field($titles_str));
     $titles = array_map('trim', $titles);
 
@@ -34,13 +38,13 @@ function abpcwa_create_pages_manually($titles_str) {
             // Extract page template
             if (strpos($title, '::template=') !== false) {
                 list($title, $template_part) = explode('::template=', $title, 2);
-                $page_template = trim($template_part);
+                $page_template = sanitize_text_field(trim($template_part));
             }
 
             // Extract post status
             if (strpos($title, '::status=') !== false) {
                 list($title, $status_part) = explode('::status=', $title, 2);
-                $post_status = trim($status_part);
+                $post_status = sanitize_key(trim($status_part));
             }
 
             // Calculate depth
@@ -95,9 +99,9 @@ function abpcwa_create_pages_manually($titles_str) {
     }
 
     if ($created_pages > 0) {
-        echo '<div class="notice notice-success is-dismissible"><p>' . $created_pages . ' pages created successfully!</p></div>';
+        echo '<div class="notice notice-success is-dismissible"><p>' . sprintf(esc_html__('%d pages created successfully!', 'abpcwa'), absint($created_pages)) . '</p></div>';
     } else {
-        echo '<div class="notice notice-warning is-dismissible"><p>No pages were created. Please check your input.</p></div>';
+        echo '<div class="notice notice-warning is-dismissible"><p>' . esc_html__('No pages were created. Please check your input.', 'abpcwa') . '</p></div>';
     }
 }
 

@@ -6,9 +6,9 @@ if (!defined('ABSPATH')) {
 // AI generation tab content
 function abpcwa_ai_generation_tab() {
     // Handle creation of suggested pages
-    if (isset($_POST['action']) && $_POST['action'] == 'create_suggested_pages' && check_admin_referer('abpcwa_create_suggested_pages')) {
+    if (isset($_POST['action']) && $_POST['action'] == 'create_suggested_pages' && isset($_POST['_wpnonce']) && wp_verify_nonce(sanitize_key($_POST['_wpnonce']), 'abpcwa_create_suggested_pages')) {
         if (isset($_POST['abpcwa_selected_pages']) && is_array($_POST['abpcwa_selected_pages'])) {
-            $selected_pages = array_map('sanitize_text_field', $_POST['abpcwa_selected_pages']);
+            $selected_pages = array_map('sanitize_text_field', wp_unslash($_POST['abpcwa_selected_pages']));
             $generate_images = isset($_POST['abpcwa_generate_images']) && $_POST['abpcwa_generate_images'] == '1';
             abpcwa_create_suggested_pages($selected_pages, $generate_images);
         }
@@ -55,15 +55,15 @@ function abpcwa_ai_generation_tab() {
         <?php submit_button('Generate Page Suggestions'); ?>
     </form>
     <?php
-    if (isset($_POST['submit']) && check_admin_referer('abpcwa_ai_generate_pages')) {
-        $business_type = sanitize_text_field($_POST['abpcwa_business_type']);
-        $business_details = sanitize_textarea_field($_POST['abpcwa_business_details']);
-        $seo_keywords = sanitize_text_field($_POST['abpcwa_seo_keywords']);
-        $target_audience = sanitize_text_field($_POST['abpcwa_target_audience']);
+    if (isset($_POST['submit']) && isset($_POST['_wpnonce']) && wp_verify_nonce(sanitize_key($_POST['_wpnonce']), 'abpcwa_ai_generate_pages')) {
+        $business_type = isset($_POST['abpcwa_business_type']) ? sanitize_text_field(wp_unslash($_POST['abpcwa_business_type'])) : '';
+        $business_details = isset($_POST['abpcwa_business_details']) ? sanitize_textarea_field(wp_unslash($_POST['abpcwa_business_details'])) : '';
+        $seo_keywords = isset($_POST['abpcwa_seo_keywords']) ? sanitize_text_field(wp_unslash($_POST['abpcwa_seo_keywords'])) : '';
+        $target_audience = isset($_POST['abpcwa_target_audience']) ? sanitize_text_field(wp_unslash($_POST['abpcwa_target_audience'])) : '';
         
         // Process CSV file if uploaded
         $csv_keywords = '';
-        if (isset($_FILES['abpcwa_keywords_csv']) && !empty($_FILES['abpcwa_keywords_csv']['tmp_name'])) {
+        if (isset($_FILES['abpcwa_keywords_csv']) && !empty($_FILES['abpcwa_keywords_csv']['tmp_name']) && $_FILES['abpcwa_keywords_csv']['error'] == UPLOAD_ERR_OK) {
             $csv_keywords = abpcwa_process_keywords_csv($_FILES['abpcwa_keywords_csv']);
         }
         
@@ -87,7 +87,7 @@ function abpcwa_generate_pages_with_ai($business_type, $business_details, $seo_k
     $api_key = get_option('abpcwa_' . $provider . '_api_key');
 
     if (empty($api_key)) {
-        echo '<div class="notice notice-error"><p>Please enter your ' . ucfirst($provider) . ' API key in the Settings tab.</p></div>';
+        echo '<div class="notice notice-error"><p>Please enter your ' . esc_html(ucfirst($provider)) . ' API key in the Settings tab.</p></div>';
         return;
     }
 
@@ -174,7 +174,7 @@ function abpcwa_generate_pages_with_ai($business_type, $business_details, $seo_k
     $is_deepseek = $provider === 'deepseek';
     
     echo '<p>';
-    echo '<input type="checkbox" name="abpcwa_generate_images" id="abpcwa_generate_images" value="1" ' . ($is_deepseek ? 'disabled' : '') . '>';
+    echo '<input type="checkbox" name="abpcwa_generate_images" id="abpcwa_generate_images" value="1" ' . checked(true, !$is_deepseek, false) . '>';
     echo '<label for="abpcwa_generate_images"> Generate featured images with AI</label>';
     
     if ($is_deepseek) {
@@ -626,9 +626,12 @@ function abpcwa_create_suggested_pages($pages, $generate_images = false) {
     }
 
     if ($created_count > 0) {
-        $message = $created_count . ' pages created successfully as drafts.';
+        $message = sprintf(
+            esc_html__('%d pages created successfully as drafts.', 'abpcwa'),
+            absint($created_count)
+        );
         if ($generate_images) {
-            $message .= ' Featured images generated with AI.';
+            $message .= ' ' . esc_html__('Featured images generated with AI.', 'abpcwa');
         }
         echo '<div class="notice notice-success is-dismissible"><p>' . $message . '</p></div>';
     }

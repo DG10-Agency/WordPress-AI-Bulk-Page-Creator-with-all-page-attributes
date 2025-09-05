@@ -264,16 +264,16 @@ function abpcwa_extract_faq_items($content) {
     foreach ($patterns as $pattern) {
         if (preg_match_all($pattern, $content, $matches, PREG_SET_ORDER)) {
             foreach ($matches as $match) {
-                $question = strip_tags($match[1]);
-                $answer = strip_tags($match[2]);
+                $question = sanitize_text_field(trim(strip_tags($match[1])));
+                $answer = sanitize_textarea_field(trim(strip_tags($match[2])));
                 
                 if (!empty($question) && !empty($answer)) {
                     $faq_items[] = [
                         '@type' => 'Question',
-                        'name' => trim($question),
+                        'name' => $question,
                         'acceptedAnswer' => [
                             '@type' => 'Answer',
-                            'text' => trim($answer)
+                            'text' => $answer
                         ]
                     ];
                 }
@@ -293,18 +293,18 @@ function abpcwa_generate_blog_schema($post_id) {
     $schema = [
         '@context' => 'https://schema.org',
         '@type' => 'BlogPosting',
-        'headline' => get_the_title($post_id),
-        'description' => get_the_excerpt($post_id),
+        'headline' => sanitize_text_field(get_the_title($post_id)),
+        'description' => sanitize_text_field(get_the_excerpt($post_id)),
         'datePublished' => get_the_date('c', $post_id),
         'dateModified' => get_the_modified_date('c', $post_id),
         'author' => [
             '@type' => 'Person',
-            'name' => $author->display_name
+            'name' => sanitize_text_field($author->display_name)
         ],
         'publisher' => abpcwa_get_organization_schema(),
         'mainEntityOfPage' => [
             '@type' => 'WebPage',
-            '@id' => get_permalink($post_id)
+            '@id' => esc_url_raw(get_permalink($post_id))
         ]
     ];
 
@@ -327,13 +327,13 @@ function abpcwa_generate_article_schema($post_id) {
     $schema = [
         '@context' => 'https://schema.org',
         '@type' => 'Article',
-        'headline' => get_the_title($post_id),
-        'description' => get_the_excerpt($post_id),
+        'headline' => sanitize_text_field(get_the_title($post_id)),
+        'description' => sanitize_text_field(get_the_excerpt($post_id)),
         'datePublished' => get_the_date('c', $post_id),
         'dateModified' => get_the_modified_date('c', $post_id),
         'mainEntityOfPage' => [
             '@type' => 'WebPage',
-            '@id' => get_permalink($post_id)
+            '@id' => esc_url_raw(get_permalink($post_id))
         ],
         'publisher' => abpcwa_get_organization_schema()
     ];
@@ -365,11 +365,11 @@ function abpcwa_generate_service_schema($post_id) {
     $schema = [
         '@context' => 'https://schema.org',
         '@type' => 'Service',
-        'name' => get_the_title($post_id),
-        'description' => get_the_excerpt($post_id),
+        'name' => sanitize_text_field(get_the_title($post_id)),
+        'description' => sanitize_text_field(get_the_excerpt($post_id)),
         'provider' => abpcwa_get_organization_schema(),
         'areaServed' => 'Worldwide',
-        'serviceType' => get_the_title($post_id)
+        'serviceType' => sanitize_text_field(get_the_title($post_id))
     ];
 
     return $schema;
@@ -381,9 +381,9 @@ function abpcwa_generate_product_schema($post_id) {
     $schema = [
         '@context' => 'https://schema.org',
         '@type' => 'Product',
-        'name' => get_the_title($post_id),
-        'description' => get_the_excerpt($post_id),
-        'sku' => 'PROD-' . $post_id,
+        'name' => sanitize_text_field(get_the_title($post_id)),
+        'description' => sanitize_text_field(get_the_excerpt($post_id)),
+        'sku' => 'PROD-' . absint($post_id),
         'offers' => [
             '@type' => 'Offer',
             'priceCurrency' => 'USD',
@@ -428,9 +428,9 @@ function abpcwa_generate_local_business_schema($post_id) {
     $schema = [
         '@context' => 'https://schema.org',
         '@type' => 'LocalBusiness',
-        'name' => get_bloginfo('name'),
-        'description' => get_the_excerpt($post_id),
-        'url' => home_url()
+        'name' => sanitize_text_field(get_bloginfo('name')),
+        'description' => sanitize_text_field(get_the_excerpt($post_id)),
+        'url' => esc_url_raw(home_url())
     ];
 
     return $schema;
@@ -441,9 +441,9 @@ function abpcwa_generate_webpage_schema($post_id) {
     $schema = [
         '@context' => 'https://schema.org',
         '@type' => 'WebPage',
-        'name' => get_the_title($post_id),
-        'description' => get_the_excerpt($post_id),
-        'url' => get_permalink($post_id)
+        'name' => sanitize_text_field(get_the_title($post_id)),
+        'description' => sanitize_text_field(get_the_excerpt($post_id)),
+        'url' => esc_url_raw(get_permalink($post_id))
     ];
 
     // Add publisher information
@@ -572,11 +572,11 @@ add_action('admin_init', 'abpcwa_handle_schema_generation_actions');
 
 // Add admin notices for schema generation
 function abpcwa_schema_generation_notices() {
-    if (isset($_GET['schema_generated']) && $_GET['schema_generated'] == '1') {
-        echo '<div class="notice notice-success is-dismissible"><p>Schema generated successfully!</p></div>';
+    if (isset($_GET['schema_generated']) && sanitize_key($_GET['schema_generated']) == '1') {
+        echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Schema generated successfully!', 'abpcwa') . '</p></div>';
     }
-    if (isset($_GET['schema_regenerated']) && $_GET['schema_regenerated'] == '1') {
-        echo '<div class="notice notice-success is-dismissible"><p>Schema regenerated successfully!</p></div>';
+    if (isset($_GET['schema_regenerated']) && sanitize_key($_GET['schema_regenerated']) == '1') {
+        echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Schema regenerated successfully!', 'abpcwa') . '</p></div>';
     }
 }
 add_action('admin_notices', 'abpcwa_schema_generation_notices');
@@ -597,15 +597,15 @@ function abpcwa_schema_generator_tab() {
             $generated_count++;
         }
         
-        echo '<div class="notice notice-success is-dismissible"><p>Generated schema for ' . $generated_count . ' pages!</p></div>';
+        echo '<div class="notice notice-success is-dismissible"><p>' . sprintf(esc_html__('Generated schema for %d pages!', 'abpcwa'), absint($generated_count)) . '</p></div>';
     }
     
     // Handle individual page schema generation
-    if (isset($_POST['generate_schema_for_page']) && check_admin_referer('abpcwa_generate_schema_for_page')) {
-        $page_id = intval($_POST['page_id']);
+    if (isset($_POST['generate_schema_for_page']) && isset($_POST['_wpnonce']) && wp_verify_nonce(sanitize_key($_POST['_wpnonce']), 'abpcwa_generate_schema_for_page')) {
+        $page_id = isset($_POST['page_id']) ? absint($_POST['page_id']) : 0;
         if ($page_id) {
             abpcwa_generate_schema_markup($page_id);
-            echo '<div class="notice notice-success is-dismissible"><p>Schema generated for selected page!</p></div>';
+            echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Schema generated for selected page!', 'abpcwa') . '</p></div>';
         }
     }
     ?>
@@ -758,13 +758,13 @@ function abpcwa_schema_generator_tab() {
 function abpcwa_ajax_get_schema_preview() {
     check_ajax_referer('abpcwa_schema_preview', 'nonce');
     
-    if (!current_user_can('manage_options')) {
-        wp_die('Unauthorized');
+    if (!current_user_can('edit_pages')) {
+        wp_send_json_error(['message' => esc_html__('Unauthorized', 'abpcwa')], 403);
     }
     
-    $page_id = intval($_POST['page_id']);
+    $page_id = isset($_POST['page_id']) ? absint($_POST['page_id']) : 0;
     if (!$page_id) {
-        wp_send_json_error('Invalid page ID');
+        wp_send_json_error(['message' => esc_html__('Invalid page ID', 'abpcwa')]);
     }
     
     $schema_data = get_post_meta($page_id, '_abpcwa_schema_data', true);

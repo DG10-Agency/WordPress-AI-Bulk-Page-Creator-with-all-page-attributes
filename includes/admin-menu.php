@@ -19,40 +19,40 @@ add_action('admin_menu', 'abpcwa_add_admin_menu');
 
 // Admin page content
 function abpcwa_admin_page() {
+    $active_tab = isset($_GET['tab']) ? sanitize_key($_GET['tab']) : 'manual';
     ?>
     <div class="wrap">
         <h1>AI Bulk Page Creator with Attributes</h1>
         <div class="nav-tab-wrapper">
-            <a href="?page=ai-bulk-page-creator&tab=manual" class="nav-tab <?php echo !isset($_GET['tab']) || $_GET['tab'] == 'manual' ? 'nav-tab-active' : ''; ?>">Manual Creation</a>
-            <a href="?page=ai-bulk-page-creator&tab=csv" class="nav-tab <?php echo isset($_GET['tab']) && $_GET['tab'] == 'csv' ? 'nav-tab-active' : ''; ?>">CSV Upload</a>
-            <a href="?page=ai-bulk-page-creator&tab=ai" class="nav-tab <?php echo isset($_GET['tab']) && $_GET['tab'] == 'ai' ? 'nav-tab-active' : ''; ?>">Generate with AI</a>
-            <a href="?page=ai-bulk-page-creator&tab=schema" class="nav-tab <?php echo isset($_GET['tab']) && $_GET['tab'] == 'schema' ? 'nav-tab-active' : ''; ?>">Schema Generator</a>
-            <a href="?page=ai-bulk-page-creator&tab=menu" class="nav-tab <?php echo isset($_GET['tab']) && $_GET['tab'] == 'menu' ? 'nav-tab-active' : ''; ?>">Menu Generator</a>
-            <a href="?page=ai-bulk-page-creator&tab=hierarchy" class="nav-tab <?php echo isset($_GET['tab']) && $_GET['tab'] == 'hierarchy' ? 'nav-tab-active' : ''; ?>">Page Hierarchy</a>
-            <a href="?page=ai-bulk-page-creator&tab=settings" class="nav-tab <?php echo isset($_GET['tab']) && $_GET['tab'] == 'settings' ? 'nav-tab-active' : ''; ?>">Settings</a>
+            <a href="?page=ai-bulk-page-creator&tab=manual" class="nav-tab <?php echo $active_tab == 'manual' ? 'nav-tab-active' : ''; ?>">Manual Creation</a>
+            <a href="?page=ai-bulk-page-creator&tab=csv" class="nav-tab <?php echo $active_tab == 'csv' ? 'nav-tab-active' : ''; ?>">CSV Upload</a>
+            <a href="?page=ai-bulk-page-creator&tab=ai" class="nav-tab <?php echo $active_tab == 'ai' ? 'nav-tab-active' : ''; ?>">Generate with AI</a>
+            <a href="?page=ai-bulk-page-creator&tab=schema" class="nav-tab <?php echo $active_tab == 'schema' ? 'nav-tab-active' : ''; ?>">Schema Generator</a>
+            <a href="?page=ai-bulk-page-creator&tab=menu" class="nav-tab <?php echo $active_tab == 'menu' ? 'nav-tab-active' : ''; ?>">Menu Generator</a>
+            <a href="?page=ai-bulk-page-creator&tab=hierarchy" class="nav-tab <?php echo $active_tab == 'hierarchy' ? 'nav-tab-active' : ''; ?>">Page Hierarchy</a>
+            <a href="?page=ai-bulk-page-creator&tab=settings" class="nav-tab <?php echo $active_tab == 'settings' ? 'nav-tab-active' : ''; ?>">Settings</a>
         </div>
         <?php
-        $tab = isset($_GET['tab']) ? $_GET['tab'] : 'manual';
-        if ($tab == 'manual') {
+        if ($active_tab == 'manual') {
             abpcwa_manual_creation_tab();
-        } elseif ($tab == 'csv') {
+        } elseif ($active_tab == 'csv') {
             abpcwa_csv_upload_tab();
-        } elseif ($tab == 'ai') {
+        } elseif ($active_tab == 'ai') {
             abpcwa_ai_generation_tab();
-        } elseif ($tab == 'schema') {
+        } elseif ($active_tab == 'schema') {
             abpcwa_schema_generator_tab();
-        } elseif ($tab == 'menu') {
+        } elseif ($active_tab == 'menu') {
             abpcwa_menu_generator_tab();
-        } elseif ($tab == 'hierarchy') {
+        } elseif ($active_tab == 'hierarchy') {
             abpcwa_hierarchy_tab();
-        } else {
+        } elseif ($active_tab == 'settings') {
             abpcwa_settings_tab();
         }
         ?>
         <div class="dg10-footer-promo">
             <p>
                 This plugin is brought to you by <a href="https://www.dg10.agency" target="_blank">DG10 Agency</a>. 
-                This is an open-source project. Feel free to <a href="<?php echo ABPCWA_GITHUB_URL; ?>" target="_blank">star us on GitHub</a>.
+                This is an open-source project. Feel free to <a href="<?php echo esc_url(ABPCWA_GITHUB_URL); ?>" target="_blank">star us on GitHub</a>.
             </p>
         </div>
     </div>
@@ -121,8 +121,8 @@ function abpcwa_csv_upload_tab() {
 // Menu generator tab content
 function abpcwa_menu_generator_tab() {
     // Handle menu generation requests
-    if (isset($_POST['generate_menu']) && check_admin_referer('abpcwa_generate_menu')) {
-        $menu_type = sanitize_text_field($_POST['menu_type']);
+    if (isset($_POST['generate_menu']) && isset($_POST['_wpnonce']) && wp_verify_nonce(sanitize_key($_POST['_wpnonce']), 'abpcwa_generate_menu')) {
+        $menu_type = isset($_POST['menu_type']) ? sanitize_key($_POST['menu_type']) : '';
         
         switch ($menu_type) {
             case 'universal_bottom':

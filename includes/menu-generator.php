@@ -53,6 +53,9 @@ class ABPCWA_Menu_Generator {
      * Create universal bottom menu
      */
     public function create_universal_bottom_menu() {
+        if (!current_user_can('edit_theme_options')) {
+            return false;
+        }
         $menu_name = 'Universal Bottom Menu';
         $menu_exists = wp_get_nav_menu_object($menu_name);
         
@@ -132,6 +135,9 @@ class ABPCWA_Menu_Generator {
      * Generate services menu
      */
     public function create_services_menu() {
+        if (!current_user_can('edit_theme_options')) {
+            return false;
+        }
         $services = get_pages(array(
             'post_status' => 'publish',
             'meta_key' => '_wp_page_template',
@@ -176,6 +182,9 @@ class ABPCWA_Menu_Generator {
      * Generate company menu
      */
     public function create_company_menu() {
+        if (!current_user_can('edit_theme_options')) {
+            return false;
+        }
         $company_pages = get_pages(array(
             'post_status' => 'publish',
             'meta_key' => '_wp_page_template',
