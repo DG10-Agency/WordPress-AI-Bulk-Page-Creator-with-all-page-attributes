@@ -10,6 +10,12 @@ function abpcwa_hierarchy_tab() {
         <div class="abpcwa-hierarchy-header">
             <h2>Page Hierarchy Visualizer</h2>
             <p class="description">Visualize and manage your page hierarchy. This is a <strong>read-only</strong> view for visualization purposes only.</p>
+            <div class="abpcwa-view-controls">
+                <button class="button button-primary" data-view="tree">Tree View</button>
+                <button class="button" data-view="mindmap">Mind Map</button>
+                <button class="button" data-view="orgchart">Org Chart</button>
+                <button class="button" data-view="grid">Grid View</button>
+            </div>
             <div class="abpcwa-hierarchy-controls">
                 <button id="abpcwa-expand-all" class="button">Expand All</button>
                 <button id="abpcwa-collapse-all" class="button">Collapse All</button>
@@ -21,8 +27,13 @@ function abpcwa_hierarchy_tab() {
             <input type="text" id="abpcwa-hierarchy-search" placeholder="Search pages..." class="regular-text">
         </div>
         
-        <div id="abpcwa-hierarchy-tree" class="abpcwa-hierarchy-tree">
-            <div class="abpcwa-loading">Loading page hierarchy...</div>
+        <div id="abpcwa-hierarchy-view-container">
+            <div id="abpcwa-hierarchy-tree" class="abpcwa-hierarchy-view active-view">
+                <div class="abpcwa-loading">Loading page hierarchy...</div>
+            </div>
+            <div id="abpcwa-hierarchy-mindmap" class="abpcwa-hierarchy-view"></div>
+            <div id="abpcwa-hierarchy-orgchart" class="abpcwa-hierarchy-view"></div>
+            <div id="abpcwa-hierarchy-grid" class="abpcwa-hierarchy-view"></div>
         </div>
         
         <div class="abpcwa-hierarchy-note">
@@ -105,8 +116,11 @@ function abpcwa_enqueue_hierarchy_assets($hook) {
         wp_enqueue_style('jstree', 'https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.15/themes/default/style.min.css');
         wp_enqueue_script('jstree', 'https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.15/jstree.min.js', array('jquery'), '3.3.15', true);
         
+        // Enqueue D3.js for Mind Map and Org Chart
+        wp_enqueue_script('d3', 'https://d3js.org/d3.v7.min.js', array(), '7.0.0', true);
+
         // Enqueue our hierarchy scripts
-        wp_enqueue_script('abpcwa-hierarchy', ABPCWA_PLUGIN_URL . 'assets/js/hierarchy.js', array('jquery', 'jstree'), null, true);
+        wp_enqueue_script('abpcwa-hierarchy', ABPCWA_PLUGIN_URL . 'assets/js/hierarchy.js', array('jquery', 'jstree', 'd3'), null, true);
         wp_enqueue_style('abpcwa-hierarchy', ABPCWA_PLUGIN_URL . 'assets/css/hierarchy.css');
         
         // Localize script with data
