@@ -1,4 +1,4 @@
-# AI Bulk Page Creator with All Page Attributes
+# AIOPMS - All In One Page Management System
 
 ## 📖 Table of Contents
 - [Overview](#-overview)
@@ -21,7 +21,7 @@
 
 ## 🎯 Overview
 
-**AI Bulk Page Creator with All Page Attributes** is a comprehensive WordPress plugin that revolutionizes website content creation by leveraging artificial intelligence to generate complete website structures, create pages in bulk, and optimize them for search engines with all essential page attributes.
+**AIOPMS - All In One Page Management System** is a comprehensive WordPress plugin that revolutionizes website content creation by leveraging artificial intelligence to generate complete website structures, create pages in bulk, and optimize them for search engines with all essential page attributes.
 
 This plugin is designed for website developers, content creators, and business owners who need to quickly build professional websites with SEO-optimized content without spending hours on manual page creation.
 
@@ -1033,6 +1033,6 @@ For feature requests, please describe:
 
 **Transform your WordPress website with AI-powered content creation!** 🚀
 
-This plugin represents the future of content creation - combining artificial intelligence with WordPress expertise to help you build better websites faster. Whether you're creating a small business site or a large content portal, AI Bulk Page Creator with All Page Attributes gives you the tools to succeed in the competitive online landscape.
+This plugin represents the future of content creation - combining artificial intelligence with WordPress expertise to help you build better websites faster. Whether you're creating a small business site or a large content portal, AIOPMS - All In One Page Management System gives you the tools to succeed in the competitive online landscape.
 
 *Happy creating!* 🎨

@@ -1,8 +1,8 @@
 jQuery(document).ready(function($) {
     // Handle AI provider change to enable/disable image generation checkbox
     function updateImageGenerationCheckbox() {
-        var provider = $('select[name="abpcwa_ai_provider"]').val();
-        var generateImagesCheckbox = $('#abpcwa_generate_images');
+        var provider = $('select[name="aiopms_ai_provider"]').val();
+        var generateImagesCheckbox = $('#aiopms_generate_images');
         
         if (provider === 'deepseek') {
             generateImagesCheckbox.prop('disabled', true);
@@ -16,13 +16,13 @@ jQuery(document).ready(function($) {
     updateImageGenerationCheckbox();
     
     // Update when provider changes
-    $('select[name="abpcwa_ai_provider"]').on('change', function() {
+    $('select[name="aiopms_ai_provider"]').on('change', function() {
         updateImageGenerationCheckbox();
     });
     
     // Show loading state when generating images
     $('form').on('submit', function() {
-        if ($('#abpcwa_generate_images').is(':checked') && !$('#abpcwa_generate_images').is(':disabled')) {
+        if ($('#aiopms_generate_images').is(':checked') && !$('#aiopms_generate_images').is(':disabled')) {
             $('.submit .spinner').css('visibility', 'visible');
             $('input[type="submit"]').prop('disabled', true).val('Generating Images...');
         }
@@ -35,11 +35,11 @@ jQuery(document).ready(function($) {
         var buttonText = submitButton.val();
         
         // Check if this is the AI generation form (has business_type field)
-        if ($form.find('input[name="abpcwa_business_type"]').length > 0 && buttonText === 'Generate Page Suggestions') {
+        if ($form.find('input[name="aiopms_business_type"]').length > 0 && buttonText === 'Generate Page Suggestions') {
             // Create loading overlay if it doesn't exist
-            if ($('#abpcwa-loading-overlay').length === 0) {
+            if ($('#aiopms-loading-overlay').length === 0) {
                 $('body').append(`
-                    <div id="abpcwa-loading-overlay" style="
+                    <div id="aiopms-loading-overlay" style="
                         position: fixed;
                         top: 0;
                         left: 0;
@@ -54,7 +54,7 @@ jQuery(document).ready(function($) {
                         backdrop-filter: blur(5px);
                     ">
                         <div style="text-align: center;">
-                            <img src="${abpcwa_plugin_data.plugin_url}assets/images/loader.png" 
+                            <img src="${aiopms_plugin_data.plugin_url}assets/images/loader.png" 
                                  alt="Loading..." 
                                  style="
                                      width: 80px;
@@ -85,18 +85,18 @@ jQuery(document).ready(function($) {
             }
             
             // Show loading overlay
-            $('#abpcwa-loading-overlay').fadeIn(300);
+            $('#aiopms-loading-overlay').fadeIn(300);
             
             // Disable submit button to prevent multiple submissions
             submitButton.prop('disabled', true).val('Analyzing with AI...');
         }
         
         // Check if this is the page creation form (has selected_pages field)
-        if ($form.find('input[name="abpcwa_selected_pages[]"]').length > 0 && buttonText === 'Create Selected Pages') {
+        if ($form.find('input[name="aiopms_selected_pages[]"]').length > 0 && buttonText === 'Create Selected Pages') {
             // Create loading overlay if it doesn't exist
-            if ($('#abpcwa-loading-overlay').length === 0) {
+            if ($('#aiopms-loading-overlay').length === 0) {
                 $('body').append(`
-                    <div id="abpcwa-loading-overlay" style="
+                    <div id="aiopms-loading-overlay" style="
                         position: fixed;
                         top: 0;
                         left: 0;
@@ -111,7 +111,7 @@ jQuery(document).ready(function($) {
                         backdrop-filter: blur(5px);
                     ">
                         <div style="text-align: center;">
-                            <img src="${abpcwa_plugin_data.plugin_url}assets/images/loader.png" 
+                            <img src="${aiopms_plugin_data.plugin_url}assets/images/loader.png" 
                                  alt="Loading..." 
                                  style="
                                      width: 80px;
@@ -142,7 +142,7 @@ jQuery(document).ready(function($) {
             }
             
             // Show loading overlay
-            $('#abpcwa-loading-overlay').fadeIn(300);
+            $('#aiopms-loading-overlay').fadeIn(300);
             
             // Disable submit button to prevent multiple submissions
             submitButton.prop('disabled', true).val('Creating Pages...');

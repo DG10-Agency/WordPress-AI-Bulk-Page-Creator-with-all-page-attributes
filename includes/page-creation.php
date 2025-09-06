@@ -4,9 +4,9 @@ if (!defined('ABSPATH')) {
 }
 
 // Create pages from manual input
-function abpcwa_create_pages_manually($titles_str) {
+function aiopms_create_pages_manually($titles_str) {
     if (!current_user_can('publish_pages')) {
-        wp_die(esc_html__('You do not have sufficient permissions to create pages.', 'abpcwa'));
+        wp_die(esc_html__('You do not have sufficient permissions to create pages.', 'aiopms'));
     }
 
     $titles = explode("\n", sanitize_textarea_field($titles_str));
@@ -58,7 +58,7 @@ function abpcwa_create_pages_manually($titles_str) {
             $parent_id = ($depth > 0 && isset($parent_id_stack[$depth - 1])) ? $parent_id_stack[$depth - 1] : 0;
 
             // Generate SEO-optimized slug
-            $post_name = abpcwa_generate_seo_slug($title);
+            $post_name = aiopms_generate_seo_slug($title);
             
             // Create page
             $new_page = array(
@@ -78,17 +78,17 @@ function abpcwa_create_pages_manually($titles_str) {
                 // Set featured image with SEO metadata
                 if (!empty($featured_image_url)) {
                     $image_title = "Featured Image for " . sanitize_text_field($title);
-                    $keywords = abpcwa_extract_primary_keywords($title);
+                    $keywords = aiopms_extract_primary_keywords($title);
                     $image_alt = "Visual representation of " . $keywords . " concept";
                     $image_description = "Featured image for " . sanitize_text_field($title) . " page";
                     
-                    abpcwa_set_featured_image($page_id, $featured_image_url, $image_title, $image_alt, $image_description);
+                    aiopms_set_featured_image($page_id, $featured_image_url, $image_title, $image_alt, $image_description);
                 }
 
                 // Generate schema markup for the new page
-                $auto_generate = get_option('abpcwa_auto_schema_generation', true);
+                $auto_generate = get_option('aiopms_auto_schema_generation', true);
                 if ($auto_generate) {
-                    abpcwa_generate_schema_markup($page_id);
+                    aiopms_generate_schema_markup($page_id);
                 }
 
                 // Update parent stack
@@ -99,14 +99,14 @@ function abpcwa_create_pages_manually($titles_str) {
     }
 
     if ($created_pages > 0) {
-        echo '<div class="notice notice-success is-dismissible"><p>' . sprintf(esc_html__('%d pages created successfully!', 'abpcwa'), absint($created_pages)) . '</p></div>';
+        echo '<div class="notice notice-success is-dismissible"><p>' . sprintf(esc_html__('%d pages created successfully!', 'aiopms'), absint($created_pages)) . '</p></div>';
     } else {
-        echo '<div class="notice notice-warning is-dismissible"><p>' . esc_html__('No pages were created. Please check your input.', 'abpcwa') . '</p></div>';
+        echo '<div class="notice notice-warning is-dismissible"><p>' . esc_html__('No pages were created. Please check your input.', 'aiopms') . '</p></div>';
     }
 }
 
 // Generate SEO-optimized slug
-function abpcwa_generate_seo_slug($title, $max_length = 72) {
+function aiopms_generate_seo_slug($title, $max_length = 72) {
     // Convert to lowercase
     $slug = strtolower($title);
     
@@ -133,7 +133,7 @@ function abpcwa_generate_seo_slug($title, $max_length = 72) {
 }
 
 // Set featured image with SEO metadata
-function abpcwa_set_featured_image($post_id, $image_url, $image_title = '', $image_alt = '', $image_description = '') {
+function aiopms_set_featured_image($post_id, $image_url, $image_title = '', $image_alt = '', $image_description = '') {
     // Check if the image URL is valid
     if (filter_var($image_url, FILTER_VALIDATE_URL) === FALSE) {
         return;

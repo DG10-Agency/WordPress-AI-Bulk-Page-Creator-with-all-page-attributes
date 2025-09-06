@@ -63,6 +63,24 @@
     border: 1px solid #ffcdd2;
 }
 
+.abpcwa-schema-howto {
+    background-color: #e8f5e8;
+    color: #2e7d32;
+    border: 1px solid #c8e6c9;
+}
+
+.abpcwa-schema-review {
+    background-color: #fff3e0;
+    color: #ef6c00;
+    border: 1px solid #ffe0b2;
+}
+
+.abpcwa-schema-event {
+    background-color: #f3e5f5;
+    color: #7b1fa2;
+    border: 1px solid #e1bee7;
+}
+
 /* Schema admin page styling */
 .abpcwa-schema-preview {
     background: #f9f9f9;

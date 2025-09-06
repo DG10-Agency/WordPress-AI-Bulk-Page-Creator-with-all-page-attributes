@@ -1,5 +1,5 @@
 /* Center the plugin icon in the WordPress admin menu */
-#adminmenu #toplevel_page_ai-bulk-page-creator .wp-menu-image {
+#adminmenu #toplevel_page_aiopms-page-management .wp-menu-image {
     width: 36px !important;
     height: 34px !important;
     position: relative !important;
@@ -8,8 +8,8 @@
 }
 
 /* Ensure the SVG/img itself is centered and sized like core icons */
-#adminmenu #toplevel_page_ai-bulk-page-creator .wp-menu-image img,
-#adminmenu #toplevel_page_ai-bulk-page-creator .wp-menu-image svg {
+#adminmenu #toplevel_page_aiopms-page-management .wp-menu-image img,
+#adminmenu #toplevel_page_aiopms-page-management .wp-menu-image svg {
     width: 20px !important;
     height: 20px !important;
     display: block !important;
@@ -25,13 +25,13 @@
     transition: opacity 0.2s ease-in-out;
 }
 
-#adminmenu #toplevel_page_ai-bulk-page-creator:hover .wp-menu-image img,
-#adminmenu #toplevel_page_ai-bulk-page-creator.current .wp-menu-image img {
+#adminmenu #toplevel_page_aiopms-page-management:hover .wp-menu-image img,
+#adminmenu #toplevel_page_aiopms-page-management.current .wp-menu-image img {
     opacity: 1 !important;
 }
 
 /* Remove the default dashicon pseudo-element so only our SVG shows */
-#adminmenu #toplevel_page_ai-bulk-page-creator .wp-menu-image:before {
+#adminmenu #toplevel_page_aiopms-page-management .wp-menu-image:before {
     content: none !important;
     display: none !important;
 }

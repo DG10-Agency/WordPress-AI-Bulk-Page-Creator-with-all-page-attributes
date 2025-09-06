@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIOPMS Hierarchy Debug Test</title>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- D3.js -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    
+    <!-- jsTree -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.15/themes/default/style.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.15/jstree.min.js"></script>
+    
+    <!-- Bootstrap (for tooltips) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- WordPress Admin Styles -->
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+            background: #f1f1f1;
+            padding: 20px;
+            margin: 0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 4px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        
+        .debug-console {
+            background: #1d2327;
+            color: #fff;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AIOPMS Hierarchy Debug Test</h1>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <h3>Test Data Generator</h3>
+                <button id="generate-test-data" class="btn btn-primary">Generate Test Data</button>
+                <button id="clear-console" class="btn btn-secondary">Clear Console</button>
+                
+                <div class="mt-3">
+                    <h4>Test Cases:</h4>
+                    <button class="btn btn-sm btn-info test-case" data-case="single-root">Single Root Page</button>
+                    <button class="btn btn-sm btn-info test-case" data-case="multiple-roots">Multiple Root Pages</button>
+                    <button class="btn btn-sm btn-info test-case" data-case="deep-hierarchy">Deep Hierarchy (3+ levels)</button>
+                    <button class="btn btn-sm btn-info test-case" data-case="no-roots">No Root Pages</button>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <h3>View Controls</h3>
+                <div class="btn-group">
+                    <button class="btn btn-primary" data-view="tree">Tree View</button>
+                    <button class="btn btn-outline-primary" data-view="orgchart">Org Chart</button>
+                    <button class="btn btn-outline-primary" data-view="grid">Grid View</button>
+                </div>
+                
+                <div class="mt-3">
+                    <input type="text" id="search-input" placeholder="Search..." class="form-control">
+                </div>
+            </div>
+        </div>
+        
+        <hr>
+        
+        <div id="hierarchy-container" style="min-height: 500px; border: 1px solid #ddd; padding: 15px; margin-top: 20px;">
+            <div id="hierarchy-tree" style="display: none;"></div>
+            <div id="hierarchy-orgchart" style="display: none;"></div>
+            <div id="hierarchy-grid" style="display: none;"></div>
+            
+            <div id="no-view-selected" class="text-center text-muted" style="padding: 50px;">
+                <p>Select a view to display hierarchy</p>
+            </div>
+        </div>
+        
+        <div class="debug-console" id="debug-console">
+            <strong>Debug Console:</strong><br>
+            <div id="console-output"></div>
+        </div>
+    </div>
+
+    <script>
+    // Mock aiopmsHierarchy object that would be provided by WordPress
+    const aiopmsHierarchy = {
+        rest_url: '/wp-json/aiopms/v1/',
+        nonce: 'test-nonce-12345',
+        strings: {
+            loading: 'Loading page hierarchy...',
+            search: 'Search pages...',
+            readonly_note: 'Visualization only - use WordPress editor to modify hierarchy'
+        }
+    };
+
+    // Debug logging function
+    function debugLog(message) {
+        const timestamp = new Date().toLocaleTimeString();
+        const logEntry = `[${timestamp}] ${message}<br>`;
+        $('#console-output').prepend(logEntry);
+        console.log(message);
+    }
+
+    // Generate test hierarchy data
+    function generateTestData(caseType = 'single-root') {
+        let testData = [];
+        
+        switch(caseType) {
+            case 'single-root':
+                // Single root with children
+                testData = [
+                    { id: 1, parent: '#', text: 'Home Page', type: 'page', 
+                      a_attr: { href: '#home', target: '_blank', title: 'View: Home Page' },
+                      meta: { status: 'publish', description: 'Main homepage', published: 'Jan 1, 2023', author: 'Admin' } },
+                    { id: 2, parent: 1, text: 'About Us', type: 'page',
+                      a_attr: { href: '#about', target: '_blank', title: 'View: About Us' },
+                      meta: { status: 'publish', description: 'About our company', published: 'Jan 2, 2023', author: 'Admin' } },
+                    { id: 3, parent: 1, text: 'Services', type: 'page',
+                      a_attr: { href: '#services', target: '_blank', title: 'View: Services' },
+                      meta: { status: 'publish', description: 'Our services', published: 'Jan 3, 2023', author: 'Admin' } },
+                    { id: 4, parent: 3, text: 'Web Development', type: 'page',
+                      a_attr: { href: '#webdev', target: '_blank', title: 'View: Web Development' },
+                      meta: { status: 'publish', description: 'Web development services', published: 'Jan 4, 2023', author: 'Developer' } }
+                ];
+                break;
+                
+            case 'multiple-roots':
+                // Multiple root pages
+                testData = [
+                    { id: 1, parent: '#', text: 'Home', type: 'page',
+                      a_attr: { href: '#home', target: '_blank', title: 'View: Home' },
+                      meta: { status: 'publish', published: 'Jan 1, 2023', author: 'Admin' } },
+                    { id: 2, parent: '#', text: 'Blog', type: 'page',
+                      a_attr: { href: '#blog', target: '_blank', title: 'View: Blog' },
+                      meta: { status: 'publish', published: 'Jan 2, 2023', author: 'Admin' } },
+                    { id: 3, parent: 2, text: 'Latest Posts', type: 'page',
+                      a_attr: { href: '#posts', target: '_blank', title: 'View: Latest Posts' },
+                      meta: { status: 'publish', published: 'Jan 3, 2023', author: 'Editor' } }
+                ];
+                break;
+                
+            case 'deep-hierarchy':
+                // Deep hierarchy
+                testData = [
+                    { id: 1, parent: '#', text: 'Level 1 - Root', type: 'page',
+                      a_attr: { href: '#l1', target: '_blank', title: 'View: Level 1' } },
+                    { id: 2, parent: 1, text: 'Level 2 - Child', type: 'page',
+                      a_attr: { href: '#l2', target: '_blank', title: 'View: Level 2' } },
+                    { id: 3, parent: 2, text: 'Level 3 - Grandchild', type: 'page',
+                      a_attr: { href: '#l3', target: '_blank', title: 'View: Level 3' } },
+                    { id: 4, parent: 3, text: 'Level 4 - Great Grandchild', type: 'page',
+                      a_attr: { href: '#l4', target: '_blank', title: 'View: Level 4' } }
+                ];
+                break;
+                
+            case 'no-roots':
+                // No root pages (all have parents)
+                testData = [
+                    { id: 1, parent: 999, text: 'Orphan Page 1', type: 'page',
+                      a_attr: { href: '#orphan1', target: '_blank', title: 'View: Orphan 1' } },
+                    { id: 2, parent: 999, text: 'Orphan Page 2', type: 'page',
+                      a_attr: { href: '#orphan2', target: '_blank', title: 'View: Orphan 2' } }
+                ];
+                break;
+        }
+        
+        debugLog(`Generated test data for case: ${caseType}`);
+        debugLog(`Data structure: ${JSON.stringify(testData, null, 2)}`);
+        
+        return testData;
+    }
+
+    // Render functions (simplified versions)
+    function renderTreeView(data) {
+        $('#hierarchy-tree').show().empty();
+        $('#hierarchy-orgchart').hide();
+        $('#hierarchy-grid').hide();
+        $('#no-view-selected').hide();
+        
+        debugLog('Rendering Tree View...');
+        
+        $('#hierarchy-tree').jstree({
+            'core': {
+                'data': data,
+                'themes': { 'name': 'default', 'responsive': true },
+                'check_callback': false
+            },
+            'plugins': ['search']
+        });
+        
+        debugLog('Tree View rendered successfully');
+    }
+
+    function renderGridView(data) {
+        $('#hierarchy-grid').show().empty();
+        $('#hierarchy-tree').hide();
+        $('#hierarchy-orgchart').hide();
+        $('#no-view-selected').hide();
+        
+        debugLog('Rendering Grid View...');
+        debugLog(`Grid data: ${JSON.stringify(data)}`);
+        
+        // Simple grid rendering for testing
+        data.forEach(page => {
+            const card = $(`<div class="card mb-2">
+                <div class="card-body">
+                    <h5 class="card-title">${page.text}</h5>
+                    <p class="card-text">ID: ${page.id}, Parent: ${page.parent}</p>
+                </div>
+            </div>`);
+            
+            $('#hierarchy-grid').append(card);
+        });
+        
+        debugLog('Grid View rendered with ' + data.length + ' items');
+    }
+
+    // Event handlers
+    $(document).ready(function() {
+        debugLog('Debug test page loaded');
+        
+        // Generate test data button
+        $('#generate-test-data').click(function() {
+            const testData = generateTestData('single-root');
+            debugLog('Test data ready - use view buttons to render');
+            window.testData = testData; // Make available globally
+        });
+        
+        // Test case buttons
+        $('.test-case').click(function() {
+            const caseType = $(this).data('case');
+            const testData = generateTestData(caseType);
+            window.testData = testData;
+        });
+        
+        // View buttons
+        $('[data-view]').click(function() {
+            const view = $(this).data('view');
+            
+            if (!window.testData) {
+                debugLog('Please generate test data first!');
+                return;
+            }
+            
+            $('[data-view]').removeClass('btn-primary').addClass('btn-outline-primary');
+            $(this).removeClass('btn-outline-primary').addClass('btn-primary');
+            
+            switch(view) {
+                case 'tree':
+                    renderTreeView(window.testData);
+                    break;
+                case 'grid':
+                    renderGridView(window.testData);
+                    break;
+                case 'orgchart':
+                    debugLog('Org Chart view would render here');
+                    $('#hierarchy-orgchart').show().html('<div class="alert alert-info">Org Chart view placeholder</div>');
+                    $('#hierarchy-tree').hide();
+                    $('#hierarchy-grid').hide();
+                    $('#no-view-selected').hide();
+                    break;
+            }
+        });
+        
+        // Clear console
+        $('#clear-console').click(function() {
+            $('#console-output').empty();
+            debugLog('Console cleared');
+        });
+        
+        // Search
+        $('#search-input').keyup(function() {
+            const searchTerm = $(this).val();
+            if (searchTerm && $('#hierarchy-tree').is(':visible')) {
+                $('#hierarchy-tree').jstree(true).search(searchTerm);
+            }
+        });
+    });
+    </script>
+</body>
+</html>

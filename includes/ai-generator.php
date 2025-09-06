@@ -4,50 +4,50 @@ if (!defined('ABSPATH')) {
 }
 
 // AI generation tab content
-function abpcwa_ai_generation_tab() {
+function aiopms_ai_generation_tab() {
     // Handle creation of suggested pages
-    if (isset($_POST['action']) && $_POST['action'] == 'create_suggested_pages' && isset($_POST['_wpnonce']) && wp_verify_nonce(sanitize_key($_POST['_wpnonce']), 'abpcwa_create_suggested_pages')) {
-        if (isset($_POST['abpcwa_selected_pages']) && is_array($_POST['abpcwa_selected_pages'])) {
-            $selected_pages = array_map('sanitize_text_field', wp_unslash($_POST['abpcwa_selected_pages']));
-            $generate_images = isset($_POST['abpcwa_generate_images']) && $_POST['abpcwa_generate_images'] == '1';
+    if (isset($_POST['action']) && $_POST['action'] == 'create_suggested_pages' && isset($_POST['_wpnonce']) && wp_verify_nonce(sanitize_key($_POST['_wpnonce']), 'aiopms_create_suggested_pages')) {
+        if (isset($_POST['aiopms_selected_pages']) && is_array($_POST['aiopms_selected_pages'])) {
+            $selected_pages = array_map('sanitize_text_field', wp_unslash($_POST['aiopms_selected_pages']));
+            $generate_images = isset($_POST['aiopms_generate_images']) && $_POST['aiopms_generate_images'] == '1';
             abpcwa_create_suggested_pages($selected_pages, $generate_images);
         }
         return; // Stop further processing
     }
     ?>
     <form method="post" action="" enctype="multipart/form-data">
-        <?php wp_nonce_field('abpcwa_ai_generate_pages'); ?>
+        <?php wp_nonce_field('aiopms_ai_generate_pages'); ?>
         <table class="form-table">
             <tr valign="top">
                 <th scope="row">Business Type</th>
                 <td>
-                    <input type="text" name="abpcwa_business_type" class="regular-text" placeholder="e.g., E-commerce, Blog, Corporate">
+                    <input type="text" name="aiopms_business_type" class="regular-text" placeholder="e.g., E-commerce, Blog, Corporate">
                 </td>
             </tr>
             <tr valign="top">
                 <th scope="row">Business Details</th>
                 <td>
-                    <textarea name="abpcwa_business_details" rows="5" class="large-text" placeholder="Provide a brief description of the business and its services."></textarea>
+                    <textarea name="aiopms_business_details" rows="5" class="large-text" placeholder="Provide a brief description of the business and its services."></textarea>
                 </td>
             </tr>
             <tr valign="top">
                 <th scope="row">SEO Keywords</th>
                 <td>
-                    <input type="text" name="abpcwa_seo_keywords" class="regular-text" placeholder="e.g., digital marketing, web design, SEO services">
+                    <input type="text" name="aiopms_seo_keywords" class="regular-text" placeholder="e.g., digital marketing, web design, SEO services">
                     <p class="description">Comma-separated list of primary keywords for SEO optimization</p>
                 </td>
             </tr>
             <tr valign="top">
                 <th scope="row">Upload Keywords CSV</th>
                 <td>
-                    <input type="file" name="abpcwa_keywords_csv" id="abpcwa_keywords_csv" accept=".csv">
+                    <input type="file" name="aiopms_keywords_csv" id="aiopms_keywords_csv" accept=".csv">
                     <p class="description">Upload a CSV file with keywords (one keyword per line or comma-separated)</p>
                 </td>
             </tr>
             <tr valign="top">
                 <th scope="row">Target Audience</th>
                 <td>
-                    <input type="text" name="abpcwa_target_audience" class="regular-text" placeholder="e.g., small businesses, entrepreneurs, local clients">
+                    <input type="text" name="aiopms_target_audience" class="regular-text" placeholder="e.g., small businesses, entrepreneurs, local clients">
                     <p class="description">Describe your target audience for better content optimization</p>
                 </td>
             </tr>
@@ -55,16 +55,16 @@ function abpcwa_ai_generation_tab() {
         <?php submit_button('Generate Page Suggestions'); ?>
     </form>
     <?php
-    if (isset($_POST['submit']) && isset($_POST['_wpnonce']) && wp_verify_nonce(sanitize_key($_POST['_wpnonce']), 'abpcwa_ai_generate_pages')) {
-        $business_type = isset($_POST['abpcwa_business_type']) ? sanitize_text_field(wp_unslash($_POST['abpcwa_business_type'])) : '';
-        $business_details = isset($_POST['abpcwa_business_details']) ? sanitize_textarea_field(wp_unslash($_POST['abpcwa_business_details'])) : '';
-        $seo_keywords = isset($_POST['abpcwa_seo_keywords']) ? sanitize_text_field(wp_unslash($_POST['abpcwa_seo_keywords'])) : '';
-        $target_audience = isset($_POST['abpcwa_target_audience']) ? sanitize_text_field(wp_unslash($_POST['abpcwa_target_audience'])) : '';
+    if (isset($_POST['submit']) && isset($_POST['_wpnonce']) && wp_verify_nonce(sanitize_key($_POST['_wpnonce']), 'aiopms_ai_generate_pages')) {
+        $business_type = isset($_POST['aiopms_business_type']) ? sanitize_text_field(wp_unslash($_POST['aiopms_business_type'])) : '';
+        $business_details = isset($_POST['aiopms_business_details']) ? sanitize_textarea_field(wp_unslash($_POST['aiopms_business_details'])) : '';
+        $seo_keywords = isset($_POST['aiopms_seo_keywords']) ? sanitize_text_field(wp_unslash($_POST['aiopms_seo_keywords'])) : '';
+        $target_audience = isset($_POST['aiopms_target_audience']) ? sanitize_text_field(wp_unslash($_POST['aiopms_target_audience'])) : '';
         
         // Process CSV file if uploaded
         $csv_keywords = '';
-        if (isset($_FILES['abpcwa_keywords_csv']) && !empty($_FILES['abpcwa_keywords_csv']['tmp_name']) && $_FILES['abpcwa_keywords_csv']['error'] == UPLOAD_ERR_OK) {
-            $csv_keywords = abpcwa_process_keywords_csv($_FILES['abpcwa_keywords_csv']);
+        if (isset($_FILES['aiopms_keywords_csv']) && !empty($_FILES['aiopms_keywords_csv']['tmp_name']) && $_FILES['aiopms_keywords_csv']['error'] == UPLOAD_ERR_OK) {
+            $csv_keywords = abpcwa_process_keywords_csv($_FILES['aiopms_keywords_csv']);
         }
         
         // Combine manual keywords and CSV keywords
@@ -117,7 +117,7 @@ function abpcwa_generate_pages_with_ai($business_type, $business_details, $seo_k
 
     echo '<h3>Suggested Pages:</h3>';
     echo '<form method="post" action="">';
-    wp_nonce_field('abpcwa_create_suggested_pages');
+    wp_nonce_field('aiopms_create_suggested_pages');
     echo '<input type="hidden" name="action" value="create_suggested_pages">';
     
     // Display in table format
@@ -151,7 +151,7 @@ function abpcwa_generate_pages_with_ai($business_type, $business_details, $seo_k
         $display_title = trim($display_title);
         
         echo '<tr>';
-        echo '<td><input type="checkbox" name="abpcwa_selected_pages[]" value="' . esc_attr($page_line) . '" checked></td>';
+        echo '<td><input type="checkbox" name="aiopms_selected_pages[]" value="' . esc_attr($page_line) . '" checked></td>';
         echo '<td>' . str_repeat('&nbsp;&nbsp;&nbsp;', $depth) . esc_html($display_title) . '</td>';
         echo '<td>' . esc_html($excerpt) . '</td>';
         echo '</tr>';
@@ -164,7 +164,7 @@ function abpcwa_generate_pages_with_ai($business_type, $business_details, $seo_k
     echo '<script>
     jQuery(document).ready(function($) {
         $("#select-all-pages").on("change", function() {
-            $("input[name=\'abpcwa_selected_pages[]\']").prop("checked", $(this).prop("checked"));
+            $("input[name=\'aiopms_selected_pages[]\']").prop("checked", $(this).prop("checked"));
         });
     });
     </script>';
@@ -174,8 +174,8 @@ function abpcwa_generate_pages_with_ai($business_type, $business_details, $seo_k
     $is_deepseek = $provider === 'deepseek';
     
     echo '<p>';
-    echo '<input type="checkbox" name="abpcwa_generate_images" id="abpcwa_generate_images" value="1" ' . checked(true, !$is_deepseek, false) . '>';
-    echo '<label for="abpcwa_generate_images"> Generate featured images with AI</label>';
+    echo '<input type="checkbox" name="aiopms_generate_images" id="aiopms_generate_images" value="1" ' . checked(true, !$is_deepseek, false) . '>';
+    echo '<label for="aiopms_generate_images"> Generate featured images with AI</label>';
     
     if ($is_deepseek) {
         echo ' <span class="description" style="color: #d63638;">(Image generation not supported with DeepSeek)</span>';
@@ -593,7 +593,7 @@ function abpcwa_create_suggested_pages($pages, $generate_images = false) {
         $parent_id = ($depth > 0 && isset($parent_id_stack[$depth - 1])) ? $parent_id_stack[$depth - 1] : 0;
 
         // Generate SEO-optimized slug
-        $post_name = abpcwa_generate_seo_slug($page_title);
+        $post_name = aiopms_generate_seo_slug($page_title);
         
         $new_page = array(
             'post_title'   => $page_title,
@@ -615,9 +615,9 @@ function abpcwa_create_suggested_pages($pages, $generate_images = false) {
             }
             
             // Generate schema markup for the new page
-            $auto_generate = get_option('abpcwa_auto_schema_generation', true);
+            $auto_generate = get_option('aiopms_auto_schema_generation', true);
             if ($auto_generate) {
-                abpcwa_generate_schema_markup($page_id);
+                aiopms_generate_schema_markup($page_id);
             }
             
             $parent_id_stack[$depth] = $page_id;
@@ -700,13 +700,13 @@ Avoid photorealistic images - focus on abstract, brand-aligned graphics that enh
         $image_title = "Featured Image for " . sanitize_text_field($page_title);
         
         // Extract primary keywords from page title for alt text
-        $keywords = abpcwa_extract_primary_keywords($page_title);
+        $keywords = aiopms_extract_primary_keywords($page_title);
         $image_alt = "Visual representation of " . $keywords . " concept";
         
         $image_description = "AI-generated featured image showcasing themes related to " . sanitize_text_field($page_title);
         
         // Use the enhanced featured image setting function with metadata
-        abpcwa_set_featured_image($post_id, $image_url, $image_title, $image_alt, $image_description);
+        aiopms_set_featured_image($post_id, $image_url, $image_title, $image_alt, $image_description);
         return true;
     }
     
@@ -788,7 +788,7 @@ function abpcwa_process_keywords_csv($file) {
 }
 
 // Extract primary keywords from page title for SEO optimization
-function abpcwa_extract_primary_keywords($title) {
+function aiopms_extract_primary_keywords($title) {
     // Remove common stop words and extract meaningful keywords
     $stop_words = ['the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'a', 'an'];
     

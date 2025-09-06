@@ -4,10 +4,10 @@ if (!defined('ABSPATH')) {
 }
 
 // Create pages from CSV file
-function abpcwa_create_pages_from_csv($file) {
+function aiopms_create_pages_from_csv($file) {
     // 1. Validate file upload
     if (!is_uploaded_file($file['tmp_name']) || $file['error'] !== UPLOAD_ERR_OK) {
-        echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__('File upload failed. Please try again.', 'abpcwa') . '</p></div>';
+        echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__('File upload failed. Please try again.', 'aiopms') . '</p></div>';
         return;
     }
 
@@ -16,13 +16,13 @@ function abpcwa_create_pages_from_csv($file) {
     $mime_type = finfo_file($finfo, $file['tmp_name']);
     finfo_close($finfo);
     if ($mime_type !== 'text/csv' && $mime_type !== 'application/csv') {
-         echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__('Invalid file type. Please upload a valid CSV file.', 'abpcwa') . '</p></div>';
+         echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__('Invalid file type. Please upload a valid CSV file.', 'aiopms') . '</p></div>';
         return;
     }
 
     $csv_data = array_map('str_getcsv', file($file['tmp_name']));
     if (empty($csv_data)) {
-        echo '<div class="notice notice-warning is-dismissible"><p>' . esc_html__('The CSV file is empty.', 'abpcwa') . '</p></div>';
+        echo '<div class="notice notice-warning is-dismissible"><p>' . esc_html__('The CSV file is empty.', 'aiopms') . '</p></div>';
         return;
     }
 
@@ -52,7 +52,7 @@ function abpcwa_create_pages_from_csv($file) {
         // Use custom slug if provided, otherwise generate SEO-optimized slug
         $post_name = isset($row_data['slug']) && !empty($row_data['slug']) 
             ? sanitize_title(wp_unslash($row_data['slug']))
-            : abpcwa_generate_seo_slug($post_title);
+            : aiopms_generate_seo_slug($post_title);
 
         // Determine parent ID
         $parent_id = 0;
@@ -81,18 +81,18 @@ function abpcwa_create_pages_from_csv($file) {
             // Set featured image with SEO metadata
             if (!empty($featured_image_url)) {
                 $image_title = "Featured Image for " . sanitize_text_field($post_title);
-                $keywords = abpcwa_extract_primary_keywords($post_title);
+                $keywords = aiopms_extract_primary_keywords($post_title);
                 $image_alt = "Visual representation of " . $keywords . " concept";
                 $image_description = "Featured image for " . sanitize_text_field($post_title) . " page";
                 
-                abpcwa_set_featured_image($page_id, $featured_image_url, $image_title, $image_alt, $image_description);
+                aiopms_set_featured_image($page_id, $featured_image_url, $image_title, $image_alt, $image_description);
             }
         }
     }
 
     if ($created_pages > 0) {
-        echo '<div class="notice notice-success is-dismissible"><p>' . sprintf(esc_html__('%d pages created successfully from the CSV file!', 'abpcwa'), absint($created_pages)) . '</p></div>';
+        echo '<div class="notice notice-success is-dismissible"><p>' . sprintf(esc_html__('%d pages created successfully from the CSV file!', 'aiopms'), absint($created_pages)) . '</p></div>';
     } else {
-        echo '<div class="notice notice-warning is-dismissible"><p>' . esc_html__('No pages were created from the CSV file. Please check the file format and content.', 'abpcwa') . '</p></div>';
+        echo '<div class="notice notice-warning is-dismissible"><p>' . esc_html__('No pages were created from the CSV file. Please check the file format and content.', 'aiopms') . '</p></div>';
     }
 }
