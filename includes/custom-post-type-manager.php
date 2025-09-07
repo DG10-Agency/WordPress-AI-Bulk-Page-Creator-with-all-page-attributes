@@ -54,34 +54,115 @@ function aiopms_add_cpt_management_menu() {
 // CPT management page
 function aiopms_cpt_management_page() {
     $active_tab = isset($_GET['tab']) ? sanitize_key($_GET['tab']) : 'list';
+    
+    // Define menu items with their details
+    $menu_items = array(
+        'list' => array(
+            'title' => 'Manage CPTs',
+            'icon' => '📋',
+            'description' => 'View and manage existing custom post types'
+        ),
+        'create' => array(
+            'title' => 'Create New CPT',
+            'icon' => '➕',
+            'description' => 'Create new custom post types manually'
+        ),
+        'settings' => array(
+            'title' => 'Settings',
+            'icon' => '⚙️',
+            'description' => 'Configure custom post type settings'
+        )
+    );
     ?>
-    <div class="wrap">
-        <h1>Custom Post Types Management</h1>
-        
-        <nav class="nav-tab-wrapper">
-            <a href="?page=aiopms-cpt-management&tab=list" class="nav-tab <?php echo $active_tab == 'list' ? 'nav-tab-active' : ''; ?>">
-                📋 Manage CPTs
-            </a>
-            <a href="?page=aiopms-cpt-management&tab=create" class="nav-tab <?php echo $active_tab == 'create' ? 'nav-tab-active' : ''; ?>">
-                ➕ Create New CPT
-            </a>
-            <a href="?page=aiopms-cpt-management&tab=settings" class="nav-tab <?php echo $active_tab == 'settings' ? 'nav-tab-active' : ''; ?>">
-                ⚙️ Settings
-            </a>
-        </nav>
-        
-        <div class="tab-content">
-            <?php
-            if ($active_tab == 'list') {
-                aiopms_cpt_list_tab();
-            } elseif ($active_tab == 'create') {
-                aiopms_cpt_create_tab();
-            } elseif ($active_tab == 'settings') {
-                aiopms_cpt_settings_tab();
-            }
-            ?>
+    <div class="wrap dg10-brand">
+        <div class="dg10-main-layout">
+            <!-- Admin Sidebar -->
+            <div class="dg10-admin-sidebar">
+                <div class="dg10-sidebar-header">
+                    <div class="dg10-sidebar-title">
+                        <img src="<?php echo AIOPMS_PLUGIN_URL; ?>assets/images/logo.svg" alt="AIOPMS Plugin" style="width: 24px; height: 24px;">
+                        AIOPMS
+                    </div>
+                    <p class="dg10-sidebar-subtitle">All In One Page Management System</p>
+                </div>
+                
+                <nav class="dg10-sidebar-nav">
+                    <?php foreach ($menu_items as $tab_key => $item): ?>
+                        <a href="?page=aiopms-cpt-management&tab=<?php echo esc_attr($tab_key); ?>" 
+                           class="dg10-sidebar-nav-item <?php echo $active_tab == $tab_key ? 'active' : ''; ?>"
+                           title="<?php echo esc_attr($item['description']); ?>">
+                            <span class="nav-icon"><?php echo $item['icon']; ?></span>
+                            <?php echo esc_html($item['title']); ?>
+                        </a>
+                    <?php endforeach; ?>
+                </nav>
+            </div>
+            
+            <!-- Main Content Area -->
+            <div class="dg10-main-content">
+                <div class="dg10-card">
+                    <div class="dg10-card-header">
+                        <div class="dg10-hero-content">
+                            <div class="dg10-hero-text">
+                                <h1><?php echo esc_html($menu_items[$active_tab]['title']); ?></h1>
+                                <p class="dg10-hero-description">
+                                    <?php echo esc_html($menu_items[$active_tab]['description']); ?>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dg10-card-body">
+                        <?php
+                        if ($active_tab == 'list') {
+                            aiopms_cpt_list_tab();
+                        } elseif ($active_tab == 'create') {
+                            aiopms_cpt_create_tab();
+                        } elseif ($active_tab == 'settings') {
+                            aiopms_cpt_settings_tab();
+                        }
+                        ?>
+                    </div>
+                    <div class="dg10-card-footer">
+                        <div class="dg10-promotion-section">
+                            <div class="dg10-promotion-header">
+                                <img src="<?php echo AIOPMS_PLUGIN_URL; ?>assets/images/dg10-brand-logo.svg" alt="DG10 Agency" class="dg10-promotion-logo">
+                                <h3>About us</h3>
+                            </div>
+                            <div class="dg10-promotion-content">
+                                <p>DG10 Agency specializes in creating powerful WordPress and Elementor solutions. We help businesses build custom websites, optimize performance, and implement complex integrations that drive results.</p>
+                                <div class="dg10-promotion-buttons">
+                                    <a href="https://www.dg10.agency" target="_blank" class="dg10-btn dg10-btn-primary">
+                                        Visit Website
+                                        <span class="dg10-btn-icon">→</span>
+                                    </a>
+                                    <a href="https://calendly.com/dg10-agency/30min" target="_blank" class="dg10-btn dg10-btn-outline">
+                                        <span class="dg10-btn-icon">📅</span>
+                                        Book a Free Consultation
+                                    </a>
+                                </div>
+                                <p class="dg10-promotion-footer">
+                                    This is an open-source project - please <a href="<?php echo esc_url(AIOPMS_GITHUB_URL); ?>" target="_blank">star the repo on GitHub</a>.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+    
+    <!-- Sidebar JavaScript -->
+    <script>
+    jQuery(document).ready(function($) {
+        // Handle sidebar navigation
+        $('.dg10-sidebar-nav-item').on('click', function(e) {
+            // Remove active class from all items
+            $('.dg10-sidebar-nav-item').removeClass('active');
+            // Add active class to clicked item
+            $(this).addClass('active');
+        });
+    });
+    </script>
     <?php
 }
 
@@ -101,7 +182,6 @@ function aiopms_cpt_list_tab() {
     
     ?>
     <div class="aiopms-cpt-list">
-        <h2>Dynamic Custom Post Types</h2>
         <p>Manage custom post types created by the AIOPMS Advanced Mode.</p>
         
         <?php if (empty($dynamic_cpts)): ?>
@@ -192,7 +272,6 @@ function aiopms_cpt_create_tab() {
     
     ?>
     <div class="aiopms-cpt-create">
-        <h2>Create Custom Post Type</h2>
         <p>Manually create a custom post type with custom fields.</p>
         
         <form method="post" action="">
@@ -349,7 +428,6 @@ function aiopms_cpt_settings_tab() {
     
     ?>
     <div class="aiopms-cpt-settings">
-        <h2>Custom Post Type Settings</h2>
         <p>Configure how custom post types integrate with other AIOPMS features.</p>
         
         <form method="post" action="">

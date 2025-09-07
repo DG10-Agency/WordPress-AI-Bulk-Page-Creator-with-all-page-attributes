@@ -13,13 +13,16 @@
 
 .abpcwa-hierarchy-header h2 {
     margin: 0 0 10px 0;
-    color: #1d2327;
+    color: #1F2937; /* Darker color for better contrast */
+    font-weight: 700; /* Increased weight for better contrast */
 }
 
 .abpcwa-hierarchy-header .description {
     margin: 10px 0;
     font-size: 14px;
-    color: #646970;
+    color: #374151; /* Darker color for better contrast */
+    font-weight: 500; /* Increased weight for better readability */
+    line-height: 1.5; /* Improved line height */
 }
 
 .abpcwa-view-controls {
@@ -31,15 +34,17 @@
 }
 
 .abpcwa-view-controls .button.button-primary {
-    background-color: #2271b1;
-    border-color: #2271b1;
+    background-color: #1D4ED8; /* Darker blue for better contrast */
+    border-color: #1D4ED8;
     color: #fff;
+    font-weight: 600; /* Increased weight for better contrast */
 }
 
 .abpcwa-view-controls .button:not(.button-primary) {
     background-color: #f6f7f7;
-    border-color: #dcdcde;
-    color: #50575e;
+    border-color: #9CA3AF; /* Darker border for better visibility */
+    color: #374151; /* Darker color for better contrast */
+    font-weight: 500; /* Increased weight for better readability */
 }
 
 .abpcwa-hierarchy-controls {
@@ -283,16 +288,18 @@
     flex: 1;
     margin-bottom: 0;
     font-size: 16px;
-    color: #2c3338;
+    color: #1F2937; /* Darker color for better contrast */
     min-width: 0; /* Allow text truncation */
+    font-weight: 600; /* Increased weight for better contrast */
 }
 
 .aiopms-grid-title strong {
-    font-weight: 600;
+    font-weight: 700; /* Increased weight for better contrast */
     display: block;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    color: #111827; /* Even darker color for better contrast */
 }
 
 /* Status Badge Styles */
@@ -300,7 +307,7 @@
     padding: 4px 8px;
     border-radius: 4px;
     font-size: 12px;
-    font-weight: 500;
+    font-weight: 600; /* Increased weight for better contrast */
     line-height: 1.2;
     flex-shrink: 0;
     white-space: nowrap;
@@ -345,8 +352,8 @@
 
 .aiopms-grid-excerpt {
     font-size: 13px;
-    color: #50575e;
-    line-height: 1.4;
+    color: #374151; /* Darker color for better contrast */
+    line-height: 1.5; /* Improved line height */
     margin-bottom: 8px;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -354,6 +361,7 @@
     line-clamp: 2;
     overflow: hidden;
     text-overflow: ellipsis;
+    font-weight: 500; /* Increased weight for better readability */
 }
 
 .aiopms-grid-details {
@@ -361,7 +369,8 @@
     flex-wrap: wrap;
     gap: 12px;
     font-size: 12px;
-    color: #646970;
+    color: #374151; /* Darker color for better contrast */
+    font-weight: 500; /* Increased weight for better readability */
 }
 
 .aiopms-meta-item {
@@ -401,17 +410,18 @@
 }
 
 .aiopms-grid-edit-link {
-    color: #2271b1;
+    color: #1D4ED8; /* Darker blue for better contrast */
     text-decoration: none;
     font-size: 14px;
     padding: 2px 4px;
     border-radius: 3px;
     transition: color 0.2s ease;
+    font-weight: 600; /* Increased weight for better contrast */
 }
 
 .aiopms-grid-edit-link:hover {
-    color: #135e96;
-    background: rgba(34, 113, 177, 0.1);
+    color: #1E40AF; /* Darker blue for better contrast */
+    background: rgba(29, 78, 216, 0.1);
 }
 
 .aiopms-grid-children {
@@ -433,13 +443,16 @@
     left: -20px;
     top: 50%;
     transform: translateY(-50%);
-    font-size: 10px;
-    color: #646970;
+    font-size: 12px; /* Increased size for better visibility */
+    color: #1D4ED8; /* Dark blue for better contrast */
+    font-weight: 700; /* Bold for better visibility */
     transition: transform 0.2s ease;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* Subtle shadow for definition */
 }
 
 .aiopms-grid-card.has-expanded-children::before {
     transform: translateY(-50%) rotate(90deg);
+    color: #1E40AF; /* Slightly darker blue when expanded */
 }
 
 @keyframes fadeIn {
@@ -604,12 +617,13 @@
 .jstree-default .jstree-clicked {
     background: #f0f6fc;
     box-shadow: none;
-    color: #2271b1;
+    color: #1D4ED8; /* Darker blue for better contrast */
 }
 
 .jstree-default .jstree-hovered {
     background: #f6f7f7;
     box-shadow: none;
+    color: #1D4ED8; /* Dark blue for better contrast */
 }
 
 .jstree-default .jstree-anchor {
@@ -618,7 +632,8 @@
 }
 
 .jstree-default .jstree-icon {
-    color: #8c8f94;
+    color: #1D4ED8; /* Dark blue for better contrast */
+    font-weight: 600; /* Bold for better visibility */
 }
 
 .jstree-default .jstree-leaf > .jstree-ocl {

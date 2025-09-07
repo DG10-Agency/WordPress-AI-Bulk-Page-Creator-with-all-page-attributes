@@ -103,8 +103,8 @@ function aiopms_ai_generation_tab() {
 
 // Generate pages with AI
 function abpcwa_generate_pages_with_ai($business_type, $business_details, $seo_keywords = '', $target_audience = '') {
-    $provider = get_option('abpcwa_ai_provider', 'openai');
-    $api_key = get_option('abpcwa_' . $provider . '_api_key');
+    $provider = get_option('aiopms_ai_provider', 'openai');
+    $api_key = get_option('aiopms_' . $provider . '_api_key');
 
     if (empty($api_key)) {
         echo '<div class="notice notice-error"><p>Please enter your ' . esc_html(ucfirst($provider)) . ' API key in the Settings tab.</p></div>';
@@ -190,7 +190,7 @@ function abpcwa_generate_pages_with_ai($business_type, $business_details, $seo_k
     </script>';
     
     // Add image generation checkbox
-    $provider = get_option('abpcwa_ai_provider', 'openai');
+    $provider = get_option('aiopms_ai_provider', 'openai');
     $is_deepseek = $provider === 'deepseek';
     
     echo '<p>';
@@ -659,9 +659,9 @@ function abpcwa_create_suggested_pages($pages, $generate_images = false) {
 
 // Generate and set featured image using AI
 function abpcwa_generate_and_set_featured_image($post_id, $page_title) {
-    $provider = get_option('abpcwa_ai_provider', 'openai');
-    $api_key = get_option('abpcwa_' . $provider . '_api_key');
-    $brand_color = get_option('abpcwa_brand_color', '#4A90E2');
+    $provider = get_option('aiopms_ai_provider', 'openai');
+    $api_key = get_option('aiopms_' . $provider . '_api_key');
+    $brand_color = get_option('aiopms_brand_color', '#4A90E2');
     
     if (empty($api_key)) {
         return false;
@@ -808,32 +808,34 @@ function abpcwa_process_keywords_csv($file) {
 }
 
 // Extract primary keywords from page title for SEO optimization
-function aiopms_extract_primary_keywords($title) {
-    // Remove common stop words and extract meaningful keywords
-    $stop_words = ['the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'a', 'an'];
-    
-    // Clean the title and split into words
-    $words = preg_split('/\s+/', strtolower($title));
-    $words = array_map('trim', $words);
-    
-    // Remove stop words and short words
-    $keywords = array_filter($words, function($word) use ($stop_words) {
-        return !in_array($word, $stop_words) && strlen($word) > 2 && !is_numeric($word);
-    });
-    
-    // Remove duplicates and return the first 3-4 keywords
-    $keywords = array_unique($keywords);
-    $keywords = array_slice($keywords, 0, 4);
-    
-    return implode(' ', $keywords) ?: sanitize_text_field($title);
+if (!function_exists('aiopms_extract_primary_keywords')) {
+    function aiopms_extract_primary_keywords($title) {
+        // Remove common stop words and extract meaningful keywords
+        $stop_words = ['the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'a', 'an'];
+        
+        // Clean the title and split into words
+        $words = preg_split('/\s+/', strtolower($title));
+        $words = array_map('trim', $words);
+        
+        // Remove stop words and short words
+        $keywords = array_filter($words, function($word) use ($stop_words) {
+            return !in_array($word, $stop_words) && strlen($word) > 2 && !is_numeric($word);
+        });
+        
+        // Remove duplicates and return the first 3-4 keywords
+        $keywords = array_unique($keywords);
+        $keywords = array_slice($keywords, 0, 4);
+        
+        return implode(' ', $keywords) ?: sanitize_text_field($title);
+    }
 }
 
 // ===== ADVANCED MODE FUNCTIONALITY =====
 
 // Generate advanced content with AI (pages + custom post types)
 function aiopms_generate_advanced_content_with_ai($business_type, $business_details, $seo_keywords = '', $target_audience = '') {
-    $provider = get_option('abpcwa_ai_provider', 'openai');
-    $api_key = get_option('abpcwa_' . $provider . '_api_key');
+    $provider = get_option('aiopms_ai_provider', 'openai');
+    $api_key = get_option('aiopms_' . $provider . '_api_key');
 
     if (empty($api_key)) {
         echo '<div class="notice notice-error"><p>Please enter your ' . esc_html(ucfirst($provider)) . ' API key in the Settings tab.</p></div>';
@@ -1226,7 +1228,7 @@ function aiopms_display_advanced_content_suggestions($suggestions) {
     }
 
     // Add image generation checkbox
-    $provider = get_option('abpcwa_ai_provider', 'openai');
+    $provider = get_option('aiopms_ai_provider', 'openai');
     $is_deepseek = $provider === 'deepseek';
     
     echo '<div class="aiopms-options">';

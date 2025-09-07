@@ -10,7 +10,6 @@ function abpcwa_hierarchy_tab() {
     ?>
     <div class="abpcwa-hierarchy-container">
         <div class="abpcwa-hierarchy-header">
-            <h2>Page Hierarchy Visualizer</h2>
             <p class="description">Visualize and manage your page hierarchy. This is a <strong>read-only</strong> view for visualization purposes only.</p>
             <div class="abpcwa-view-controls">
                 <button class="button button-primary" data-view="tree">Tree View</button>

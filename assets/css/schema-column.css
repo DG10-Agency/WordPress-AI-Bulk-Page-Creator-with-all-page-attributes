@@ -8,11 +8,11 @@
     padding: 6px 12px;
     border-radius: 16px;
     font-size: 11px;
-    font-weight: 600;
+    font-weight: 700; /* Increased weight for better contrast */
     text-transform: uppercase;
     letter-spacing: 0.5px;
     border: none;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); /* Enhanced shadow for better visibility */
     transition: all 0.2s ease;
     position: relative;
     overflow: hidden;
@@ -35,7 +35,7 @@
 
 .abpcwa-schema-badge:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25); /* Enhanced shadow on hover */
 }
 
 /* Enhanced schema type colors with gradients */
@@ -102,7 +102,7 @@
 /* Schema admin page styling */
 .abpcwa-schema-preview {
     background: #f9f9f9;
-    border: 1px solid #ddd;
+    border: 1px solid #9CA3AF; /* Darker border for better visibility */
     border-radius: 4px;
     padding: 15px;
     margin: 15px 0;
@@ -110,6 +110,8 @@
     white-space: pre-wrap;
     max-height: 300px;
     overflow-y: auto;
+    color: #374151; /* Darker color for better contrast */
+    font-weight: 500; /* Increased weight for better readability */
 }
 
 .abpcwa-schema-type-selector {
@@ -117,6 +119,7 @@
     padding: 10px;
     background: #f7f7f7;
     border-radius: 4px;
+    border: 1px solid #D1D5DB; /* Add border for better definition */
 }
 
 .abpcwa-schema-type-selector select {
@@ -130,13 +133,15 @@
 /* Schema generator tab styling */
 .abpcwa-schema-tab h3 {
     margin-top: 30px;
-    border-bottom: 2px solid #2271b1;
+    border-bottom: 2px solid #1D4ED8; /* Darker blue for better contrast */
     padding-bottom: 10px;
+    font-weight: 700; /* Increased weight for better contrast */
+    color: #1F2937; /* Darker color for better contrast */
 }
 
 .abpcwa-schema-stats {
     background: #fff;
-    border: 1px solid #ccd0d4;
+    border: 1px solid #9CA3AF; /* Darker border for better visibility */
     border-radius: 4px;
     padding: 15px;
     margin: 15px 0;
@@ -144,7 +149,8 @@
 
 .abpcwa-schema-stats h4 {
     margin-top: 0;
-    color: #2271b1;
+    color: #1D4ED8; /* Darker blue for better contrast */
+    font-weight: 700; /* Increased weight for better contrast */
 }
 
 .abpcwa-schema-stats ul {

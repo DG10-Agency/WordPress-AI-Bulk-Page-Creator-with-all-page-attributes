@@ -8,36 +8,36 @@
    ========================================================================== */
 
 :root {
-    /* Primary Brand Colors */
-    --dg10-primary: #B47CFD;        /* DG10 Purple */
-    --dg10-accent: #FF7FC2;         /* DG10 Pink */
+    /* Primary Brand Colors - WCAG 2.1 AA Compliant */
+    --dg10-primary: #8B5CF6;        /* DG10 Purple - Improved contrast */
+    --dg10-accent: #EC4899;         /* DG10 Pink - Improved contrast */
     
-    /* Extended Palette */
-    --dg10-dark-blue: #0f0520;      /* Deep Navy */
+    /* Extended Palette - Enhanced for accessibility */
+    --dg10-dark-blue: #0f0520;      /* Deep Navy - Maintained for dark backgrounds */
     --dg10-black: #000000;          /* Pure Black */
     --dg10-white: #FFFFFF;          /* Pure White */
     
-    /* Supporting Colors */
-    --dg10-dark-purple: #8B5CF6;
-    --dg10-light-purple: #C4B5FD;
-    --dg10-dark-pink: #EC4899;
-    --dg10-light-pink: #FBCFE8;
-    --dg10-neutral: #6B7280;
+    /* Supporting Colors - Improved contrast ratios */
+    --dg10-dark-purple: #7C3AED;    /* Darker for better contrast */
+    --dg10-light-purple: #A78BFA;   /* Lighter for better contrast */
+    --dg10-dark-pink: #DB2777;      /* Darker for better contrast */
+    --dg10-light-pink: #F9A8D4;     /* Lighter for better contrast */
+    --dg10-neutral: #4B5563;        /* Darker for better contrast */
     --dg10-light-gray: #F3F4F6;
     
-    /* Semantic Colors */
-    --dg10-success: #10B981;
-    --dg10-success-dark: #059669;
-    --dg10-error: #EF4444;
-    --dg10-error-dark: #DC2626;
-    --dg10-warning: #F59E0B;
-    --dg10-warning-dark: #D97706;
-    --dg10-info: #3B82F6;
-    --dg10-info-dark: #2563EB;
+    /* Semantic Colors - WCAG 2.1 AA Compliant */
+    --dg10-success: #059669;        /* Darker for better contrast */
+    --dg10-success-dark: #047857;   /* Even darker for better contrast */
+    --dg10-error: #DC2626;          /* Darker for better contrast */
+    --dg10-error-dark: #B91C1C;     /* Even darker for better contrast */
+    --dg10-warning: #D97706;        /* Darker for better contrast */
+    --dg10-warning-dark: #B45309;   /* Even darker for better contrast */
+    --dg10-info: #2563EB;           /* Darker for better contrast */
+    --dg10-info-dark: #1D4ED8;      /* Even darker for better contrast */
     
-    /* Gradients */
+    /* Gradients - Enhanced for better contrast */
     --dg10-gradient-primary: linear-gradient(135deg, var(--dg10-primary) 0%, var(--dg10-accent) 100%);
-    --dg10-gradient-dark: linear-gradient(135deg, var(--dg10-dark-blue) 0%, var(--dg10-primary) 100%);
+    --dg10-gradient-dark: linear-gradient(135deg, var(--dg10-dark-blue) 0%, var(--dg10-dark-purple) 100%);
     --dg10-gradient-success: linear-gradient(135deg, var(--dg10-success) 0%, var(--dg10-success-dark) 100%);
     --dg10-gradient-error: linear-gradient(135deg, var(--dg10-error) 0%, var(--dg10-error-dark) 100%);
     --dg10-gradient-warning: linear-gradient(135deg, var(--dg10-warning) 0%, var(--dg10-warning-dark) 100%);
@@ -134,11 +134,13 @@
 .dg10-brand h6 {
     font-size: var(--dg10-font-size-base);
     color: var(--dg10-neutral);
+    font-weight: 600; /* Increased weight for better contrast */
 }
 
 .dg10-brand p {
     margin: 0 0 var(--dg10-spacing-md) 0;
     color: var(--dg10-neutral);
+    line-height: 1.6; /* Improved line height for readability */
 }
 
 .dg10-brand a {
@@ -191,16 +193,20 @@
 /* Primary Button */
 .dg10-btn-primary {
     background: var(--dg10-gradient-primary);
-    color: var(--dg10-white);
+    color: #FFFFFF !important; /* Force white text for maximum contrast */
     border-color: transparent;
     box-shadow: var(--dg10-shadow-sm);
+    font-weight: 600; /* Ensure proper weight for better contrast */
+    text-shadow: none; /* Remove text shadow for cleaner look */
 }
 
 .dg10-btn-primary:hover {
     transform: translateY(-1px);
     box-shadow: var(--dg10-shadow-md);
-    color: var(--dg10-white);
+    color: #FFFFFF !important; /* Force white text on hover for maximum contrast */
     text-decoration: none;
+    font-weight: 600; /* Consistent weight */
+    text-shadow: none; /* Remove text shadow for cleaner look */
 }
 
 .dg10-btn-primary:active {
@@ -210,10 +216,12 @@
 
 /* Secondary Button */
 .dg10-btn-secondary {
-    background: var(--dg10-dark-blue);
-    color: var(--dg10-white);
+    background: var(--dg10-white); /* Light background for better contrast */
+    color: var(--dg10-primary); /* Primary color text for better visibility */
     border-color: var(--dg10-primary);
+    border-width: 2px; /* Increased border width for better visibility */
     box-shadow: var(--dg10-shadow-sm);
+    font-weight: 600; /* Increased weight for better contrast */
 }
 
 .dg10-btn-secondary:hover {
@@ -223,6 +231,7 @@
     box-shadow: var(--dg10-shadow-md);
     color: var(--dg10-white);
     text-decoration: none;
+    font-weight: 700; /* Increased weight on hover for better visibility */
 }
 
 /* Outline Button */
@@ -230,6 +239,8 @@
     background: transparent;
     color: var(--dg10-primary);
     border-color: var(--dg10-primary);
+    border-width: 2px; /* Increased border width for better visibility */
+    font-weight: 600; /* Increased weight for better contrast */
 }
 
 .dg10-btn-outline:hover {
@@ -238,6 +249,7 @@
     transform: translateY(-1px);
     box-shadow: var(--dg10-shadow-md);
     text-decoration: none;
+    font-weight: 700; /* Increased weight on hover for better visibility */
 }
 
 /* Success Button */
@@ -292,7 +304,7 @@
 .dg10-form-label {
     display: block;
     font-size: var(--dg10-font-size-sm);
-    font-weight: 500;
+    font-weight: 600; /* Increased weight for better contrast */
     color: var(--dg10-dark-blue);
     margin-bottom: var(--dg10-spacing-xs);
 }
@@ -307,7 +319,7 @@
     line-height: 1.5;
     color: var(--dg10-dark-blue);
     background-color: var(--dg10-white);
-    border: 1px solid #D1D5DB;
+    border: 2px solid #9CA3AF; /* Darker border for better visibility on light backgrounds */
     border-radius: var(--dg10-radius-md);
     transition: all var(--dg10-transition-fast);
 }
@@ -317,13 +329,13 @@
 .dg10-form-textarea:focus {
     outline: none;
     border-color: var(--dg10-primary);
-    box-shadow: 0 0 0 3px rgba(180, 124, 253, 0.1);
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2); /* Enhanced focus ring for better visibility */
 }
 
 .dg10-form-input::placeholder,
 .dg10-form-textarea::placeholder {
-    color: var(--dg10-neutral);
-    opacity: 1;
+    color: #6B7280; /* Darker placeholder text for better contrast */
+    opacity: 0.9; /* Increased opacity for better visibility */
 }
 
 .dg10-form-textarea {
@@ -341,14 +353,16 @@
 
 .dg10-form-help {
     font-size: var(--dg10-font-size-xs);
-    color: var(--dg10-neutral);
+    color: #374151; /* Darker color for better contrast */
     margin-top: var(--dg10-spacing-xs);
+    font-weight: 500; /* Increased weight for better readability */
 }
 
 .dg10-form-error {
     font-size: var(--dg10-font-size-xs);
     color: var(--dg10-error);
     margin-top: var(--dg10-spacing-xs);
+    font-weight: 700; /* Increased weight for better visibility */
 }
 
 /* ==========================================================================
@@ -370,20 +384,22 @@
 }
 
 .dg10-card-header {
-    background: var(--dg10-gradient-dark);
-    color: var(--dg10-white);
+    background: var(--dg10-gradient-dark) !important; /* Force dark gradient background */
+    color: #FFFFFF !important; /* Force white text for dark backgrounds */
     padding: var(--dg10-spacing-xl);
     border-bottom: 1px solid #E5E7EB;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6), 0 1px 2px rgba(0, 0, 0, 0.4); /* Enhanced shadows for better contrast on dark backgrounds */
 }
 
 .dg10-card-header h3,
 .dg10-card-header h4,
 .dg10-card-header h5 {
     margin: 0;
-    color: var(--dg10-white);
+    color: #FFFFFF !important; /* Force white text for dark backgrounds */
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6), 0 1px 2px rgba(0, 0, 0, 0.4); /* Enhanced shadows for better contrast on dark backgrounds */
 }
 
-/* Enhanced Hero Section Styling */
+/* Enhanced Hero Section Styling - Light Mode Optimized */
 .dg10-hero-content {
     display: flex;
     align-items: center;
@@ -392,6 +408,7 @@
     margin: 0 auto;
 }
 
+
 .dg10-hero-logo {
     flex-shrink: 0;
 }
@@ -399,13 +416,15 @@
 .dg10-logo-img {
     width: 60px;
     height: 60px;
-    filter: brightness(0) invert(1); /* Make logo white for contrast */
+    filter: none; /* Keep original colors for light backgrounds */
     transition: all var(--dg10-transition-normal);
+    opacity: 1; /* Full opacity for better visibility */
 }
 
 .dg10-hero-logo:hover .dg10-logo-img {
-    filter: brightness(0) invert(1) drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+    filter: none; /* Keep original colors for light backgrounds */
     transform: scale(1.05);
+    opacity: 0.8; /* Slight opacity change on hover */
 }
 
 .dg10-hero-text {
@@ -416,18 +435,18 @@
     margin: 0 0 var(--dg10-spacing-sm) 0;
     font-size: var(--dg10-font-size-3xl);
     font-weight: 700;
-    color: var(--dg10-white);
+    color: #1F2937 !important; /* Force dark text for white backgrounds */
     line-height: 1.2;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-shadow: none !important; /* Remove shadows for clean look on white backgrounds */
 }
 
 .dg10-hero-description {
     margin: 0;
     font-size: var(--dg10-font-size-lg);
-    color: rgba(255, 255, 255, 0.9); /* Lighter whitish color for better contrast */
+    color: #6B7280 !important; /* Force medium gray text for white backgrounds */
     line-height: 1.5;
-    font-weight: 400;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    font-weight: 500; /* Increased weight for better readability */
+    text-shadow: none !important; /* Remove shadows for clean look on white backgrounds */
 }
 
 .dg10-card-body {
@@ -491,7 +510,7 @@
 }
 
 .dg10-notification-close:hover {
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: rgba(0, 0, 0, 0.2); /* Increased opacity for better visibility */
 }
 
 /* Success Notification */
@@ -611,8 +630,8 @@
     gap: var(--dg10-spacing-sm);
     padding: var(--dg10-spacing-md) var(--dg10-spacing-lg);
     font-size: var(--dg10-font-size-sm);
-    font-weight: 500;
-    color: var(--dg10-neutral);
+    font-weight: 700; /* Increased weight for better contrast */
+    color: #374151; /* Darker color for better contrast on light backgrounds */
     text-decoration: none;
     border-bottom: 2px solid transparent;
     transition: all var(--dg10-transition-fast);
@@ -622,13 +641,17 @@
 .dg10-nav-tab:hover {
     color: var(--dg10-primary);
     text-decoration: none;
-    border-bottom-color: var(--dg10-light-purple);
+    border-bottom-color: var(--dg10-primary); /* Use primary color for better contrast */
+    background: rgba(139, 92, 246, 0.05); /* Subtle background for better visibility */
+    font-weight: 600; /* Consistent weight */
 }
 
 .dg10-nav-tab.active {
     color: var(--dg10-primary);
     border-bottom-color: var(--dg10-primary);
-    background: linear-gradient(to bottom, rgba(180, 124, 253, 0.05), transparent);
+    background: rgba(139, 92, 246, 0.08); /* Clean, subtle background */
+    font-weight: 700; /* Increased weight for active state */
+    box-shadow: none; /* Remove shadow for cleaner look */
 }
 
 /* ==========================================================================
@@ -675,7 +698,9 @@
 
 .dg10-badge-neutral {
     background: var(--dg10-light-gray);
-    color: var(--dg10-neutral);
+    color: #374151; /* Darker color for better contrast */
+    border: 1px solid #9CA3AF; /* Darker border for better definition */
+    font-weight: 600; /* Increased weight for better contrast */
 }
 
 /* ==========================================================================
@@ -783,6 +808,64 @@
 }
 
 /* ==========================================================================
+   ACCESSIBILITY ENHANCEMENTS
+   ========================================================================== */
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    :root {
+        --dg10-primary: #6D28D9; /* Darker purple for high contrast */
+        --dg10-accent: #BE185D;  /* Darker pink for high contrast */
+        --dg10-neutral: #374151; /* Darker neutral for high contrast */
+    }
+    
+    .dg10-hero-text h1 {
+        color: #1F2937 !important; /* Force dark text for white backgrounds */
+        text-shadow: none !important; /* Remove shadows for clean look on white backgrounds */
+    }
+    
+    .dg10-hero-description {
+        color: #6B7280 !important; /* Force medium gray text for white backgrounds */
+        text-shadow: none !important; /* Remove shadows for clean look on white backgrounds */
+    }
+    
+    .dg10-card-header {
+        background: var(--dg10-gradient-dark) !important; /* Force dark gradient background */
+        color: #FFFFFF !important; /* Force white text for dark backgrounds */
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5); /* Enhanced shadow for high contrast */
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .dg10-btn,
+    .dg10-card,
+    .dg10-notification,
+    .dg10-spinner,
+    .dg10-nav-tab {
+        transition: none;
+        animation: none;
+    }
+    
+    .dg10-btn:hover {
+        transform: none;
+    }
+    
+    .dg10-card:hover {
+        transform: none;
+    }
+}
+
+/* Focus indicators for keyboard navigation */
+.dg10-btn:focus-visible,
+.dg10-nav-tab:focus-visible,
+.dg10-sidebar-btn:focus-visible {
+    outline: 3px solid var(--dg10-primary);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 6px rgba(139, 92, 246, 0.2);
+}
+
+/* ==========================================================================
    RESPONSIVE DESIGN
    ========================================================================== */
 
@@ -808,14 +891,16 @@
     }
     
     .dg10-nav-tab {
-        border-bottom: 1px solid #E5E7EB;
+        border-bottom: 2px solid #E5E7EB; /* Increased border width for better visibility */
         border-radius: 0;
+        font-weight: 700; /* Increased weight for mobile */
     }
     
     .dg10-nav-tab.active {
         background: var(--dg10-light-purple);
         color: var(--dg10-white);
         border-bottom-color: var(--dg10-primary);
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); /* Add text shadow for better contrast */
     }
     
     .dg10-card-body,
@@ -861,6 +946,40 @@
     .dg10-hero-description {
         font-size: var(--dg10-font-size-base);
     }
+    
+    /* Footer branding mobile adjustments */
+    .dg10-footer-branding {
+        flex-direction: column;
+        gap: var(--dg10-spacing-sm);
+    }
+    
+    .dg10-footer-logo {
+        width: 80px;
+        max-height: 30px;
+    }
+    
+    /* DG10 promotion mobile adjustments */
+    .dg10-promotion-section {
+        padding: var(--dg10-spacing-lg);
+    }
+    
+    .dg10-promotion-header {
+        gap: var(--dg10-spacing-sm);
+    }
+    
+    .dg10-promotion-logo {
+        width: 80px;
+        max-height: 35px;
+    }
+    
+    .dg10-promotion-header h3 {
+        font-size: var(--dg10-font-size-xl);
+    }
+    
+    .dg10-promotion-buttons .dg10-btn {
+        min-width: auto;
+        width: 100%;
+    }
 }
 
 @media (max-width: 480px) {
@@ -878,12 +997,14 @@
     
     .dg10-sidebar-header h3 {
         font-size: var(--dg10-font-size-lg);
+        font-weight: 700; /* Ensure proper weight on small screens */
     }
     
     .dg10-sidebar-btn {
         padding: var(--dg10-spacing-sm) var(--dg10-spacing-md);
         font-size: var(--dg10-font-size-xs);
         min-height: 2.5rem;
+        font-weight: 600; /* Ensure proper weight on small screens */
     }
     
     .dg10-brand h1 {
@@ -911,10 +1032,16 @@
     .dg10-hero-text h1 {
         font-size: var(--dg10-font-size-xl);
         line-height: 1.3;
+        font-weight: 700; /* Ensure proper weight on small screens */
+        color: #1F2937 !important; /* Force dark text for white backgrounds */
+        text-shadow: none !important; /* Remove shadows for clean look on white backgrounds */
     }
     
     .dg10-hero-description {
         font-size: var(--dg10-font-size-sm);
+        font-weight: 500; /* Ensure proper weight on small screens */
+        color: #6B7280 !important; /* Force medium gray text for white backgrounds */
+        text-shadow: none !important; /* Remove shadows for clean look on white backgrounds */
     }
     
     .dg10-logo-img {
@@ -924,6 +1051,42 @@
     
     .dg10-card-header {
         padding: var(--dg10-spacing-lg);
+        background: var(--dg10-gradient-dark) !important; /* Force dark gradient background */
+        color: #FFFFFF !important; /* Force white text for dark backgrounds */
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3); /* Add shadow for better contrast on dark backgrounds */
+    }
+    
+    /* Footer branding responsive adjustments */
+    .dg10-footer-branding {
+        flex-direction: column;
+        gap: var(--dg10-spacing-sm);
+    }
+    
+    .dg10-footer-logo {
+        width: 100px;
+        max-height: 35px;
+    }
+    
+    /* DG10 promotion responsive adjustments */
+    .dg10-promotion-header {
+        flex-direction: column;
+        text-align: center;
+        gap: var(--dg10-spacing-md);
+    }
+    
+    .dg10-promotion-logo {
+        width: 100px;
+        max-height: 40px;
+    }
+    
+    .dg10-promotion-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .dg10-promotion-buttons .dg10-btn {
+        width: 100%;
+        max-width: 250px;
     }
 }
 
@@ -1166,6 +1329,115 @@
    FOOTER PROMO ENHANCEMENT
    ========================================================================== */
 
+/* ==========================================================================
+   DG10 PROMOTION SECTION
+   ========================================================================== */
+
+.dg10-promotion-section {
+    background: var(--dg10-white);
+    border: 1px solid #E5E7EB; /* Cleaner, lighter border */
+    border-radius: var(--dg10-radius-lg);
+    padding: var(--dg10-spacing-xl);
+    box-shadow: var(--dg10-shadow-sm); /* Subtle shadow for clean look */
+    margin-top: var(--dg10-spacing-2xl);
+}
+
+.dg10-promotion-header {
+    display: flex;
+    align-items: center;
+    gap: var(--dg10-spacing-lg);
+    margin-bottom: var(--dg10-spacing-lg);
+}
+
+.dg10-promotion-logo {
+    width: 120px;
+    height: auto;
+    max-height: 50px;
+    object-fit: contain;
+    filter: none; /* Keep original colors for light background */
+    opacity: 0.9; /* Slight opacity for better integration */
+    transition: all var(--dg10-transition-normal);
+}
+
+.dg10-promotion-header h3 {
+    margin: 0;
+    font-size: var(--dg10-font-size-2xl);
+    font-weight: 700;
+    color: var(--dg10-dark-blue);
+    text-shadow: none; /* Remove shadow for cleaner look */
+}
+
+.dg10-promotion-content {
+    color: var(--dg10-neutral);
+}
+
+.dg10-promotion-content p {
+    margin: 0 0 var(--dg10-spacing-lg) 0;
+    font-size: var(--dg10-font-size-base);
+    line-height: 1.6;
+    color: #374151; /* Darker color for better contrast */
+    font-weight: 500; /* Increased weight for better readability */
+}
+
+.dg10-promotion-buttons {
+    display: flex;
+    gap: var(--dg10-spacing-md);
+    margin-bottom: var(--dg10-spacing-lg);
+    flex-wrap: wrap;
+}
+
+.dg10-promotion-buttons .dg10-btn {
+    min-width: 180px;
+    justify-content: center;
+    font-weight: 600; /* Ensure proper weight for better contrast */
+}
+
+/* Specific styling for promotion buttons to ensure proper contrast */
+.dg10-promotion-buttons .dg10-btn-primary {
+    color: #FFFFFF !important; /* Force white text for maximum contrast */
+}
+
+.dg10-promotion-buttons .dg10-btn-primary:hover {
+    color: #FFFFFF !important; /* Force white text on hover */
+}
+
+.dg10-promotion-buttons .dg10-btn-primary .dg10-btn-icon {
+    color: #FFFFFF !important; /* Force white icon color */
+}
+
+.dg10-btn-icon {
+    font-size: var(--dg10-font-size-sm);
+    margin-left: var(--dg10-spacing-xs);
+    color: inherit !important; /* Force icon to inherit button text color */
+}
+
+.dg10-promotion-buttons .dg10-btn-outline .dg10-btn-icon {
+    margin-left: 0;
+    margin-right: var(--dg10-spacing-xs);
+    color: inherit !important; /* Force icon to inherit button text color */
+}
+
+.dg10-promotion-footer {
+    margin: 0 !important;
+    font-size: var(--dg10-font-size-sm);
+    color: #374151; /* Darker color for better contrast */
+    text-align: center;
+    font-weight: 500; /* Increased weight for better readability */
+}
+
+.dg10-promotion-footer a {
+    color: var(--dg10-info);
+    text-decoration: none;
+    font-weight: 600; /* Increased weight for better contrast */
+    transition: color var(--dg10-transition-fast);
+}
+
+.dg10-promotion-footer a:hover {
+    color: var(--dg10-info-dark);
+    text-decoration: underline;
+}
+
+/* Legacy footer promo styles for backward compatibility */
 .dg10-footer-promo {
     margin-top: var(--dg10-spacing-2xl);
     padding: var(--dg10-spacing-xl);
@@ -1174,24 +1446,53 @@
     text-align: center;
     color: var(--dg10-white);
     box-shadow: var(--dg10-shadow-lg);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.dg10-footer-branding {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--dg10-spacing-md);
+}
+
+.dg10-footer-logo {
+    width: 120px;
+    height: auto;
+    max-height: 40px;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    opacity: 0.9;
+    transition: all var(--dg10-transition-normal);
+}
+
+.dg10-footer-logo:hover {
+    opacity: 1;
+    filter: brightness(0) invert(1) drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+    transform: scale(1.05);
 }
 
 .dg10-footer-promo p {
     margin: 0;
     font-size: var(--dg10-font-size-sm);
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--dg10-white); /* Pure white for maximum contrast */
+    font-weight: 500; /* Increased weight for better readability */
+    line-height: 1.6; /* Improved line height */
 }
 
 .dg10-footer-promo a {
     color: var(--dg10-accent);
     text-decoration: none;
-    font-weight: 500;
+    font-weight: 600; /* Increased weight for better contrast */
     transition: color var(--dg10-transition-fast);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); /* Add text shadow for better contrast */
 }
 
 .dg10-footer-promo a:hover {
     color: var(--dg10-white);
     text-decoration: underline;
+    font-weight: 700; /* Increased weight on hover for better visibility */
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); /* Enhanced shadow on hover */
 }
 
 /* ==========================================================================
@@ -1326,9 +1627,11 @@
 
 .dg10-sidebar-btn-secondary {
     background: var(--dg10-white);
-    color: var(--dg10-dark-blue); /* Dark blue for better visibility */
+    color: var(--dg10-primary); /* Primary color for better visibility */
     border-color: var(--dg10-primary);
+    border-width: 2px; /* Increased border width for better visibility */
     box-shadow: var(--dg10-shadow-sm);
+    font-weight: 600; /* Increased weight for better contrast */
 }
 
 .dg10-sidebar-btn-secondary:hover {
@@ -1337,6 +1640,7 @@
     transform: translateY(-1px);
     box-shadow: var(--dg10-shadow-md);
     text-decoration: none;
+    font-weight: 700; /* Increased weight on hover for better visibility */
 }
 
 .dg10-sidebar-btn-secondary:active {
@@ -1353,15 +1657,16 @@
 .dg10-sidebar-footer p {
     margin: 0;
     font-size: var(--dg10-font-size-xs);
-    color: var(--dg10-neutral);
+    color: #374151; /* Darker color for better contrast */
     line-height: 1.5;
     text-align: center;
+    font-weight: 500; /* Increased weight for better readability */
 }
 
 .dg10-sidebar-footer a {
     color: var(--dg10-primary);
     text-decoration: none;
-    font-weight: 500;
+    font-weight: 600; /* Increased weight for better contrast */
     transition: color var(--dg10-transition-fast);
 }
 
@@ -1622,6 +1927,72 @@
     .dg10-brand .keyword-analysis-form {
         padding: var(--dg10-spacing-lg);
     }
+}
+
+/* ==========================================================================
+   BUTTON CONTRAST FIXES
+   ========================================================================== */
+
+/* Force button text to be white for proper contrast */
+.dg10-brand .dg10-btn-primary,
+.dg10-brand .dg10-btn-primary *,
+.dg10-brand .dg10-btn-primary .dg10-btn-icon {
+    color: #FFFFFF !important;
+}
+
+.dg10-brand .dg10-btn-primary:hover,
+.dg10-brand .dg10-btn-primary:hover *,
+.dg10-brand .dg10-btn-primary:hover .dg10-btn-icon {
+    color: #FFFFFF !important;
+}
+
+/* Force dark section text to be white/light for proper contrast */
+.dg10-brand .dg10-card-header,
+.dg10-brand .dg10-card-header *,
+.dg10-brand .dg10-card-header h1,
+.dg10-brand .dg10-card-header h2,
+.dg10-brand .dg10-card-header h3,
+.dg10-brand .dg10-card-header h4,
+.dg10-brand .dg10-card-header h5,
+.dg10-brand .dg10-card-header h6,
+.dg10-brand .dg10-card-header p {
+    color: #FFFFFF !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6), 0 1px 2px rgba(0, 0, 0, 0.4) !important; /* Enhanced shadows for better definition */
+}
+
+/* Default hero text styling for light backgrounds */
+.dg10-brand .dg10-hero-text h1 {
+    color: #1F2937 !important; /* Force dark text for white backgrounds */
+    text-shadow: none !important; /* Remove shadows for clean look on white backgrounds */
+}
+
+.dg10-brand .dg10-hero-description {
+    color: #6B7280 !important; /* Force medium gray text for white backgrounds */
+    text-shadow: none !important; /* Remove shadows for clean look on white backgrounds */
+}
+
+
+
+/* Comprehensive fix for hero section text contrast - remove all text shadows and ensure proper colors */
+.dg10-brand .dg10-hero-text h1,
+.dg10-brand .dg10-hero-text h2,
+.dg10-brand .dg10-hero-text h3,
+.dg10-brand .dg10-hero-text h4,
+.dg10-brand .dg10-hero-text h5,
+.dg10-brand .dg10-hero-text h6,
+.dg10-brand .dg10-hero-description,
+.dg10-brand .dg10-hero-description p,
+.dg10-brand .dg10-hero-description span,
+.dg10-brand .dg10-hero-description div {
+    color: #1F2937 !important; /* Force dark text for white backgrounds */
+    text-shadow: none !important; /* Remove all text shadows for clean look on white backgrounds */
+}
+
+/* Override any inherited text shadows from parent elements */
+.dg10-brand .dg10-hero-content *,
+.dg10-brand .dg10-hero-section *,
+.dg10-brand .dg10-main-content .dg10-hero-text * {
+    text-shadow: none !important; /* Remove all text shadows for clean look on white backgrounds */
 }
 
 /* ==========================================================================

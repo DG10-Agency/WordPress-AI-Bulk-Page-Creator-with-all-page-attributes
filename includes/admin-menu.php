@@ -11,7 +11,7 @@ function aiopms_add_admin_menu() {
         'manage_options',
         'aiopms-page-management',
         'aiopms_admin_page',
-        AIOPMS_PLUGIN_URL . 'assets/images/dg10-logo.svg',
+        AIOPMS_PLUGIN_URL . 'assets/images/logo.svg',
         25
     );
 }
@@ -20,54 +20,94 @@ add_action('admin_menu', 'aiopms_add_admin_menu');
 // Admin page content
 function aiopms_admin_page() {
     $active_tab = isset($_GET['tab']) ? sanitize_key($_GET['tab']) : 'manual';
+    
+    // Define menu items with their details
+    $menu_items = array(
+        'manual' => array(
+            'title' => 'Manual Page Creation',
+            'icon' => '📝',
+            'description' => 'Create pages manually with custom hierarchy and attributes'
+        ),
+        'csv' => array(
+            'title' => 'CSV Upload',
+            'icon' => '📊',
+            'description' => 'Bulk import pages from CSV files'
+        ),
+        'ai' => array(
+            'title' => 'AI Generation',
+            'icon' => '🚀',
+            'description' => 'Generate pages with AI assistance'
+        ),
+        'schema' => array(
+            'title' => 'Schema Generator',
+            'icon' => '🏷️',
+            'description' => 'Create structured data markup'
+        ),
+        'menu' => array(
+            'title' => 'Menu Generator',
+            'icon' => '🍔',
+            'description' => 'Automatically generate WordPress menus'
+        ),
+        'hierarchy' => array(
+            'title' => 'Page Hierarchy',
+            'icon' => '🌳',
+            'description' => 'Visualize and manage page structure'
+        ),
+        'export' => array(
+            'title' => 'Hierarchy Export',
+            'icon' => '📤',
+            'description' => 'Export page hierarchy data'
+        ),
+        'keyword-analysis' => array(
+            'title' => 'Keyword Analysis',
+            'icon' => '🔍',
+            'description' => 'Analyze keyword density and SEO'
+        ),
+        'settings' => array(
+            'title' => 'Settings',
+            'icon' => '⚙️',
+            'description' => 'Configure plugin options'
+        )
+    );
     ?>
     <div class="wrap dg10-brand">
         <div class="dg10-main-layout">
+            <!-- Admin Sidebar -->
+            <div class="dg10-admin-sidebar">
+                <div class="dg10-sidebar-header">
+                    <div class="dg10-sidebar-title">
+                        <img src="<?php echo AIOPMS_PLUGIN_URL; ?>assets/images/logo.svg" alt="AIOPMS Plugin" style="width: 24px; height: 24px;">
+                        AIOPMS
+                    </div>
+                    <p class="dg10-sidebar-subtitle">All In One Page Management System</p>
+                </div>
+                
+                <nav class="dg10-sidebar-nav">
+                    <?php foreach ($menu_items as $tab_key => $item): ?>
+                        <a href="?page=aiopms-page-management&tab=<?php echo esc_attr($tab_key); ?>" 
+                           class="dg10-sidebar-nav-item <?php echo $active_tab == $tab_key ? 'active' : ''; ?>"
+                           title="<?php echo esc_attr($item['description']); ?>">
+                            <span class="nav-icon"><?php echo $item['icon']; ?></span>
+                            <?php echo esc_html($item['title']); ?>
+                        </a>
+                    <?php endforeach; ?>
+                </nav>
+            </div>
+            
+            <!-- Main Content Area -->
             <div class="dg10-main-content">
                 <div class="dg10-card">
-            <div class="dg10-card-header">
-                <div class="dg10-hero-content">
-                    <div class="dg10-hero-logo">
-                        <img src="<?php echo AIOPMS_PLUGIN_URL; ?>assets/images/dg10-logo.svg" alt="DG10 Agency" class="dg10-logo-img">
+                    <div class="dg10-card-header">
+                        <div class="dg10-hero-content">
+                            <div class="dg10-hero-text">
+                                <h1><?php echo esc_html($menu_items[$active_tab]['title']); ?></h1>
+                                <p class="dg10-hero-description">
+                                    <?php echo esc_html($menu_items[$active_tab]['description']); ?>
+                                </p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="dg10-hero-text">
-                        <h1>AIOPMS - All In One Page Management System</h1>
-                        <p class="dg10-hero-description">
-                            Transform your WordPress site with AI-powered page creation, intelligent schema markup, and automated menu generation
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <div class="dg10-card-body">
-                <div class="dg10-nav-tabs">
-                    <a href="?page=aiopms-page-management&tab=manual" class="dg10-nav-tab <?php echo $active_tab == 'manual' ? 'active' : ''; ?>">
-                        📝 Manual Creation
-                    </a>
-                    <a href="?page=aiopms-page-management&tab=csv" class="dg10-nav-tab <?php echo $active_tab == 'csv' ? 'active' : ''; ?>">
-                        📊 CSV Upload
-                    </a>
-                    <a href="?page=aiopms-page-management&tab=ai" class="dg10-nav-tab <?php echo $active_tab == 'ai' ? 'active' : ''; ?>">
-                        🚀 Generate with AI
-                    </a>
-                    <a href="?page=aiopms-page-management&tab=schema" class="dg10-nav-tab <?php echo $active_tab == 'schema' ? 'active' : ''; ?>">
-                        🏷️ Schema Generator
-                    </a>
-                    <a href="?page=aiopms-page-management&tab=menu" class="dg10-nav-tab <?php echo $active_tab == 'menu' ? 'active' : ''; ?>">
-                        🍔 Menu Generator
-                    </a>
-                    <a href="?page=aiopms-page-management&tab=hierarchy" class="dg10-nav-tab <?php echo $active_tab == 'hierarchy' ? 'active' : ''; ?>">
-                        🌳 Page Hierarchy
-                    </a>
-                    <a href="?page=aiopms-page-management&tab=export" class="dg10-nav-tab <?php echo $active_tab == 'export' ? 'active' : ''; ?>">
-                        📤 Hierarchy Export
-                    </a>
-                    <a href="?page=aiopms-page-management&tab=keyword-analysis" class="dg10-nav-tab <?php echo $active_tab == 'keyword-analysis' ? 'active' : ''; ?>">
-                        🔍 Keyword Analysis
-                    </a>
-                    <a href="?page=aiopms-page-management&tab=settings" class="dg10-nav-tab <?php echo $active_tab == 'settings' ? 'active' : ''; ?>">
-                        ⚙️ Settings
-                    </a>
-                </div>
+                    <div class="dg10-card-body">
         <?php
         if ($active_tab == 'manual') {
             aiopms_manual_creation_tab();
@@ -89,53 +129,114 @@ function aiopms_admin_page() {
             aiopms_settings_tab();
         }
         ?>
-            </div>
-            <div class="dg10-card-footer">
-                <div class="dg10-footer-promo">
-                    <p>
-                        This plugin is brought to you by <a href="https://www.dg10.agency" target="_blank">DG10 Agency</a>. 
-                        This is an open-source project. Feel free to <a href="<?php echo esc_url(AIOPMS_GITHUB_URL); ?>" target="_blank">star us on GitHub</a>.
-                    </p>
-                </div>
-            </div>
-        </div>
-        
-        <!-- DG10 Agency Sidebar -->
-        <div class="dg10-sidebar">
-            <div class="dg10-sidebar-card">
-                <div class="dg10-sidebar-header">
-                    <div class="dg10-sidebar-logo">
-                        <img src="<?php echo AIOPMS_PLUGIN_URL; ?>assets/images/dg10-logo.svg" alt="DG10 Agency" class="dg10-sidebar-logo-img">
                     </div>
-                    <h3>About us</h3>
-                </div>
-                <div class="dg10-sidebar-content">
-                    <p>We craft high-performance WordPress and Elementor solutions. Need help with custom development, optimization, or complex integrations?</p>
-                </div>
-                <div class="dg10-sidebar-actions">
-                    <a href="https://www.dg10.agency" target="_blank" class="dg10-sidebar-btn dg10-sidebar-btn-primary">
-                        <span>Visit Website</span>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </a>
-                    <a href="https://calendly.com/dg10-agency/30min" target="_blank" class="dg10-sidebar-btn dg10-sidebar-btn-secondary">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" stroke="currentColor" stroke-width="2"/>
-                            <line x1="16" y1="2" x2="16" y2="6" stroke="currentColor" stroke-width="2"/>
-                            <line x1="8" y1="2" x2="8" y2="6" stroke="currentColor" stroke-width="2"/>
-                            <line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="2"/>
-                        </svg>
-                        <span>Book a Free Consultation</span>
-                    </a>
-                </div>
-                <div class="dg10-sidebar-footer">
-                    <p>This is an open-source project — please <a href="<?php echo esc_url(AIOPMS_GITHUB_URL); ?>" target="_blank">star the repo on GitHub</a>.</p>
+                    <div class="dg10-card-footer">
+                        <div class="dg10-promotion-section">
+                            <div class="dg10-promotion-header">
+                                <img src="<?php echo AIOPMS_PLUGIN_URL; ?>assets/images/dg10-brand-logo.svg" alt="DG10 Agency" class="dg10-promotion-logo">
+                                <h3>About us</h3>
+                            </div>
+                            <div class="dg10-promotion-content">
+                                <p>DG10 Agency specializes in creating powerful WordPress and Elementor solutions. We help businesses build custom websites, optimize performance, and implement complex integrations that drive results.</p>
+                                <div class="dg10-promotion-buttons">
+                                    <a href="https://www.dg10.agency" target="_blank" class="dg10-btn dg10-btn-primary">
+                                        Visit Website
+                                        <span class="dg10-btn-icon">→</span>
+                                    </a>
+                                    <a href="https://calendly.com/dg10-agency/30min" target="_blank" class="dg10-btn dg10-btn-outline">
+                                        <span class="dg10-btn-icon">📅</span>
+                                        Book a Free Consultation
+                                    </a>
+                                </div>
+                                <p class="dg10-promotion-footer">
+                                    This is an open-source project - please <a href="<?php echo esc_url(AIOPMS_GITHUB_URL); ?>" target="_blank">star the repo on GitHub</a>.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
         </div>
     </div>
+    
+    <!-- Sidebar JavaScript -->
+    <script>
+    jQuery(document).ready(function($) {
+        // Handle sidebar navigation
+        $('.dg10-sidebar-nav-item').on('click', function(e) {
+            // Remove active class from all items
+            $('.dg10-sidebar-nav-item').removeClass('active');
+            // Add active class to clicked item
+            $(this).addClass('active');
+        });
+        
+        // Handle responsive sidebar behavior
+        function handleSidebarResponsive() {
+            if ($(window).width() <= 960) {
+                // Mobile/tablet view - horizontal scroll
+                $('.dg10-sidebar-nav').addClass('mobile-nav');
+            } else {
+                // Desktop view - vertical sidebar
+                $('.dg10-sidebar-nav').removeClass('mobile-nav');
+            }
+        }
+        
+        // Run on load and resize
+        handleSidebarResponsive();
+        $(window).on('resize', handleSidebarResponsive);
+        
+        // Smooth scroll for mobile navigation
+        $('.dg10-sidebar-nav').on('scroll', function() {
+            // Optional: Add scroll indicators or other mobile nav enhancements
+        });
+        
+        // Add keyboard navigation support
+        $('.dg10-sidebar-nav-item').on('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                $(this).click();
+            }
+        });
+        
+        // Focus management for accessibility
+        $('.dg10-sidebar-nav-item').on('focus', function() {
+            $(this).addClass('focused');
+        }).on('blur', function() {
+            $(this).removeClass('focused');
+        });
+    });
+    </script>
+    
+    <style>
+    /* Additional JavaScript-triggered styles */
+    .dg10-sidebar-nav-item.focused {
+        outline: 2px solid #2271b1;
+        outline-offset: 2px;
+    }
+    
+    .dg10-sidebar-nav.mobile-nav {
+        scrollbar-width: thin;
+        scrollbar-color: #2271b1 #f1f1f1;
+    }
+    
+    .dg10-sidebar-nav.mobile-nav::-webkit-scrollbar {
+        height: 6px;
+    }
+    
+    .dg10-sidebar-nav.mobile-nav::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 3px;
+    }
+    
+    .dg10-sidebar-nav.mobile-nav::-webkit-scrollbar-thumb {
+        background: #2271b1;
+        border-radius: 3px;
+    }
+    
+    .dg10-sidebar-nav.mobile-nav::-webkit-scrollbar-thumb:hover {
+        background: #1e5a96;
+    }
+    </style>
     <?php
 }
 
@@ -143,10 +244,6 @@ function aiopms_admin_page() {
 function aiopms_manual_creation_tab() {
     ?>
     <div class="dg10-card">
-        <div class="dg10-card-header">
-            <h3>📝 Manual Page Creation</h3>
-            <p style="margin: 0; opacity: 0.9;">Create pages manually with custom hierarchy and attributes</p>
-        </div>
         <div class="dg10-card-body">
             <form method="post" action="">
                 <?php wp_nonce_field('aiopms_manual_create_pages'); ?>
@@ -1022,10 +1119,6 @@ function aiopms_hierarchy_export_tab() {
 function aiopms_keyword_analysis_tab() {
     ?>
     <div class="dg10-card">
-        <div class="dg10-card-header">
-            <h3>🔍 Keyword Density Analysis</h3>
-            <p style="margin: 0; opacity: 0.9;">Analyze keyword usage and density across your pages for SEO optimization</p>
-        </div>
         <div class="dg10-card-body">
             <form id="aiopms-keyword-analysis-form">
                 <?php wp_nonce_field('aiopms_keyword_analysis', 'aiopms_keyword_nonce'); ?>

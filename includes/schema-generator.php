@@ -508,7 +508,8 @@ function aiopms_is_event_page($content, $title) {
 }
 
 // Generate schema markup for a page
-function aiopms_generate_schema_markup($post_id) {
+if (!function_exists('aiopms_generate_schema_markup')) {
+    function aiopms_generate_schema_markup($post_id) {
     $schema_type = aiopms_detect_schema_type($post_id);
     $schema_data = [];
 
@@ -551,8 +552,9 @@ function aiopms_generate_schema_markup($post_id) {
     // Store schema data as post meta
     update_post_meta($post_id, '_aiopms_schema_type', $schema_type);
     update_post_meta($post_id, '_aiopms_schema_data', $schema_data);
-
+    
     return $schema_data;
+    }
 }
 
 // Generate FAQ schema
@@ -1306,7 +1308,6 @@ function aiopms_schema_management_dashboard() {
     }
     ?>
     <div class="wrap aiopms-schema-dashboard">
-        <h1>Schema Management Dashboard</h1>
         <p>Manage structured data (schema.org) markup for your pages to improve SEO and search visibility.</p>
         
         <!-- Schema Statistics -->

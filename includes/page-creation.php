@@ -133,7 +133,8 @@ function aiopms_generate_seo_slug($title, $max_length = 72) {
 }
 
 // Set featured image with SEO metadata
-function aiopms_set_featured_image($post_id, $image_url, $image_title = '', $image_alt = '', $image_description = '') {
+if (!function_exists('aiopms_set_featured_image')) {
+    function aiopms_set_featured_image($post_id, $image_url, $image_title = '', $image_alt = '', $image_description = '') {
     // Check if the image URL is valid
     if (filter_var($image_url, FILTER_VALIDATE_URL) === FALSE) {
         return;
@@ -182,4 +183,5 @@ function aiopms_set_featured_image($post_id, $image_url, $image_title = '', $ima
     set_post_thumbnail($post_id, $attach_id);
     
     return $attach_id;
+}
 }

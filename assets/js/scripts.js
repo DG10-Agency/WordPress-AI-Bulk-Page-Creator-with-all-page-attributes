@@ -1,4 +1,106 @@
 jQuery(document).ready(function($) {
+    // ===== SIDEBAR NAVIGATION FUNCTIONALITY =====
+    
+    // Handle sidebar navigation
+    $('.dg10-sidebar-nav-item').on('click', function(e) {
+        // Remove active class from all items
+        $('.dg10-sidebar-nav-item').removeClass('active');
+        // Add active class to clicked item
+        $(this).addClass('active');
+        
+        // Optional: Add smooth transition effect
+        $(this).css('transform', 'scale(0.98)');
+        setTimeout(() => {
+            $(this).css('transform', 'scale(1)');
+        }, 150);
+    });
+    
+    // Handle responsive sidebar behavior
+    function handleSidebarResponsive() {
+        var windowWidth = $(window).width();
+        
+        if (windowWidth <= 960) {
+            // Mobile/tablet view - horizontal scroll
+            $('.dg10-sidebar-nav').addClass('mobile-nav');
+            $('.dg10-admin-sidebar').addClass('mobile-sidebar');
+        } else {
+            // Desktop view - vertical sidebar
+            $('.dg10-sidebar-nav').removeClass('mobile-nav');
+            $('.dg10-admin-sidebar').removeClass('mobile-sidebar');
+        }
+    }
+    
+    // Run on load and resize
+    handleSidebarResponsive();
+    $(window).on('resize', debounce(handleSidebarResponsive, 250));
+    
+    // Debounce function for performance
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+    
+    // Add keyboard navigation support
+    $('.dg10-sidebar-nav-item').on('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            $(this).click();
+        }
+        
+        // Arrow key navigation
+        if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+            e.preventDefault();
+            var items = $('.dg10-sidebar-nav-item');
+            var currentIndex = items.index(this);
+            var nextIndex;
+            
+            if (e.key === 'ArrowDown') {
+                nextIndex = (currentIndex + 1) % items.length;
+            } else {
+                nextIndex = (currentIndex - 1 + items.length) % items.length;
+            }
+            
+            items.eq(nextIndex).focus();
+        }
+    });
+    
+    // Focus management for accessibility
+    $('.dg10-sidebar-nav-item').on('focus', function() {
+        $(this).addClass('focused');
+    }).on('blur', function() {
+        $(this).removeClass('focused');
+    });
+    
+    // Auto-scroll active item into view on mobile
+    function scrollActiveItemIntoView() {
+        var activeItem = $('.dg10-sidebar-nav-item.active');
+        if (activeItem.length && $('.dg10-sidebar-nav').hasClass('mobile-nav')) {
+            var navContainer = $('.dg10-sidebar-nav');
+            var itemOffset = activeItem.position().left;
+            var itemWidth = activeItem.outerWidth();
+            var containerWidth = navContainer.width();
+            var scrollLeft = navContainer.scrollLeft();
+            
+            if (itemOffset < scrollLeft) {
+                navContainer.animate({scrollLeft: itemOffset - 20}, 300);
+            } else if (itemOffset + itemWidth > scrollLeft + containerWidth) {
+                navContainer.animate({scrollLeft: itemOffset + itemWidth - containerWidth + 20}, 300);
+            }
+        }
+    }
+    
+    // Run scroll function on load
+    setTimeout(scrollActiveItemIntoView, 100);
+    
+    // ===== EXISTING FUNCTIONALITY =====
+    
     // Handle AI provider change to enable/disable image generation checkbox
     function updateImageGenerationCheckbox() {
         var provider = $('select[name="aiopms_ai_provider"]').val();
