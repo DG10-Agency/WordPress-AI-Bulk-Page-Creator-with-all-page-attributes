@@ -51,6 +51,20 @@ function aiopms_ai_generation_tab() {
                     <p class="description">Describe your target audience for better content optimization</p>
                 </td>
             </tr>
+            <tr valign="top">
+                <th scope="row">Advanced Mode</th>
+                <td>
+                    <label>
+                        <input type="checkbox" name="aiopms_advanced_mode" id="aiopms_advanced_mode" value="1">
+                        Enable Advanced Mode - Generate custom post types and dynamic content ecosystem
+                    </label>
+                    <p class="description">
+                        <strong>Standard Mode:</strong> Creates standard pages only<br>
+                        <strong>Advanced Mode:</strong> Analyzes your business and suggests custom post types with relevant fields<br>
+                        <em>Advanced Mode will show business analysis and custom post type suggestions below</em>
+                    </p>
+                </td>
+            </tr>
         </table>
         <?php submit_button('Generate Page Suggestions'); ?>
     </form>
@@ -60,6 +74,7 @@ function aiopms_ai_generation_tab() {
         $business_details = isset($_POST['aiopms_business_details']) ? sanitize_textarea_field(wp_unslash($_POST['aiopms_business_details'])) : '';
         $seo_keywords = isset($_POST['aiopms_seo_keywords']) ? sanitize_text_field(wp_unslash($_POST['aiopms_seo_keywords'])) : '';
         $target_audience = isset($_POST['aiopms_target_audience']) ? sanitize_text_field(wp_unslash($_POST['aiopms_target_audience'])) : '';
+        $advanced_mode = isset($_POST['aiopms_advanced_mode']) && $_POST['aiopms_advanced_mode'] == '1';
         
         // Process CSV file if uploaded
         $csv_keywords = '';
@@ -77,7 +92,12 @@ function aiopms_ai_generation_tab() {
             }
         }
         
-        abpcwa_generate_pages_with_ai($business_type, $business_details, $all_keywords, $target_audience);
+        if ($advanced_mode) {
+            // Use advanced mode functionality directly
+            aiopms_generate_advanced_content_with_ai($business_type, $business_details, $all_keywords, $target_audience);
+        } else {
+            abpcwa_generate_pages_with_ai($business_type, $business_details, $all_keywords, $target_audience);
+        }
     }
 }
 
@@ -806,4 +826,797 @@ function aiopms_extract_primary_keywords($title) {
     $keywords = array_slice($keywords, 0, 4);
     
     return implode(' ', $keywords) ?: sanitize_text_field($title);
+}
+
+// ===== ADVANCED MODE FUNCTIONALITY =====
+
+// Generate advanced content with AI (pages + custom post types)
+function aiopms_generate_advanced_content_with_ai($business_type, $business_details, $seo_keywords = '', $target_audience = '') {
+    $provider = get_option('abpcwa_ai_provider', 'openai');
+    $api_key = get_option('abpcwa_' . $provider . '_api_key');
+
+    if (empty($api_key)) {
+        echo '<div class="notice notice-error"><p>Please enter your ' . esc_html(ucfirst($provider)) . ' API key in the Settings tab.</p></div>';
+        return;
+    }
+
+    // Get advanced content suggestions from AI
+    $advanced_suggestions = [];
+    switch ($provider) {
+        case 'openai':
+            $advanced_suggestions = aiopms_get_openai_advanced_suggestions($business_type, $business_details, $seo_keywords, $target_audience, $api_key);
+            break;
+        case 'gemini':
+            $advanced_suggestions = aiopms_get_gemini_advanced_suggestions($business_type, $business_details, $seo_keywords, $target_audience, $api_key);
+            break;
+        case 'deepseek':
+            $advanced_suggestions = aiopms_get_deepseek_advanced_suggestions($business_type, $business_details, $seo_keywords, $target_audience, $api_key);
+            break;
+    }
+
+    if (empty($advanced_suggestions)) {
+        echo '<div class="notice notice-warning"><p>Could not generate advanced content suggestions. Please check your API key and try again.</p></div>';
+        return;
+    }
+
+    // Parse the AI response
+    $parsed_suggestions = aiopms_parse_advanced_ai_response($advanced_suggestions);
+    
+    if (empty($parsed_suggestions['pages']) && empty($parsed_suggestions['custom_post_types'])) {
+        echo '<div class="notice notice-warning"><p>No content suggestions were generated. Please try with more detailed business information.</p></div>';
+        return;
+    }
+
+    // Display the suggestions
+    aiopms_display_advanced_content_suggestions($parsed_suggestions);
+}
+
+// Get advanced suggestions from OpenAI API
+function aiopms_get_openai_advanced_suggestions($business_type, $business_details, $seo_keywords, $target_audience, $api_key) {
+    $url = 'https://api.openai.com/v1/chat/completions';
+    
+    $prompt = aiopms_build_advanced_ai_prompt($business_type, $business_details, $seo_keywords, $target_audience);
+
+    $body = json_encode([
+        'model' => 'gpt-4',
+        'messages' => [['role' => 'user', 'content' => $prompt]],
+        'temperature' => 0.7,
+        'max_tokens' => 2000,
+    ]);
+
+    $response = wp_remote_post($url, [
+        'headers' => [
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer ' . $api_key,
+        ],
+        'body' => $body,
+        'timeout' => 60,
+    ]);
+
+    if (is_wp_error($response)) {
+        return [];
+    }
+
+    $response_body = json_decode(wp_remote_retrieve_body($response), true);
+    if (isset($response_body['choices'][0]['message']['content'])) {
+        return $response_body['choices'][0]['message']['content'];
+    }
+
+    return [];
+}
+
+// Get advanced suggestions from Gemini API
+function aiopms_get_gemini_advanced_suggestions($business_type, $business_details, $seo_keywords, $target_audience, $api_key) {
+    $url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=' . $api_key;
+    
+    $prompt = aiopms_build_advanced_ai_prompt($business_type, $business_details, $seo_keywords, $target_audience);
+
+    $body = json_encode([
+        'contents' => [['parts' => [['text' => $prompt]]]],
+    ]);
+
+    $response = wp_remote_post($url, [
+        'headers' => ['Content-Type' => 'application/json'],
+        'body' => $body,
+        'timeout' => 60,
+    ]);
+
+    if (is_wp_error($response)) {
+        return [];
+    }
+
+    $response_body = json_decode(wp_remote_retrieve_body($response), true);
+    if (isset($response_body['candidates'][0]['content']['parts'][0]['text'])) {
+        return $response_body['candidates'][0]['content']['parts'][0]['text'];
+    }
+
+    return [];
+}
+
+// Get advanced suggestions from DeepSeek API
+function aiopms_get_deepseek_advanced_suggestions($business_type, $business_details, $seo_keywords, $target_audience, $api_key) {
+    $url = 'https://api.deepseek.com/v1/chat/completions';
+    
+    $prompt = aiopms_build_advanced_ai_prompt($business_type, $business_details, $seo_keywords, $target_audience);
+
+    $body = json_encode([
+        'model' => 'deepseek-chat',
+        'messages' => [['role' => 'user', 'content' => $prompt]],
+        'temperature' => 0.7,
+        'max_tokens' => 2000,
+    ]);
+
+    $response = wp_remote_post($url, [
+        'headers' => [
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer ' . $api_key,
+        ],
+        'body' => $body,
+        'timeout' => 60,
+    ]);
+
+    if (is_wp_error($response)) {
+        return [];
+    }
+
+    $response_body = json_decode(wp_remote_retrieve_body($response), true);
+    if (isset($response_body['choices'][0]['message']['content'])) {
+        return $response_body['choices'][0]['message']['content'];
+    }
+
+    return [];
+}
+
+// Build the advanced AI prompt for dynamic business analysis
+function aiopms_build_advanced_ai_prompt($business_type, $business_details, $seo_keywords, $target_audience) {
+    return "## ROLE & CONTEXT
+You are an expert digital strategist and WordPress developer specializing in creating comprehensive content ecosystems for businesses. Your task is to analyze a specific business and generate both standard pages AND custom post types that would be most valuable for that business model.
+
+## BUSINESS CONTEXT TO ANALYZE
+- **Business Type**: {$business_type}
+- **Business Details**: {$business_details}
+- **Target Audience**: {$target_audience}
+- **Primary Keywords**: {$seo_keywords}
+
+## CRITICAL REQUIREMENTS
+
+### 1. DYNAMIC BUSINESS ANALYSIS
+- **DO NOT use predefined templates or examples**
+- **Analyze THIS specific business** and determine what content would be most valuable
+- **Think about the business model** - what type of content would help this business succeed?
+- **Consider the target audience** - what information would they be looking for?
+- **Think about conversion** - what content would help turn visitors into customers?
+
+### 2. INTELLIGENT CONTENT SUGGESTIONS
+For each suggestion, provide:
+- **Clear reasoning** for why this content type is valuable for THIS business
+- **Specific custom fields** that would be useful for managing this content
+- **Sample content ideas** that would be relevant to this business
+
+### 3. CUSTOM POST TYPE ANALYSIS
+Consider what types of content this business would need to manage regularly:
+- **Portfolio/Showcase content** (for service businesses)
+- **Product catalogs** (for e-commerce)
+- **Case studies** (for agencies/consultants)
+- **Testimonials** (for service businesses)
+- **Team members** (for professional services)
+- **Events** (for event-based businesses)
+- **Courses/Tutorials** (for educational businesses)
+- **News/Updates** (for any business with regular updates)
+
+## OUTPUT FORMAT
+
+Return your analysis in this EXACT JSON format:
+
+{
+  \"business_analysis\": {
+    \"business_model\": \"Brief description of the business model\",
+    \"content_needs\": \"What types of content this business needs\",
+    \"target_audience_insights\": \"What the target audience is looking for\"
+  },
+  \"standard_pages\": [
+    {
+      \"title\": \"Page Title\",
+      \"meta_description\": \"SEO-optimized meta description (155-160 chars)\",
+      \"reasoning\": \"Why this page is essential for this business\",
+      \"hierarchy_level\": 0
+    }
+  ],
+  \"custom_post_types\": [
+    {
+      \"name\": \"post_type_slug\",
+      \"label\": \"Display Name\",
+      \"description\": \"What this post type is for\",
+      \"reasoning\": \"Why this post type is valuable for this specific business\",
+      \"custom_fields\": [
+        {
+          \"name\": \"field_slug\",
+          \"label\": \"Field Label\",
+          \"type\": \"text|textarea|select|image|url|number|date\",
+          \"description\": \"What this field is for\",
+          \"required\": true|false
+        }
+      ],
+      \"sample_entries\": [
+        {
+          \"title\": \"Sample Entry Title\",
+          \"content\": \"Brief description of what this entry would contain\"
+        }
+      ]
+    }
+  ]
+}
+
+## ANALYSIS GUIDELINES
+
+### For Standard Pages:
+- Include only pages that make sense for THIS specific business
+- Consider what pages customers would expect to find
+- Think about the customer journey and what information they need
+- Include both commercial and informational pages
+
+### For Custom Post Types:
+- Think about what content this business creates regularly
+- Consider what would help showcase their expertise
+- Think about what would help with SEO and user engagement
+- Consider what would help convert visitors to customers
+
+### For Custom Fields:
+- Choose fields that would be genuinely useful for this business
+- Consider what information customers would want to see
+- Think about what would help with content management
+- Include fields that would enhance SEO
+
+## EXAMPLES OF GOOD ANALYSIS:
+
+**Digital Marketing Agency** might need:
+- Standard pages: Home, About, Services, Contact, Blog
+- Custom post type: \"Case Studies\" with fields like Client Name, Industry, Results, Project Duration, Testimonial
+
+**Pet Grooming Service** might need:
+- Standard pages: Home, Services, About, Contact, Gallery
+- Custom post type: \"Services\" with fields like Service Name, Price, Duration, Pet Types, Description
+
+**Online Course Platform** might need:
+- Standard pages: Home, Courses, About, Contact, Pricing
+- Custom post type: \"Courses\" with fields like Course Title, Price, Duration, Skill Level, Prerequisites, Instructor
+
+**Wedding Photography Business** might need:
+- Standard pages: Home, Portfolio, Services, About, Contact
+- Custom post type: \"Portfolio\" with fields like Event Type, Date, Location, Couple Names, Photo Count, Gallery
+
+## REMEMBER:
+- Analyze the SPECIFIC business provided
+- Don't use generic templates
+- Think about what would actually help this business succeed
+- Consider the target audience and their needs
+- Focus on content that would drive conversions
+
+Provide a comprehensive analysis that would create a complete content ecosystem for this specific business.";
+}
+
+// Parse the AI response into structured data
+function aiopms_parse_advanced_ai_response($ai_response) {
+    $parsed = [
+        'pages' => [],
+        'custom_post_types' => []
+    ];
+
+    // Try to extract JSON from the response
+    $json_start = strpos($ai_response, '{');
+    $json_end = strrpos($ai_response, '}') + 1;
+    
+    if ($json_start !== false && $json_end !== false) {
+        $json_string = substr($ai_response, $json_start, $json_end - $json_start);
+        $data = json_decode($json_string, true);
+        
+        if ($data) {
+            $parsed['pages'] = isset($data['standard_pages']) ? $data['standard_pages'] : [];
+            $parsed['custom_post_types'] = isset($data['custom_post_types']) ? $data['custom_post_types'] : [];
+            $parsed['business_analysis'] = isset($data['business_analysis']) ? $data['business_analysis'] : [];
+        }
+    }
+
+    return $parsed;
+}
+
+// Display advanced content suggestions
+function aiopms_display_advanced_content_suggestions($suggestions) {
+    echo '<div class="aiopms-advanced-suggestions">';
+    
+    // Display business analysis if available
+    if (!empty($suggestions['business_analysis'])) {
+        echo '<div class="aiopms-business-analysis">';
+        echo '<h3>📊 Business Analysis</h3>';
+        echo '<div class="analysis-content">';
+        if (isset($suggestions['business_analysis']['business_model'])) {
+            echo '<p><strong>Business Model:</strong> ' . esc_html($suggestions['business_analysis']['business_model']) . '</p>';
+        }
+        if (isset($suggestions['business_analysis']['content_needs'])) {
+            echo '<p><strong>Content Needs:</strong> ' . esc_html($suggestions['business_analysis']['content_needs']) . '</p>';
+        }
+        if (isset($suggestions['business_analysis']['target_audience_insights'])) {
+            echo '<p><strong>Target Audience Insights:</strong> ' . esc_html($suggestions['business_analysis']['target_audience_insights']) . '</p>';
+        }
+        echo '</div>';
+        echo '</div>';
+    }
+
+    echo '<form method="post" action="">';
+    wp_nonce_field('aiopms_create_advanced_content');
+    echo '<input type="hidden" name="action" value="create_advanced_content">';
+
+    // Display standard pages
+    if (!empty($suggestions['pages'])) {
+        echo '<div class="aiopms-pages-section">';
+        echo '<h3>📄 Suggested Standard Pages</h3>';
+        echo '<table class="widefat striped">';
+        echo '<thead>';
+        echo '<tr>';
+        echo '<th width="20px"><input type="checkbox" id="select-all-pages" checked></th>';
+        echo '<th>Page Title</th>';
+        echo '<th>Meta Description</th>';
+        echo '<th>Reasoning</th>';
+        echo '</tr>';
+        echo '</thead>';
+        echo '<tbody>';
+        
+        foreach ($suggestions['pages'] as $page) {
+            echo '<tr>';
+            echo '<td><input type="checkbox" name="aiopms_selected_pages[]" value="' . esc_attr(json_encode($page)) . '" checked></td>';
+            echo '<td>' . esc_html($page['title']) . '</td>';
+            echo '<td>' . esc_html($page['meta_description']) . '</td>';
+            echo '<td>' . esc_html($page['reasoning']) . '</td>';
+            echo '</tr>';
+        }
+        
+        echo '</tbody>';
+        echo '</table>';
+        echo '</div>';
+    }
+
+    // Display custom post types
+    if (!empty($suggestions['custom_post_types'])) {
+        echo '<div class="aiopms-cpts-section">';
+        echo '<h3>🏗️ Suggested Custom Post Types</h3>';
+        
+        foreach ($suggestions['custom_post_types'] as $cpt) {
+            echo '<div class="cpt-suggestion">';
+            echo '<div class="cpt-header">';
+            echo '<label>';
+            echo '<input type="checkbox" name="aiopms_selected_cpts[]" value="' . esc_attr(json_encode($cpt)) . '" checked>';
+            echo '<strong>' . esc_html($cpt['label']) . '</strong> (' . esc_html($cpt['name']) . ')';
+            echo '</label>';
+            echo '</div>';
+            echo '<div class="cpt-details">';
+            echo '<p><strong>Description:</strong> ' . esc_html($cpt['description']) . '</p>';
+            echo '<p><strong>Why this is valuable:</strong> ' . esc_html($cpt['reasoning']) . '</p>';
+            
+            if (!empty($cpt['custom_fields'])) {
+                echo '<div class="custom-fields">';
+                echo '<h4>Custom Fields:</h4>';
+                echo '<ul>';
+                foreach ($cpt['custom_fields'] as $field) {
+                    echo '<li><strong>' . esc_html($field['label']) . '</strong> (' . esc_html($field['type']) . ') - ' . esc_html($field['description']);
+                    if ($field['required']) {
+                        echo ' <span class="required">*Required</span>';
+                    }
+                    echo '</li>';
+                }
+                echo '</ul>';
+                echo '</div>';
+            }
+            
+            if (!empty($cpt['sample_entries'])) {
+                echo '<div class="sample-entries">';
+                echo '<h4>Sample Entries:</h4>';
+                echo '<ul>';
+                foreach ($cpt['sample_entries'] as $entry) {
+                    echo '<li><strong>' . esc_html($entry['title']) . '</strong> - ' . esc_html($entry['content']) . '</li>';
+                }
+                echo '</ul>';
+                echo '</div>';
+            }
+            
+            echo '</div>';
+            echo '</div>';
+        }
+        
+        echo '</div>';
+    }
+
+    // Add image generation checkbox
+    $provider = get_option('abpcwa_ai_provider', 'openai');
+    $is_deepseek = $provider === 'deepseek';
+    
+    echo '<div class="aiopms-options">';
+    echo '<p>';
+    echo '<input type="checkbox" name="aiopms_generate_images" id="aiopms_generate_images" value="1" ' . checked(true, !$is_deepseek, false) . '>';
+    echo '<label for="aiopms_generate_images"> Generate featured images with AI</label>';
+    
+    if ($is_deepseek) {
+        echo ' <span class="description" style="color: #d63638;">(Image generation not supported with DeepSeek)</span>';
+    }
+    echo '</p>';
+    echo '</div>';
+
+    submit_button('Create Selected Content');
+    echo '</form>';
+
+    // Add JavaScript for select all functionality
+    echo '<script>
+    jQuery(document).ready(function($) {
+        $("#select-all-pages").on("change", function() {
+            $("input[name=\'aiopms_selected_pages[]\']").prop("checked", $(this).prop("checked"));
+        });
+    });
+    </script>';
+
+    echo '</div>';
+
+    // Add CSS for the advanced suggestions display
+    echo '<style>
+    .aiopms-advanced-suggestions {
+        margin: 20px 0;
+    }
+    
+    .aiopms-business-analysis {
+        background: #f0f6fc;
+        padding: 20px;
+        border-left: 4px solid #2271b1;
+        margin-bottom: 30px;
+        border-radius: 0 4px 4px 0;
+    }
+    
+    .aiopms-business-analysis h3 {
+        margin: 0 0 15px 0;
+        color: #1d2327;
+    }
+    
+    .analysis-content p {
+        margin: 10px 0;
+        line-height: 1.6;
+    }
+    
+    .aiopms-pages-section,
+    .aiopms-cpts-section {
+        margin: 30px 0;
+    }
+    
+    .aiopms-pages-section h3,
+    .aiopms-cpts-section h3 {
+        color: #2271b1;
+        border-bottom: 2px solid #2271b1;
+        padding-bottom: 8px;
+    }
+    
+    .cpt-suggestion {
+        background: #fff;
+        border: 1px solid #dcdcde;
+        border-radius: 6px;
+        padding: 20px;
+        margin: 15px 0;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .cpt-header {
+        margin-bottom: 15px;
+    }
+    
+    .cpt-header label {
+        font-size: 16px;
+        cursor: pointer;
+    }
+    
+    .cpt-details p {
+        margin: 10px 0;
+        line-height: 1.6;
+    }
+    
+    .custom-fields,
+    .sample-entries {
+        margin: 15px 0;
+    }
+    
+    .custom-fields h4,
+    .sample-entries h4 {
+        margin: 0 0 10px 0;
+        color: #1d2327;
+        font-size: 14px;
+    }
+    
+    .custom-fields ul,
+    .sample-entries ul {
+        margin: 0;
+        padding-left: 20px;
+    }
+    
+    .custom-fields li,
+    .sample-entries li {
+        margin: 8px 0;
+        line-height: 1.5;
+    }
+    
+    .required {
+        color: #d63638;
+        font-weight: bold;
+    }
+    
+    .aiopms-options {
+        margin: 20px 0;
+        padding: 15px;
+        background: #f9f9f9;
+        border-radius: 4px;
+    }
+    </style>';
+}
+
+// Handle creation of advanced content (pages + custom post types)
+if (isset($_POST['action']) && $_POST['action'] == 'create_advanced_content' && isset($_POST['_wpnonce']) && wp_verify_nonce(sanitize_key($_POST['_wpnonce']), 'aiopms_create_advanced_content')) {
+    if (isset($_POST['aiopms_selected_pages']) && is_array($_POST['aiopms_selected_pages'])) {
+        $selected_pages = array_map('sanitize_text_field', wp_unslash($_POST['aiopms_selected_pages']));
+        $selected_cpts = isset($_POST['aiopms_selected_cpts']) ? array_map('sanitize_text_field', wp_unslash($_POST['aiopms_selected_cpts'])) : [];
+        $generate_images = isset($_POST['aiopms_generate_images']) && $_POST['aiopms_generate_images'] == '1';
+        aiopms_create_advanced_content($selected_pages, $selected_cpts, $generate_images);
+    }
+}
+
+// Create advanced content (pages + custom post types)
+function aiopms_create_advanced_content($pages, $custom_post_types, $generate_images = false) {
+    $created_pages = 0;
+    $created_cpts = 0;
+    $parent_id_stack = [];
+
+    // Create standard pages
+    foreach ($pages as $page_data) {
+        $page = json_decode($page_data, true);
+        if (!$page) continue;
+
+        $page_title = $page['title'];
+        $meta_description = $page['meta_description'];
+        $hierarchy_level = isset($page['hierarchy_level']) ? $page['hierarchy_level'] : 0;
+
+        $parent_id = ($hierarchy_level > 0 && isset($parent_id_stack[$hierarchy_level - 1])) ? $parent_id_stack[$hierarchy_level - 1] : 0;
+
+        // Generate SEO-optimized slug
+        $post_name = aiopms_generate_seo_slug($page_title);
+        
+        $new_page = array(
+            'post_title'   => $page_title,
+            'post_name'    => $post_name,
+            'post_content' => '',
+            'post_status'  => 'draft',
+            'post_type'    => 'page',
+            'post_parent'  => $parent_id,
+            'post_excerpt' => $meta_description,
+        );
+        $page_id = wp_insert_post($new_page);
+
+        if ($page_id) {
+            $created_pages++;
+            
+            // Generate and set featured image if enabled
+            if ($generate_images) {
+                abpcwa_generate_and_set_featured_image($page_id, $page_title);
+            }
+            
+            // Generate schema markup for the new page
+            $auto_generate = get_option('aiopms_auto_schema_generation', true);
+            if ($auto_generate) {
+                aiopms_generate_schema_markup($page_id);
+            }
+            
+            $parent_id_stack[$hierarchy_level] = $page_id;
+            $parent_id_stack = array_slice($parent_id_stack, 0, $hierarchy_level + 1);
+        }
+    }
+
+    // Create custom post types
+    foreach ($custom_post_types as $cpt_data) {
+        $cpt = json_decode($cpt_data, true);
+        if (!$cpt) continue;
+
+        if (aiopms_register_dynamic_custom_post_type($cpt)) {
+            $created_cpts++;
+            
+            // Create sample entries if specified
+            if (!empty($cpt['sample_entries'])) {
+                aiopms_create_sample_cpt_entries($cpt);
+            }
+        }
+    }
+
+    // Display success message
+    $message_parts = [];
+    if ($created_pages > 0) {
+        $message_parts[] = sprintf('%d pages created successfully as drafts.', $created_pages);
+    }
+    if ($created_cpts > 0) {
+        $message_parts[] = sprintf('%d custom post types registered successfully.', $created_cpts);
+    }
+    if ($generate_images && $created_pages > 0) {
+        $message_parts[] = 'Featured images generated with AI.';
+    }
+
+    if (!empty($message_parts)) {
+        echo '<div class="notice notice-success is-dismissible"><p>' . implode(' ', $message_parts) . '</p></div>';
+    }
+}
+
+// Register dynamic custom post type
+function aiopms_register_dynamic_custom_post_type($cpt_data) {
+    $post_type = sanitize_key($cpt_data['name']);
+    $label = sanitize_text_field($cpt_data['label']);
+    $description = sanitize_text_field($cpt_data['description']);
+
+    $args = array(
+        'label' => $label,
+        'labels' => array(
+            'name' => $label,
+            'singular_name' => $label,
+            'add_new' => 'Add New',
+            'add_new_item' => 'Add New ' . $label,
+            'edit_item' => 'Edit ' . $label,
+            'new_item' => 'New ' . $label,
+            'view_item' => 'View ' . $label,
+            'search_items' => 'Search ' . $label,
+            'not_found' => 'No ' . strtolower($label) . ' found',
+            'not_found_in_trash' => 'No ' . strtolower($label) . ' found in Trash',
+        ),
+        'public' => true,
+        'publicly_queryable' => true,
+        'show_ui' => true,
+        'show_in_menu' => true,
+        'show_in_nav_menus' => true,
+        'show_in_admin_bar' => true,
+        'show_in_rest' => true,
+        'rest_base' => $post_type,
+        'rest_controller_class' => 'WP_REST_Posts_Controller',
+        'has_archive' => true,
+        'hierarchical' => false,
+        'supports' => array('title', 'editor', 'excerpt', 'thumbnail', 'custom-fields'),
+        'menu_icon' => 'dashicons-admin-post',
+        'description' => $description,
+    );
+
+    $result = register_post_type($post_type, $args);
+    
+    if ($result && !is_wp_error($result)) {
+        // Register custom fields
+        if (!empty($cpt_data['custom_fields'])) {
+            aiopms_register_custom_fields($post_type, $cpt_data['custom_fields']);
+        }
+        
+        // Store CPT data for later use
+        $existing_cpts = get_option('aiopms_dynamic_cpts', []);
+        $existing_cpts[$post_type] = $cpt_data;
+        update_option('aiopms_dynamic_cpts', $existing_cpts);
+        
+        return true;
+    }
+
+    return false;
+}
+
+// Register custom fields for a post type
+function aiopms_register_custom_fields($post_type, $fields) {
+    foreach ($fields as $field) {
+        $field_name = sanitize_key($field['name']);
+        $field_label = sanitize_text_field($field['label']);
+        $field_type = sanitize_key($field['type']);
+        $field_description = sanitize_text_field($field['description']);
+        $field_required = (bool) $field['required'];
+
+        // Add meta box for custom fields
+        add_action('add_meta_boxes', function() use ($post_type, $field_name, $field_label, $field_type, $field_description, $field_required) {
+            add_meta_box(
+                'aiopms_' . $field_name,
+                $field_label,
+                function($post) use ($field_name, $field_type, $field_description, $field_required) {
+                    aiopms_render_custom_field($post, $field_name, $field_type, $field_description, $field_required);
+                },
+                $post_type,
+                'normal',
+                'high'
+            );
+        });
+
+        // Save custom field data
+        add_action('save_post', function($post_id) use ($post_type, $field_name, $field_required) {
+            if (get_post_type($post_id) !== $post_type) return;
+            if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+            if (!current_user_can('edit_post', $post_id)) return;
+
+            if (isset($_POST[$field_name])) {
+                $value = sanitize_text_field(wp_unslash($_POST[$field_name]));
+                update_post_meta($post_id, $field_name, $value);
+            }
+        });
+    }
+}
+
+// Render custom field in admin
+function aiopms_render_custom_field($post, $field_name, $field_type, $field_description, $field_required) {
+    $value = get_post_meta($post->ID, $field_name, true);
+    $required_attr = $field_required ? 'required' : '';
+    
+    echo '<table class="form-table">';
+    echo '<tr>';
+    echo '<th scope="row"><label for="' . esc_attr($field_name) . '">' . esc_html($field_name) . '</label></th>';
+    echo '<td>';
+    
+    switch ($field_type) {
+        case 'textarea':
+            echo '<textarea name="' . esc_attr($field_name) . '" id="' . esc_attr($field_name) . '" rows="4" cols="50" ' . $required_attr . '>' . esc_textarea($value) . '</textarea>';
+            break;
+        case 'select':
+            // For now, create a simple text input. In a full implementation, you'd want to define options
+            echo '<input type="text" name="' . esc_attr($field_name) . '" id="' . esc_attr($field_name) . '" value="' . esc_attr($value) . '" class="regular-text" ' . $required_attr . '>';
+            break;
+        case 'image':
+            echo '<input type="url" name="' . esc_attr($field_name) . '" id="' . esc_attr($field_name) . '" value="' . esc_attr($value) . '" class="regular-text" placeholder="Image URL" ' . $required_attr . '>';
+            break;
+        case 'url':
+            echo '<input type="url" name="' . esc_attr($field_name) . '" id="' . esc_attr($field_name) . '" value="' . esc_attr($value) . '" class="regular-text" placeholder="https://" ' . $required_attr . '>';
+            break;
+        case 'number':
+            echo '<input type="number" name="' . esc_attr($field_name) . '" id="' . esc_attr($field_name) . '" value="' . esc_attr($value) . '" class="small-text" ' . $required_attr . '>';
+            break;
+        case 'date':
+            echo '<input type="date" name="' . esc_attr($field_name) . '" id="' . esc_attr($field_name) . '" value="' . esc_attr($value) . '" ' . $required_attr . '>';
+            break;
+        default: // text
+            echo '<input type="text" name="' . esc_attr($field_name) . '" id="' . esc_attr($field_name) . '" value="' . esc_attr($value) . '" class="regular-text" ' . $required_attr . '>';
+            break;
+    }
+    
+    if (!empty($field_description)) {
+        echo '<p class="description">' . esc_html($field_description) . '</p>';
+    }
+    
+    echo '</td>';
+    echo '</tr>';
+    echo '</table>';
+}
+
+// Create sample entries for custom post types
+function aiopms_create_sample_cpt_entries($cpt_data) {
+    $post_type = sanitize_key($cpt_data['name']);
+    
+    foreach ($cpt_data['sample_entries'] as $entry) {
+        $post_data = array(
+            'post_title' => sanitize_text_field($entry['title']),
+            'post_content' => sanitize_textarea_field($entry['content']),
+            'post_status' => 'draft',
+            'post_type' => $post_type,
+        );
+        
+        $post_id = wp_insert_post($post_data);
+        
+        if ($post_id && !empty($cpt_data['custom_fields'])) {
+            // Set sample values for custom fields
+            foreach ($cpt_data['custom_fields'] as $field) {
+                $sample_value = aiopms_generate_sample_field_value($field);
+                update_post_meta($post_id, $field['name'], $sample_value);
+            }
+        }
+    }
+}
+
+// Generate sample values for custom fields
+function aiopms_generate_sample_field_value($field) {
+    switch ($field['type']) {
+        case 'number':
+            return rand(1, 100);
+        case 'date':
+            return date('Y-m-d');
+        case 'url':
+            return 'https://example.com';
+        case 'image':
+            return 'https://via.placeholder.com/400x300';
+        case 'textarea':
+            return 'This is a sample ' . strtolower($field['label']) . ' entry.';
+        default:
+            return 'Sample ' . $field['label'];
+    }
 }

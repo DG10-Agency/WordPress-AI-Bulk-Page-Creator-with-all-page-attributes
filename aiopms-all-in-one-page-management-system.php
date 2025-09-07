@@ -21,16 +21,21 @@ require_once AIOPMS_PLUGIN_PATH . 'includes/page-creation.php';
 require_once AIOPMS_PLUGIN_PATH . 'includes/csv-handler.php';
 require_once AIOPMS_PLUGIN_PATH . 'includes/settings-page.php';
 require_once AIOPMS_PLUGIN_PATH . 'includes/ai-generator.php';
+require_once AIOPMS_PLUGIN_PATH . 'includes/custom-post-type-manager.php';
 require_once AIOPMS_PLUGIN_PATH . 'includes/hierarchy-manager.php';
 require_once AIOPMS_PLUGIN_PATH . 'includes/menu-generator.php';
 require_once AIOPMS_PLUGIN_PATH . 'includes/schema-generator.php';
+require_once AIOPMS_PLUGIN_PATH . 'includes/keyword-analyzer.php';
 
 // Enqueue scripts and styles
 function aiopms_enqueue_assets() {
-    wp_enqueue_style('aiopms-styles', AIOPMS_PLUGIN_URL . 'assets/css/styles.css');
-    wp_enqueue_style('aiopms-admin-menu', AIOPMS_PLUGIN_URL . 'assets/css/admin-menu.css');
-    wp_enqueue_style('aiopms-schema-column', AIOPMS_PLUGIN_URL . 'assets/css/schema-column.css');
-    wp_enqueue_script('aiopms-scripts', AIOPMS_PLUGIN_URL . 'assets/js/scripts.js', array('jquery'), null, true);
+    // Enqueue brand CSS first for proper cascade
+    wp_enqueue_style('aiopms-dg10-brand', AIOPMS_PLUGIN_URL . 'assets/css/dg10-brand.css', array(), '3.0');
+    wp_enqueue_style('aiopms-styles', AIOPMS_PLUGIN_URL . 'assets/css/styles.css', array('aiopms-dg10-brand'), '3.0');
+    wp_enqueue_style('aiopms-admin-menu', AIOPMS_PLUGIN_URL . 'assets/css/admin-menu.css', array('aiopms-dg10-brand'), '3.0');
+    wp_enqueue_style('aiopms-schema-column', AIOPMS_PLUGIN_URL . 'assets/css/schema-column.css', array('aiopms-dg10-brand'), '3.0');
+    wp_enqueue_style('aiopms-hierarchy', AIOPMS_PLUGIN_URL . 'assets/css/hierarchy.css', array('aiopms-dg10-brand'), '3.0');
+    wp_enqueue_script('aiopms-scripts', AIOPMS_PLUGIN_URL . 'assets/js/scripts.js', array('jquery'), '3.0', true);
     
     // Localize script with plugin URL
     wp_localize_script('aiopms-scripts', 'aiopms_plugin_data', array(

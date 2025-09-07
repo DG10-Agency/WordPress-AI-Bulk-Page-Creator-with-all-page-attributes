@@ -16,6 +16,29 @@ class AIOPMS_Menu_Generator {
     }
     
     /**
+     * Get custom post type archives for menu generation
+     */
+    public function get_custom_post_type_archives() {
+        $cpt_archives = array();
+        $dynamic_cpts = get_option('aiopms_dynamic_cpts', []);
+        
+        foreach ($dynamic_cpts as $post_type => $cpt_info) {
+            $archive_url = get_post_type_archive_link($post_type);
+            if ($archive_url) {
+                $cpt_archives[] = array(
+                    'ID' => 'cpt_archive_' . $post_type,
+                    'title' => $cpt_info['label'],
+                    'url' => $archive_url,
+                    'type' => 'cpt_archive',
+                    'post_type' => $post_type
+                );
+            }
+        }
+        
+        return $cpt_archives;
+    }
+
+    /**
      * Detect legal pages by title patterns
      */
     public function detect_legal_pages() {

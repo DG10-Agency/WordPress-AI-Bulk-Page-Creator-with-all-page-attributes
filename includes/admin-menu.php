@@ -21,18 +21,53 @@ add_action('admin_menu', 'aiopms_add_admin_menu');
 function aiopms_admin_page() {
     $active_tab = isset($_GET['tab']) ? sanitize_key($_GET['tab']) : 'manual';
     ?>
-    <div class="wrap">
-        <h1>AIOPMS - All In One Page Management System</h1>
-        <div class="nav-tab-wrapper">
-            <a href="?page=aiopms-page-management&tab=manual" class="nav-tab <?php echo $active_tab == 'manual' ? 'nav-tab-active' : ''; ?>">Manual Creation</a>
-            <a href="?page=aiopms-page-management&tab=csv" class="nav-tab <?php echo $active_tab == 'csv' ? 'nav-tab-active' : ''; ?>">CSV Upload</a>
-            <a href="?page=aiopms-page-management&tab=ai" class="nav-tab <?php echo $active_tab == 'ai' ? 'nav-tab-active' : ''; ?>">Generate with AI</a>
-            <a href="?page=aiopms-page-management&tab=schema" class="nav-tab <?php echo $active_tab == 'schema' ? 'nav-tab-active' : ''; ?>">Schema Generator</a>
-            <a href="?page=aiopms-page-management&tab=menu" class="nav-tab <?php echo $active_tab == 'menu' ? 'nav-tab-active' : ''; ?>">Menu Generator</a>
-            <a href="?page=aiopms-page-management&tab=hierarchy" class="nav-tab <?php echo $active_tab == 'hierarchy' ? 'nav-tab-active' : ''; ?>">Page Hierarchy</a>
-            <a href="?page=aiopms-page-management&tab=export" class="nav-tab <?php echo $active_tab == 'export' ? 'nav-tab-active' : ''; ?>">Hierarchy Export</a>
-            <a href="?page=aiopms-page-management&tab=settings" class="nav-tab <?php echo $active_tab == 'settings' ? 'nav-tab-active' : ''; ?>">Settings</a>
-        </div>
+    <div class="wrap dg10-brand">
+        <div class="dg10-main-layout">
+            <div class="dg10-main-content">
+                <div class="dg10-card">
+            <div class="dg10-card-header">
+                <div class="dg10-hero-content">
+                    <div class="dg10-hero-logo">
+                        <img src="<?php echo AIOPMS_PLUGIN_URL; ?>assets/images/dg10-logo.svg" alt="DG10 Agency" class="dg10-logo-img">
+                    </div>
+                    <div class="dg10-hero-text">
+                        <h1>AIOPMS - All In One Page Management System</h1>
+                        <p class="dg10-hero-description">
+                            Transform your WordPress site with AI-powered page creation, intelligent schema markup, and automated menu generation
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="dg10-card-body">
+                <div class="dg10-nav-tabs">
+                    <a href="?page=aiopms-page-management&tab=manual" class="dg10-nav-tab <?php echo $active_tab == 'manual' ? 'active' : ''; ?>">
+                        📝 Manual Creation
+                    </a>
+                    <a href="?page=aiopms-page-management&tab=csv" class="dg10-nav-tab <?php echo $active_tab == 'csv' ? 'active' : ''; ?>">
+                        📊 CSV Upload
+                    </a>
+                    <a href="?page=aiopms-page-management&tab=ai" class="dg10-nav-tab <?php echo $active_tab == 'ai' ? 'active' : ''; ?>">
+                        🚀 Generate with AI
+                    </a>
+                    <a href="?page=aiopms-page-management&tab=schema" class="dg10-nav-tab <?php echo $active_tab == 'schema' ? 'active' : ''; ?>">
+                        🏷️ Schema Generator
+                    </a>
+                    <a href="?page=aiopms-page-management&tab=menu" class="dg10-nav-tab <?php echo $active_tab == 'menu' ? 'active' : ''; ?>">
+                        🍔 Menu Generator
+                    </a>
+                    <a href="?page=aiopms-page-management&tab=hierarchy" class="dg10-nav-tab <?php echo $active_tab == 'hierarchy' ? 'active' : ''; ?>">
+                        🌳 Page Hierarchy
+                    </a>
+                    <a href="?page=aiopms-page-management&tab=export" class="dg10-nav-tab <?php echo $active_tab == 'export' ? 'active' : ''; ?>">
+                        📤 Hierarchy Export
+                    </a>
+                    <a href="?page=aiopms-page-management&tab=keyword-analysis" class="dg10-nav-tab <?php echo $active_tab == 'keyword-analysis' ? 'active' : ''; ?>">
+                        🔍 Keyword Analysis
+                    </a>
+                    <a href="?page=aiopms-page-management&tab=settings" class="dg10-nav-tab <?php echo $active_tab == 'settings' ? 'active' : ''; ?>">
+                        ⚙️ Settings
+                    </a>
+                </div>
         <?php
         if ($active_tab == 'manual') {
             aiopms_manual_creation_tab();
@@ -48,15 +83,57 @@ function aiopms_admin_page() {
             abpcwa_hierarchy_tab();
         } elseif ($active_tab == 'export') {
             aiopms_hierarchy_export_tab();
+        } elseif ($active_tab == 'keyword-analysis') {
+            aiopms_keyword_analysis_tab();
         } elseif ($active_tab == 'settings') {
             aiopms_settings_tab();
         }
         ?>
-        <div class="dg10-footer-promo">
-            <p>
-                This plugin is brought to you by <a href="https://www.dg10.agency" target="_blank">DG10 Agency</a>. 
-                This is an open-source project. Feel free to <a href="<?php echo esc_url(AIOPMS_GITHUB_URL); ?>" target="_blank">star us on GitHub</a>.
-            </p>
+            </div>
+            <div class="dg10-card-footer">
+                <div class="dg10-footer-promo">
+                    <p>
+                        This plugin is brought to you by <a href="https://www.dg10.agency" target="_blank">DG10 Agency</a>. 
+                        This is an open-source project. Feel free to <a href="<?php echo esc_url(AIOPMS_GITHUB_URL); ?>" target="_blank">star us on GitHub</a>.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- DG10 Agency Sidebar -->
+        <div class="dg10-sidebar">
+            <div class="dg10-sidebar-card">
+                <div class="dg10-sidebar-header">
+                    <div class="dg10-sidebar-logo">
+                        <img src="<?php echo AIOPMS_PLUGIN_URL; ?>assets/images/dg10-logo.svg" alt="DG10 Agency" class="dg10-sidebar-logo-img">
+                    </div>
+                    <h3>About us</h3>
+                </div>
+                <div class="dg10-sidebar-content">
+                    <p>We craft high-performance WordPress and Elementor solutions. Need help with custom development, optimization, or complex integrations?</p>
+                </div>
+                <div class="dg10-sidebar-actions">
+                    <a href="https://www.dg10.agency" target="_blank" class="dg10-sidebar-btn dg10-sidebar-btn-primary">
+                        <span>Visit Website</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                    <a href="https://calendly.com/dg10-agency/30min" target="_blank" class="dg10-sidebar-btn dg10-sidebar-btn-secondary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" stroke="currentColor" stroke-width="2"/>
+                            <line x1="16" y1="2" x2="16" y2="6" stroke="currentColor" stroke-width="2"/>
+                            <line x1="8" y1="2" x2="8" y2="6" stroke="currentColor" stroke-width="2"/>
+                            <line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        <span>Book a Free Consultation</span>
+                    </a>
+                </div>
+                <div class="dg10-sidebar-footer">
+                    <p>This is an open-source project — please <a href="<?php echo esc_url(AIOPMS_GITHUB_URL); ?>" target="_blank">star the repo on GitHub</a>.</p>
+                </div>
+            </div>
+        </div>
         </div>
     </div>
     <?php
@@ -65,26 +142,33 @@ function aiopms_admin_page() {
 // Manual creation tab content
 function aiopms_manual_creation_tab() {
     ?>
-    <form method="post" action="">
-        <?php wp_nonce_field('aiopms_manual_create_pages'); ?>
-        <table class="form-table">
-            <tr valign="top">
-                <th scope="row">Page Titles</th>
-                <td>
-                    <textarea name="aiopms_titles" id="aiopms_titles" rows="10" cols="50" class="large-text"></textarea>
-                    <p class="description">
-                        Enter one page title per line. Use hyphens for nesting.<br>
-                        - Use <code>:+</code> for the page excerpt (meta description).<br>
-                        - Use <code>:*</code> for featured image URL.<br>
-                        - Use <code>::template=template-name.php</code> for page template.<br>
-                        - Use <code>::status=draft</code> for post status (publish, draft, private, pending).<br>
-                        - <strong>SEO slugs are automatically generated</strong> from page titles (max 72 chars).
-                    </p>
-                </td>
-            </tr>
-        </table>
-        <?php submit_button('Create Pages'); ?>
-    </form>
+    <div class="dg10-card">
+        <div class="dg10-card-header">
+            <h3>📝 Manual Page Creation</h3>
+            <p style="margin: 0; opacity: 0.9;">Create pages manually with custom hierarchy and attributes</p>
+        </div>
+        <div class="dg10-card-body">
+            <form method="post" action="">
+                <?php wp_nonce_field('aiopms_manual_create_pages'); ?>
+                <div class="dg10-form-group">
+                    <label for="aiopms_titles" class="dg10-form-label">Page Titles</label>
+                    <textarea name="aiopms_titles" id="aiopms_titles" rows="10" class="dg10-form-textarea" placeholder="Enter one page title per line. Use hyphens for nesting..."></textarea>
+                    <div class="dg10-form-help">
+                        <strong>Syntax Guide:</strong><br>
+                        • Use <code>-</code> for child pages (one hyphen per level)<br>
+                        • Use <code>:+</code> for meta description<br>
+                        • Use <code>:*</code> for featured image URL<br>
+                        • Use <code>::template=template-name.php</code> for page template<br>
+                        • Use <code>::status=draft</code> for post status<br>
+                        • <strong>SEO slugs are automatically generated</strong> (max 72 chars)
+                    </div>
+                </div>
+                <button type="submit" name="submit" class="dg10-btn dg10-btn-primary">
+                    🚀 Create Pages
+                </button>
+            </form>
+        </div>
+    </div>
     <?php
     if (isset($_POST['submit']) && check_admin_referer('aiopms_manual_create_pages')) {
         aiopms_create_pages_manually($_POST['aiopms_titles']);
@@ -929,6 +1013,578 @@ function aiopms_hierarchy_export_tab() {
 
         // Load data on page load
         loadExportData();
+    });
+    </script>
+    <?php
+}
+
+// Keyword Analysis tab content
+function aiopms_keyword_analysis_tab() {
+    ?>
+    <div class="dg10-card">
+        <div class="dg10-card-header">
+            <h3>🔍 Keyword Density Analysis</h3>
+            <p style="margin: 0; opacity: 0.9;">Analyze keyword usage and density across your pages for SEO optimization</p>
+        </div>
+        <div class="dg10-card-body">
+            <form id="aiopms-keyword-analysis-form">
+                <?php wp_nonce_field('aiopms_keyword_analysis', 'aiopms_keyword_nonce'); ?>
+                
+                <div class="dg10-form-group">
+                    <label for="aiopms_page_select" class="dg10-form-label">Select Page to Analyze</label>
+                    <select name="page_id" id="aiopms_page_select" class="dg10-form-select" required>
+                        <option value="">Loading pages...</option>
+                    </select>
+                    <div class="dg10-form-help">
+                        Choose a published page or post to analyze for keyword density
+                    </div>
+                </div>
+                
+                <div class="dg10-form-group">
+                    <label for="aiopms_keywords_input" class="dg10-form-label">Keywords to Analyze</label>
+                    <textarea name="keywords" id="aiopms_keywords_input" rows="8" class="dg10-form-textarea" 
+                              placeholder="Enter keywords to analyze, one per line or separated by commas:&#10;&#10;web design&#10;SEO services&#10;digital marketing&#10;responsive design, mobile optimization" required></textarea>
+                    <div class="dg10-form-help">
+                        <strong>Format:</strong> One keyword per line, or comma-separated keywords. The analyzer will count exact matches (case-insensitive) and calculate density percentages.
+                    </div>
+                    <div id="keyword-count" class="dg10-form-help" style="margin-top: 8px;"></div>
+                </div>
+                
+                <div class="dg10-form-group">
+                    <button type="submit" id="aiopms-analyze-btn" class="dg10-btn dg10-btn-primary">
+                        <span class="btn-text">🔍 Analyze Keywords</span>
+                        <span class="dg10-spinner dg10-hidden"></span>
+                    </button>
+                </div>
+            </form>
+            
+            <!-- Results Section -->
+            <div id="aiopms-analysis-results" class="dg10-hidden">
+                <div class="dg10-card">
+                    <div class="dg10-card-header">
+                        <h3>📊 Analysis Results</h3>
+                        <div class="analysis-actions">
+                            <button id="export-csv-btn" class="dg10-btn dg10-btn-outline dg10-btn-sm">
+                                📊 Export CSV
+                            </button>
+                            <button id="export-json-btn" class="dg10-btn dg10-btn-outline dg10-btn-sm">
+                                📋 Export JSON
+                            </button>
+                        </div>
+                    </div>
+                    <div class="dg10-card-body">
+                        <!-- Page Info -->
+                        <div id="page-info-section" class="analysis-section">
+                            <h4>📄 Page Information</h4>
+                            <div id="page-info-content"></div>
+                        </div>
+                        
+                        <!-- Summary -->
+                        <div id="summary-section" class="analysis-section">
+                            <h4>📈 Analysis Summary</h4>
+                            <div id="summary-content"></div>
+                        </div>
+                        
+                        <!-- Keywords Table -->
+                        <div id="keywords-section" class="analysis-section">
+                            <h4>🔍 Keyword Analysis</h4>
+                            <div class="table-responsive">
+                                <table id="keywords-table" class="dg10-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Keyword</th>
+                                            <th>Count</th>
+                                            <th>Density</th>
+                                            <th>Status</th>
+                                            <th>Areas Found</th>
+                                            <th>Context</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <!-- Recommendations -->
+                        <div id="recommendations-section" class="analysis-section">
+                            <h4>💡 SEO Recommendations</h4>
+                            <div id="recommendations-content"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <style>
+    .analysis-actions {
+        display: flex;
+        gap: var(--dg10-spacing-sm);
+        margin-left: auto;
+    }
+    
+    .analysis-section {
+        margin-bottom: var(--dg10-spacing-xl);
+        padding-bottom: var(--dg10-spacing-lg);
+        border-bottom: 1px solid #E5E7EB;
+    }
+    
+    .analysis-section:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+    }
+    
+    .analysis-section h4 {
+        margin: 0 0 var(--dg10-spacing-md) 0;
+        color: var(--dg10-primary);
+        font-size: var(--dg10-font-size-lg);
+    }
+    
+    .page-info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: var(--dg10-spacing-md);
+        margin-bottom: var(--dg10-spacing-lg);
+    }
+    
+    .page-info-item {
+        background: var(--dg10-light-gray);
+        padding: var(--dg10-spacing-md);
+        border-radius: var(--dg10-radius-md);
+        border-left: 4px solid var(--dg10-primary);
+    }
+    
+    .page-info-label {
+        font-size: var(--dg10-font-size-xs);
+        font-weight: 600;
+        color: var(--dg10-neutral);
+        text-transform: uppercase;
+        letter-spacing: 0.025em;
+        margin-bottom: var(--dg10-spacing-xs);
+    }
+    
+    .page-info-value {
+        font-size: var(--dg10-font-size-sm);
+        color: var(--dg10-dark-blue);
+        font-weight: 500;
+    }
+    
+    .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: var(--dg10-spacing-md);
+        margin-bottom: var(--dg10-spacing-lg);
+    }
+    
+    .summary-item {
+        text-align: center;
+        padding: var(--dg10-spacing-lg);
+        background: var(--dg10-white);
+        border: 1px solid #E5E7EB;
+        border-radius: var(--dg10-radius-lg);
+        box-shadow: var(--dg10-shadow-sm);
+    }
+    
+    .summary-number {
+        font-size: var(--dg10-font-size-2xl);
+        font-weight: 700;
+        color: var(--dg10-primary);
+        margin-bottom: var(--dg10-spacing-xs);
+    }
+    
+    .summary-label {
+        font-size: var(--dg10-font-size-sm);
+        color: var(--dg10-neutral);
+        font-weight: 500;
+    }
+    
+    .dg10-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: var(--dg10-white);
+        border-radius: var(--dg10-radius-lg);
+        overflow: hidden;
+        box-shadow: var(--dg10-shadow-sm);
+    }
+    
+    .dg10-table th {
+        background: var(--dg10-gradient-dark);
+        color: var(--dg10-white);
+        padding: var(--dg10-spacing-md);
+        text-align: left;
+        font-weight: 600;
+        font-size: var(--dg10-font-size-sm);
+    }
+    
+    .dg10-table td {
+        padding: var(--dg10-spacing-md);
+        border-bottom: 1px solid #E5E7EB;
+        font-size: var(--dg10-font-size-sm);
+        vertical-align: top;
+    }
+    
+    .dg10-table tr:hover {
+        background: var(--dg10-light-gray);
+    }
+    
+    .keyword-cell {
+        font-weight: 600;
+        color: var(--dg10-dark-blue);
+    }
+    
+    .count-cell {
+        text-align: center;
+        font-weight: 600;
+    }
+    
+    .density-cell {
+        text-align: center;
+        font-weight: 600;
+    }
+    
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: var(--dg10-spacing-xs) var(--dg10-spacing-sm);
+        border-radius: var(--dg10-radius-sm);
+        font-size: var(--dg10-font-size-xs);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.025em;
+    }
+    
+    .status-high {
+        background: var(--dg10-gradient-error);
+        color: var(--dg10-white);
+    }
+    
+    .status-good {
+        background: var(--dg10-gradient-success);
+        color: var(--dg10-white);
+    }
+    
+    .status-moderate {
+        background: var(--dg10-gradient-warning);
+        color: var(--dg10-white);
+    }
+    
+    .status-low {
+        background: var(--dg10-gradient-info);
+        color: var(--dg10-white);
+    }
+    
+    .areas-found {
+        font-size: var(--dg10-font-size-xs);
+        color: var(--dg10-neutral);
+    }
+    
+    .context-preview {
+        max-width: 200px;
+        font-size: var(--dg10-font-size-xs);
+        color: var(--dg10-neutral);
+        line-height: 1.4;
+    }
+    
+    .context-preview strong {
+        color: var(--dg10-primary);
+        font-weight: 600;
+    }
+    
+    .recommendations-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .recommendations-list li {
+        padding: var(--dg10-spacing-md);
+        margin-bottom: var(--dg10-spacing-sm);
+        background: var(--dg10-light-gray);
+        border-left: 4px solid var(--dg10-primary);
+        border-radius: 0 var(--dg10-radius-md) var(--dg10-radius-md) 0;
+        font-size: var(--dg10-font-size-sm);
+        line-height: 1.5;
+    }
+    
+    .table-responsive {
+        overflow-x: auto;
+        border-radius: var(--dg10-radius-lg);
+    }
+    
+    @media (max-width: 768px) {
+        .analysis-actions {
+            flex-direction: column;
+            margin-left: 0;
+            margin-top: var(--dg10-spacing-md);
+        }
+        
+        .page-info-grid,
+        .summary-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .dg10-table {
+            font-size: var(--dg10-font-size-xs);
+        }
+        
+        .dg10-table th,
+        .dg10-table td {
+            padding: var(--dg10-spacing-sm);
+        }
+        
+        .context-preview {
+            max-width: 150px;
+        }
+    }
+    </style>
+    
+    <script>
+    jQuery(document).ready(function($) {
+        let analysisData = null;
+        
+        // Load pages on page load
+        loadPages();
+        
+        // Keyword count display
+        $('#aiopms_keywords_input').on('input', function() {
+            const text = $(this).val();
+            const keywords = text.split(/[\r\n,]+/).filter(k => k.trim().length > 0);
+            $('#keyword-count').text('Keywords: ' + keywords.length);
+        });
+        
+        // Form submission
+        $('#aiopms-keyword-analysis-form').on('submit', function(e) {
+            e.preventDefault();
+            
+            const pageId = $('#aiopms_page_select').val();
+            const keywords = $('#aiopms_keywords_input').val();
+            
+            if (!pageId || !keywords.trim()) {
+                alert('Please select a page and enter keywords to analyze.');
+                return;
+            }
+            
+            analyzeKeywords(pageId, keywords);
+        });
+        
+        // Export functions
+        $('#export-csv-btn').on('click', function() {
+            if (analysisData) {
+                exportAnalysis('csv');
+            }
+        });
+        
+        $('#export-json-btn').on('click', function() {
+            if (analysisData) {
+                exportAnalysis('json');
+            }
+        });
+        
+        function loadPages() {
+            $.ajax({
+                url: ajaxurl,
+                type: 'POST',
+                data: {
+                    action: 'aiopms_get_pages',
+                    nonce: $('#aiopms_keyword_nonce').val()
+                },
+                success: function(response) {
+                    if (response.success) {
+                        const select = $('#aiopms_page_select');
+                        select.empty();
+                        select.append('<option value="">Select a page...</option>');
+                        
+                        response.data.forEach(function(page) {
+                            select.append(`<option value="${page.id}">${page.title} (${page.type})</option>`);
+                        });
+                    } else {
+                        console.error('Failed to load pages:', response.data);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error loading pages:', error);
+                }
+            });
+        }
+        
+        function analyzeKeywords(pageId, keywords) {
+            const btn = $('#aiopms-analyze-btn');
+            const btnText = btn.find('.btn-text');
+            const spinner = btn.find('.dg10-spinner');
+            
+            // Show loading state
+            btn.prop('disabled', true);
+            btnText.addClass('dg10-hidden');
+            spinner.removeClass('dg10-hidden');
+            
+            $.ajax({
+                url: ajaxurl,
+                type: 'POST',
+                data: {
+                    action: 'aiopms_analyze_keywords',
+                    page_id: pageId,
+                    keywords: keywords,
+                    nonce: $('#aiopms_keyword_nonce').val()
+                },
+                success: function(response) {
+                    if (response.success) {
+                        analysisData = response.data;
+                        displayResults(response.data);
+                        $('#aiopms-analysis-results').removeClass('dg10-hidden');
+                    } else {
+                        alert('Analysis failed: ' + (response.data || 'Unknown error'));
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Analysis error:', error);
+                    alert('Analysis failed. Please try again.');
+                },
+                complete: function() {
+                    // Hide loading state
+                    btn.prop('disabled', false);
+                    btnText.removeClass('dg10-hidden');
+                    spinner.addClass('dg10-hidden');
+                }
+            });
+        }
+        
+        function displayResults(data) {
+            // Display page info
+            displayPageInfo(data.page_info);
+            
+            // Display summary
+            displaySummary(data.summary);
+            
+            // Display keywords table
+            displayKeywordsTable(data.keywords);
+            
+            // Display recommendations
+            displayRecommendations(data.summary.recommendations);
+        }
+        
+        function displayPageInfo(pageInfo) {
+            const content = `
+                <div class="page-info-grid">
+                    <div class="page-info-item">
+                        <div class="page-info-label">Page Title</div>
+                        <div class="page-info-value">${pageInfo.title}</div>
+                    </div>
+                    <div class="page-info-item">
+                        <div class="page-info-label">URL</div>
+                        <div class="page-info-value"><a href="${pageInfo.url}" target="_blank">View Page</a></div>
+                    </div>
+                    <div class="page-info-item">
+                        <div class="page-info-label">Word Count</div>
+                        <div class="page-info-value">${pageInfo.word_count.toLocaleString()}</div>
+                    </div>
+                    <div class="page-info-item">
+                        <div class="page-info-label">Analysis Date</div>
+                        <div class="page-info-value">${pageInfo.analysis_date}</div>
+                    </div>
+                </div>
+            `;
+            $('#page-info-content').html(content);
+        }
+        
+        function displaySummary(summary) {
+            const content = `
+                <div class="summary-grid">
+                    <div class="summary-item">
+                        <div class="summary-number">${summary.total_keywords}</div>
+                        <div class="summary-label">Total Keywords</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-number">${summary.keywords_found}</div>
+                        <div class="summary-label">Keywords Found</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-number">${summary.average_density}%</div>
+                        <div class="summary-label">Avg Density</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-number">${summary.total_words.toLocaleString()}</div>
+                        <div class="summary-label">Total Words</div>
+                    </div>
+                </div>
+            `;
+            $('#summary-content').html(content);
+        }
+        
+        function displayKeywordsTable(keywords) {
+            const tbody = $('#keywords-table tbody');
+            tbody.empty();
+            
+            keywords.forEach(function(keyword) {
+                const areas = [];
+                if (keyword.area_counts.title > 0) areas.push(`Title (${keyword.area_counts.title})`);
+                if (keyword.area_counts.content > 0) areas.push(`Content (${keyword.area_counts.content})`);
+                if (keyword.area_counts.meta_description > 0) areas.push(`Meta (${keyword.area_counts.meta_description})`);
+                if (keyword.area_counts.excerpt > 0) areas.push(`Excerpt (${keyword.area_counts.excerpt})`);
+                if (keyword.area_counts.headings > 0) areas.push(`Headings (${keyword.area_counts.headings})`);
+                
+                const context = keyword.context.length > 0 ? 
+                    keyword.context[0].substring(0, 100) + '...' : 'No context found';
+                
+                const row = `
+                    <tr>
+                        <td class="keyword-cell">${keyword.keyword}</td>
+                        <td class="count-cell">${keyword.count}</td>
+                        <td class="density-cell">${keyword.density}%</td>
+                        <td><span class="status-badge status-${keyword.status}">${keyword.status}</span></td>
+                        <td class="areas-found">${areas.join(', ') || 'Not found'}</td>
+                        <td class="context-preview">${context}</td>
+                    </tr>
+                `;
+                tbody.append(row);
+            });
+        }
+        
+        function displayRecommendations(recommendations) {
+            const content = `
+                <ul class="recommendations-list">
+                    ${recommendations.map(rec => `<li>${rec}</li>`).join('')}
+                </ul>
+            `;
+            $('#recommendations-content').html(content);
+        }
+        
+        function exportAnalysis(format) {
+            if (!analysisData) return;
+            
+            const form = $('<form>', {
+                method: 'POST',
+                action: ajaxurl,
+                target: '_blank'
+            });
+            
+            form.append($('<input>', {
+                type: 'hidden',
+                name: 'action',
+                value: 'aiopms_export_keyword_analysis'
+            }));
+            
+            form.append($('<input>', {
+                type: 'hidden',
+                name: 'nonce',
+                value: $('#aiopms_keyword_nonce').val()
+            }));
+            
+            form.append($('<input>', {
+                type: 'hidden',
+                name: 'format',
+                value: format
+            }));
+            
+            form.append($('<input>', {
+                type: 'hidden',
+                name: 'analysis_data',
+                value: JSON.stringify(analysisData)
+            }));
+            
+            $('body').append(form);
+            form.submit();
+            form.remove();
+        }
     });
     </script>
     <?php

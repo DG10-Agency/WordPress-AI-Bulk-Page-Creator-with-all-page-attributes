@@ -5,6 +5,8 @@ if (!defined('ABSPATH')) {
 
 // Hierarchy tab content
 function abpcwa_hierarchy_tab() {
+    // Debug: Log that hierarchy tab is being loaded
+    error_log('AIOPMS: Loading hierarchy tab');
     ?>
     <div class="abpcwa-hierarchy-container">
         <div class="abpcwa-hierarchy-header">
@@ -53,14 +55,19 @@ function abpcwa_hierarchy_tab() {
 
 // Get page hierarchy data (read-only)
 function aiopms_get_page_hierarchy() {
-    $pages = get_pages(array(
-        'sort_column' => 'menu_order, post_title',
-        'sort_order' => 'ASC',
-        'hierarchical' => 0, // Get flat list, we'll build hierarchy in JS
-    ));
+    try {
+        $pages = get_pages(array(
+            'sort_column' => 'menu_order, post_title',
+            'sort_order' => 'ASC',
+            'hierarchical' => 0, // Get flat list, we'll build hierarchy in JS
+        ));
 
-    $hierarchy_data = array();
+        $hierarchy_data = array();
+        
+        // Debug: Log page count
+        error_log('AIOPMS: Found ' . count($pages) . ' pages');
     
+    // Add standard pages
     foreach ($pages as $page) {
         // Get author information
         $author = get_userdata($page->post_author);
@@ -99,7 +106,99 @@ function aiopms_get_page_hierarchy() {
         );
     }
 
-    return $hierarchy_data;
+    // Add custom post types if enabled in settings
+    $settings = get_option('aiopms_cpt_settings', array());
+    if (isset($settings['include_in_hierarchy']) && $settings['include_in_hierarchy']) {
+        $dynamic_cpts = get_option('aiopms_dynamic_cpts', []);
+        
+        if (is_array($dynamic_cpts)) {
+            foreach ($dynamic_cpts as $post_type => $cpt_info) {
+                if (!is_array($cpt_info) || !isset($cpt_info['label'])) {
+                    continue; // Skip invalid CPT entries
+                }
+            // Add CPT archive as a parent node
+            $archive_url = get_post_type_archive_link($post_type);
+            if ($archive_url) {
+                $hierarchy_data[] = array(
+                    'id' => 'cpt_archive_' . $post_type,
+                    'parent' => '#',
+                    'text' => $cpt_info['label'] . ' (Archive)',
+                    'type' => 'cpt_archive',
+                    'state' => array(
+                        'opened' => false,
+                        'disabled' => false
+                    ),
+                    'li_attr' => array(
+                        'data-cpt-type' => $post_type,
+                        'data-cpt-archive' => 'true'
+                    ),
+                    'a_attr' => array(
+                        'href' => $archive_url,
+                        'target' => '_blank',
+                        'title' => 'View Archive: ' . esc_attr($cpt_info['label'])
+                    ),
+                    'meta' => array(
+                        'description' => 'Archive page for ' . $cpt_info['label'],
+                        'type' => 'Custom Post Type Archive'
+                    )
+                );
+            }
+            
+            // Add individual CPT posts as children
+            $cpt_posts = get_posts(array(
+                'post_type' => $post_type,
+                'numberposts' => -1,
+                'post_status' => 'publish',
+                'orderby' => 'title',
+                'order' => 'ASC'
+            ));
+            
+            foreach ($cpt_posts as $post) {
+                $author = get_userdata($post->post_author);
+                $author_name = $author ? $author->display_name : 'Unknown';
+                $author_login = $author ? $author->user_login : 'unknown';
+                
+                $publish_date = date('M j, Y', strtotime($post->post_date));
+                $modified_date = date('M j, Y', strtotime($post->post_modified));
+                
+                $hierarchy_data[] = array(
+                    'id' => 'cpt_' . $post->ID,
+                    'parent' => 'cpt_archive_' . $post_type,
+                    'text' => esc_html($post->post_title),
+                    'type' => 'cpt_post',
+                    'state' => array(
+                        'opened' => false,
+                        'disabled' => false
+                    ),
+                    'li_attr' => array(
+                        'data-post-id' => $post->ID,
+                        'data-post-type' => $post_type,
+                        'data-post-status' => $post->post_status
+                    ),
+                    'a_attr' => array(
+                        'href' => get_permalink($post->ID),
+                        'target' => '_blank',
+                        'title' => 'View: ' . esc_attr($post->post_title)
+                    ),
+                    'meta' => array(
+                        'description' => esc_html($post->post_excerpt),
+                        'published' => $publish_date,
+                        'modified' => $modified_date,
+                        'author' => $author_name . ' (' . $author_login . ')',
+                        'status' => $post->post_status,
+                        'type' => $cpt_info['label']
+                    )
+                );
+            }
+        }
+        }
+    }
+
+        return $hierarchy_data;
+    } catch (Exception $e) {
+        error_log('AIOPMS: Error in get_page_hierarchy: ' . $e->getMessage());
+        return array(); // Return empty array on error
+    }
 }
 
 // Register REST API endpoint for read-only access
@@ -111,6 +210,9 @@ function aiopms_register_hierarchy_rest_routes() {
             return current_user_can('edit_pages');
         }
     ));
+    
+    // Debug: Log that REST API route is being registered
+    error_log('AIOPMS: Registering REST API route: aiopms/v1/hierarchy');
 }
 
 // Register AJAX handlers for file exports
@@ -122,17 +224,31 @@ function aiopms_register_export_ajax_handlers() {
 
 // Ensure REST API and AJAX handlers are loaded early enough
 function aiopms_init_hierarchy() {
+    // Debug: Log that hierarchy initialization is starting
+    error_log('AIOPMS: Initializing hierarchy system');
+    
     aiopms_register_hierarchy_rest_routes();
     aiopms_register_export_ajax_handlers();
+    
+    // Debug: Log that hierarchy initialization is complete
+    error_log('AIOPMS: Hierarchy system initialized');
 }
 add_action('init', 'aiopms_init_hierarchy', 1);
 
 // REST: Get hierarchy data (read-only)
-function aiopms_rest_get_hierarchy() {
+function aiopms_rest_get_hierarchy($request) {
     try {
+        // Debug: Log that REST API callback is being called
+        error_log('AIOPMS: REST API callback called');
+        
         $hierarchy_data = aiopms_get_page_hierarchy();
+        
+        // Debug: Log the data to help troubleshoot
+        error_log('AIOPMS Hierarchy Data: ' . print_r($hierarchy_data, true));
+        
         return rest_ensure_response($hierarchy_data);
     } catch (Exception $e) {
+        error_log('AIOPMS Hierarchy Error: ' . $e->getMessage());
         return new WP_Error('hierarchy_error', $e->getMessage(), array('status' => 500));
     }
 }
@@ -293,6 +409,9 @@ function aiopms_enqueue_hierarchy_assets($hook) {
     $active_tab = isset($_GET['tab']) ? sanitize_key($_GET['tab']) : 'manual';
 
     if ($active_tab === 'hierarchy') {
+        // Debug: Log that hierarchy assets are being enqueued
+        error_log('AIOPMS: Enqueuing hierarchy assets for tab: ' . $active_tab);
+        
         // Enqueue jsTree
         wp_enqueue_style('jstree', 'https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.15/themes/default/style.min.css');
         wp_enqueue_script('jstree', 'https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.15/jstree.min.js', array('jquery'), '3.3.15', true);
@@ -305,7 +424,7 @@ function aiopms_enqueue_hierarchy_assets($hook) {
         wp_enqueue_style('aiopms-hierarchy', AIOPMS_PLUGIN_URL . 'assets/css/hierarchy.css');
         
         // Localize script with data
-        wp_localize_script('aiopms-hierarchy', 'aiopmsHierarchy', array(
+        $localize_data = array(
             'rest_url' => rest_url('aiopms/v1/'),
             'nonce' => wp_create_nonce('wp_rest'),
             'strings' => array(
@@ -313,7 +432,12 @@ function aiopms_enqueue_hierarchy_assets($hook) {
                 'search' => 'Search pages...',
                 'readonly_note' => 'Visualization only - use WordPress editor to modify hierarchy'
             )
-        ));
+        );
+        
+        // Debug: Log localization data
+        error_log('AIOPMS: Localizing script with data: ' . print_r($localize_data, true));
+        
+        wp_localize_script('aiopms-hierarchy', 'aiopmsHierarchy', $localize_data);
     }
 }
 add_action('admin_enqueue_scripts', 'aiopms_enqueue_hierarchy_assets');

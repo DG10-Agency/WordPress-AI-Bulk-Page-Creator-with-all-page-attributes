@@ -28,124 +28,177 @@ jQuery(document).ready(function($) {
         }
     });
 
-    // AI Generation Loading Animation - for the initial form
+    // Enhanced AI Generation Loading Animation with DG10 Brand Colors
     $('form').on('submit', function(e) {
         var $form = $(this);
-        var submitButton = $form.find('input[type="submit"]');
-        var buttonText = submitButton.val();
+        var submitButton = $form.find('input[type="submit"], button[type="submit"]');
+        var buttonText = submitButton.val() || submitButton.text();
         
         // Check if this is the AI generation form (has business_type field)
-        if ($form.find('input[name="aiopms_business_type"]').length > 0 && buttonText === 'Generate Page Suggestions') {
-            // Create loading overlay if it doesn't exist
+        if ($form.find('input[name="aiopms_business_type"]').length > 0 && (buttonText.includes('Generate') || buttonText.includes('Suggestions'))) {
+            // Create enhanced loading overlay with brand styling
             if ($('#aiopms-loading-overlay').length === 0) {
                 $('body').append(`
-                    <div id="aiopms-loading-overlay" style="
-                        position: fixed;
-                        top: 0;
-                        left: 0;
-                        width: 100%;
-                        height: 100%;
-                        background: rgba(255, 255, 255, 0.9);
-                        z-index: 9999;
-                        display: flex;
-                        flex-direction: column;
-                        justify-content: center;
-                        align-items: center;
-                        backdrop-filter: blur(5px);
-                    ">
-                        <div style="text-align: center;">
-                            <img src="${aiopms_plugin_data.plugin_url}assets/images/loader.png" 
-                                 alt="Loading..." 
-                                 style="
-                                     width: 80px;
-                                     height: 80px;
-                                     animation: spin 1.5s linear infinite;
-                                     margin-bottom: 20px;
-                                 ">
-                            <h3 style="color: #2271b1; margin: 0 0 10px 0; font-size: 18px;">
-                                Analyzing Your Business with AI
+                    <div id="aiopms-loading-overlay" class="dg10-loading-overlay">
+                        <div class="dg10-loading-content">
+                            <div class="dg10-loading-spinner"></div>
+                            <h3 class="dg10-loading-title">
+                                🤖 Analyzing Your Business with AI
                             </h3>
-                            <p style="color: #666; margin: 0; font-size: 14px;">
+                            <p class="dg10-loading-message">
                                 Crafting the perfect page structure for your needs...
                             </p>
+                            <div class="dg10-loading-progress">
+                                <div class="dg10-progress-bar">
+                                    <div class="dg10-progress-fill"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 `);
                 
-                // Add CSS animation
+                // Add enhanced CSS animations
                 $('<style>')
                     .prop('type', 'text/css')
                     .html(`
-                        @keyframes spin {
+                        .dg10-loading-overlay {
+                            position: fixed;
+                            top: 0;
+                            left: 0;
+                            width: 100%;
+                            height: 100%;
+                            background: rgba(255, 255, 255, 0.95);
+                            backdrop-filter: blur(8px);
+                            z-index: 9999;
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: center;
+                            align-items: center;
+                            animation: dg10-fade-in 0.3s ease-out;
+                        }
+                        
+                        .dg10-loading-content {
+                            text-align: center;
+                            max-width: 500px;
+                            padding: 2rem;
+                            background: white;
+                            border-radius: 16px;
+                            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+                            border: 1px solid rgba(180, 124, 253, 0.1);
+                        }
+                        
+                        .dg10-loading-spinner {
+                            width: 4rem;
+                            height: 4rem;
+                            margin: 0 auto 1.5rem;
+                            border: 4px solid rgba(180, 124, 253, 0.2);
+                            border-top: 4px solid #B47CFD;
+                            border-radius: 50%;
+                            animation: dg10-spin 1.5s linear infinite;
+                        }
+                        
+                        .dg10-loading-title {
+                            color: #B47CFD;
+                            margin: 0 0 0.5rem 0;
+                            font-size: 1.25rem;
+                            font-weight: 600;
+                            background: linear-gradient(135deg, #B47CFD 0%, #FF7FC2 100%);
+                            -webkit-background-clip: text;
+                            -webkit-text-fill-color: transparent;
+                            background-clip: text;
+                        }
+                        
+                        .dg10-loading-message {
+                            color: #6B7280;
+                            margin: 0 0 1.5rem 0;
+                            font-size: 0.875rem;
+                            line-height: 1.5;
+                        }
+                        
+                        .dg10-loading-progress {
+                            width: 100%;
+                            margin-top: 1rem;
+                        }
+                        
+                        .dg10-progress-bar {
+                            width: 100%;
+                            height: 6px;
+                            background: rgba(180, 124, 253, 0.1);
+                            border-radius: 3px;
+                            overflow: hidden;
+                        }
+                        
+                        .dg10-progress-fill {
+                            height: 100%;
+                            background: linear-gradient(135deg, #B47CFD 0%, #FF7FC2 100%);
+                            border-radius: 3px;
+                            animation: dg10-progress-pulse 2s ease-in-out infinite;
+                        }
+                        
+                        @keyframes dg10-spin {
                             0% { transform: rotate(0deg); }
                             100% { transform: rotate(360deg); }
+                        }
+                        
+                        @keyframes dg10-fade-in {
+                            0% { opacity: 0; }
+                            100% { opacity: 1; }
+                        }
+                        
+                        @keyframes dg10-progress-pulse {
+                            0%, 100% { width: 30%; }
+                            50% { width: 70%; }
                         }
                     `)
                     .appendTo('head');
             }
             
-            // Show loading overlay
+            // Show loading overlay with animation
             $('#aiopms-loading-overlay').fadeIn(300);
             
-            // Disable submit button to prevent multiple submissions
-            submitButton.prop('disabled', true).val('Analyzing with AI...');
+            // Disable submit button and update text
+            submitButton.prop('disabled', true);
+            if (submitButton.is('input')) {
+                submitButton.val('🤖 Analyzing with AI...');
+            } else {
+                submitButton.html('🤖 Analyzing with AI...');
+            }
         }
         
         // Check if this is the page creation form (has selected_pages field)
-        if ($form.find('input[name="aiopms_selected_pages[]"]').length > 0 && buttonText === 'Create Selected Pages') {
-            // Create loading overlay if it doesn't exist
+        if ($form.find('input[name="aiopms_selected_pages[]"]').length > 0 && (buttonText.includes('Create') || buttonText.includes('Pages'))) {
+            // Create enhanced loading overlay for page creation
             if ($('#aiopms-loading-overlay').length === 0) {
                 $('body').append(`
-                    <div id="aiopms-loading-overlay" style="
-                        position: fixed;
-                        top: 0;
-                        left: 0;
-                        width: 100%;
-                        height: 100%;
-                        background: rgba(255, 255, 255, 0.9);
-                        z-index: 9999;
-                        display: flex;
-                        flex-direction: column;
-                        justify-content: center;
-                        align-items: center;
-                        backdrop-filter: blur(5px);
-                    ">
-                        <div style="text-align: center;">
-                            <img src="${aiopms_plugin_data.plugin_url}assets/images/loader.png" 
-                                 alt="Loading..." 
-                                 style="
-                                     width: 80px;
-                                     height: 80px;
-                                     animation: spin 1.5s linear infinite;
-                                     margin-bottom: 20px;
-                                 ">
-                            <h3 style="color: #2271b1; margin: 0 0 10px 0; font-size: 18px;">
-                                Generating Awesome Pages with Context-Aware AI
+                    <div id="aiopms-loading-overlay" class="dg10-loading-overlay">
+                        <div class="dg10-loading-content">
+                            <div class="dg10-loading-spinner"></div>
+                            <h3 class="dg10-loading-title">
+                                🚀 Generating Awesome Pages with Context-Aware AI
                             </h3>
-                            <p style="color: #666; margin: 0; font-size: 14px;">
+                            <p class="dg10-loading-message">
                                 This may take a few moments. Please don't close this window...
                             </p>
+                            <div class="dg10-loading-progress">
+                                <div class="dg10-progress-bar">
+                                    <div class="dg10-progress-fill"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 `);
-                
-                // Add CSS animation
-                $('<style>')
-                    .prop('type', 'text/css')
-                    .html(`
-                        @keyframes spin {
-                            0% { transform: rotate(0deg); }
-                            100% { transform: rotate(360deg); }
-                        }
-                    `)
-                    .appendTo('head');
             }
             
-            // Show loading overlay
+            // Show loading overlay with animation
             $('#aiopms-loading-overlay').fadeIn(300);
             
-            // Disable submit button to prevent multiple submissions
-            submitButton.prop('disabled', true).val('Creating Pages...');
+            // Disable submit button and update text
+            submitButton.prop('disabled', true);
+            if (submitButton.is('input')) {
+                submitButton.val('🚀 Creating Pages...');
+            } else {
+                submitButton.html('🚀 Creating Pages...');
+            }
         }
     });
 

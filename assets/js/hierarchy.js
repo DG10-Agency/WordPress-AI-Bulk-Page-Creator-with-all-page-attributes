@@ -1,13 +1,39 @@
 jQuery(document).ready(function($) {
+    console.log('AIOPMS: Hierarchy script loaded');
+    console.log('AIOPMS: jQuery version:', $.fn.jquery);
+    console.log('AIOPMS: jsTree available:', typeof $.fn.jstree !== 'undefined');
+    console.log('AIOPMS: D3 available:', typeof d3 !== 'undefined');
+    
     let hierarchyData = null; // To store fetched data
     let currentView = 'tree'; // Default view
 
     // 1. Initialize the hierarchy visualization
     function initHierarchy() {
+        console.log('AIOPMS: Initializing hierarchy');
+        
+        // Check if DOM elements are available
+        const treeContainer = $('#abpcwa-hierarchy-tree');
+        console.log('AIOPMS: Tree container found:', treeContainer.length);
+        
+        if (treeContainer.length === 0) {
+            console.error('AIOPMS: Tree container not found!');
+            return;
+        }
+        
+        // Check if aiopmsHierarchy object is available
+        if (typeof aiopmsHierarchy === 'undefined') {
+            console.error('AIOPMS: aiopmsHierarchy object not found!');
+            treeContainer.html('<div class="abpcwa-error">Error: Hierarchy configuration not loaded. Please refresh the page.</div>');
+            return;
+        }
+        
         // Set initial loading message for the default view
         $('#abpcwa-hierarchy-tree').html('<div class="abpcwa-loading">' + aiopmsHierarchy.strings.loading + '</div>');
 
         // Fetch hierarchy data from REST API
+        console.log('AIOPMS: Fetching hierarchy data from:', aiopmsHierarchy.rest_url + 'hierarchy');
+        console.log('AIOPMS: Nonce:', aiopmsHierarchy.nonce);
+        
         $.ajax({
             url: aiopmsHierarchy.rest_url + 'hierarchy',
             method: 'GET',
@@ -16,16 +42,22 @@ jQuery(document).ready(function($) {
                 $('#abpcwa-hierarchy-spinner').addClass('is-active');
             },
             success: function(data) {
+                console.log('AIOPMS: Hierarchy data received:', data);
                 $('#abpcwa-hierarchy-spinner').removeClass('is-active');
                 hierarchyData = data;
                 // Render the default view
                 switchView(currentView);
             },
             error: function(xhr, status, error) {
+                console.error('AIOPMS: Hierarchy fetch error:', xhr, status, error);
                 $('#abpcwa-hierarchy-spinner').removeClass('is-active');
                 var errorMessage = 'Error loading hierarchy: ' + error;
                 if (xhr.status === 403) {
                     errorMessage += ' (Forbidden - check user permissions and nonce validation)';
+                } else if (xhr.status === 404) {
+                    errorMessage += ' (REST API endpoint not found)';
+                } else if (xhr.status === 500) {
+                    errorMessage += ' (Server error - check PHP error logs)';
                 }
                 // Display error in the active view container
                 $('.abpcwa-hierarchy-view.active-view').html(
@@ -38,7 +70,13 @@ jQuery(document).ready(function($) {
 
     // 2. Switch between different visualization views
     function switchView(view) {
-        if (!hierarchyData) return; // Don't switch if data isn't loaded
+        console.log('AIOPMS: Switching to view:', view);
+        console.log('AIOPMS: Hierarchy data available:', !!hierarchyData);
+        
+        if (!hierarchyData) {
+            console.warn('AIOPMS: Cannot switch view - no hierarchy data loaded');
+            return; // Don't switch if data isn't loaded
+        }
 
         currentView = view;
 
@@ -66,14 +104,19 @@ jQuery(document).ready(function($) {
 
     // 3. Render Functions for each view
     function renderTreeView() {
+        console.log('AIOPMS: Rendering tree view');
+        console.log('AIOPMS: Hierarchy data for tree view:', hierarchyData);
+        
         // Remove any existing tooltip handlers to prevent duplicates
         $('#abpcwa-hierarchy-tree').off('hover_node.jstree');
 
         // Check if tree is already initialized
         if ($.jstree.reference('#abpcwa-hierarchy-tree')) {
+            console.log('AIOPMS: Refreshing existing jstree');
             $('#abpcwa-hierarchy-tree').jstree(true).settings.core.data = hierarchyData;
             $('#abpcwa-hierarchy-tree').jstree(true).refresh();
         } else {
+            console.log('AIOPMS: Initializing new jstree with data:', hierarchyData);
             $('#abpcwa-hierarchy-tree').jstree({
                 'core': {
                     'data': hierarchyData,
@@ -81,6 +124,10 @@ jQuery(document).ready(function($) {
                     'check_callback': false // Read-only
                 },
                 'plugins': ['search']
+            }).on('ready.jstree', function() {
+                console.log('AIOPMS: jstree initialized successfully');
+            }).on('error.jstree', function(e, data) {
+                console.error('AIOPMS: jstree error:', data);
             });
         }
 
@@ -143,6 +190,7 @@ jQuery(document).ready(function($) {
     }
 
     function renderOrgChartView() {
+        console.log('AIOPMS: Rendering org chart view');
         const container = $('#abpcwa-hierarchy-orgchart');
         container.empty().html('<div class="abpcwa-loading">Rendering Org Chart...</div>');
 
@@ -361,6 +409,7 @@ jQuery(document).ready(function($) {
     }
 
     function renderGridView() {
+        console.log('AIOPMS: Rendering grid view');
         const container = $('#abpcwa-hierarchy-grid');
         console.log('Grid View: Container found:', container.length);
         container.empty().html('<div class="abpcwa-loading">Rendering Grid View...</div>');
@@ -540,9 +589,12 @@ jQuery(document).ready(function($) {
 
     // 4. Event Handlers
     function setupEventHandlers() {
+        console.log('AIOPMS: Setting up event handlers');
+        
         // View switcher buttons
         $('.abpcwa-view-controls').on('click', '.button', function() {
             const view = $(this).data('view');
+            console.log('AIOPMS: View button clicked:', view);
             if (view !== currentView) {
                 switchView(view);
             }
@@ -633,7 +685,9 @@ jQuery(document).ready(function($) {
             return;
         }
 
-        const exportUrl = aiopmsHierarchy.rest_url + `hierarchy/export/${format}` + `?_wpnonce=${aiopmsHierarchy.nonce}`\r\n        window.open(exportUrl, '_blank');\r\n    }
+        const exportUrl = aiopmsHierarchy.rest_url + `hierarchy/export/${format}` + `?_wpnonce=${aiopmsHierarchy.nonce}`;
+        window.open(exportUrl, '_blank');
+    }
 
     // 5. Handle window resize for responsive visualizations
     let resizeTimer;
@@ -700,6 +754,8 @@ jQuery(document).ready(function($) {
     }
 
     // 8. Initialize the script
+    console.log('AIOPMS: Starting hierarchy initialization');
     initHierarchy();
     setupEventHandlers();
+    console.log('AIOPMS: Hierarchy initialization complete');
 });
