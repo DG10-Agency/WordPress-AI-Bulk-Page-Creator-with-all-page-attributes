@@ -6,8 +6,8 @@ if (!defined('ABSPATH')) {
 // Add admin menu
 function aiopms_add_admin_menu() {
     add_menu_page(
-        'AIOPMS - Page Management',
-        'AIOPMS',
+        __('AIOPMS - Page Management', 'aiopms'),
+        __('AIOPMS', 'aiopms'),
         'manage_options',
         'aiopms-page-management',
         'aiopms_admin_page',
@@ -24,90 +24,100 @@ function aiopms_admin_page() {
     // Define menu items with their details
     $menu_items = array(
         'manual' => array(
-            'title' => 'Manual Page Creation',
+            'title' => __('Manual Page Creation', 'aiopms'),
             'icon' => '📝',
-            'description' => 'Create pages manually with custom hierarchy and attributes'
+            'description' => __('Create pages manually with custom hierarchy and attributes', 'aiopms')
         ),
         'csv' => array(
-            'title' => 'CSV Upload',
+            'title' => __('CSV Upload', 'aiopms'),
             'icon' => '📊',
-            'description' => 'Bulk import pages from CSV files'
+            'description' => __('Bulk import pages from CSV files', 'aiopms')
         ),
         'ai' => array(
-            'title' => 'AI Generation',
+            'title' => __('AI Generation', 'aiopms'),
             'icon' => '🚀',
-            'description' => 'Generate pages with AI assistance'
+            'description' => __('Generate pages with AI assistance', 'aiopms')
         ),
         'schema' => array(
-            'title' => 'Schema Generator',
+            'title' => __('Schema Generator', 'aiopms'),
             'icon' => '🏷️',
-            'description' => 'Create structured data markup'
+            'description' => __('Create structured data markup', 'aiopms')
         ),
         'menu' => array(
-            'title' => 'Menu Generator',
+            'title' => __('Menu Generator', 'aiopms'),
             'icon' => '🍔',
-            'description' => 'Automatically generate WordPress menus'
+            'description' => __('Automatically generate WordPress menus', 'aiopms')
         ),
         'hierarchy' => array(
-            'title' => 'Page Hierarchy',
+            'title' => __('Page Hierarchy', 'aiopms'),
             'icon' => '🌳',
-            'description' => 'Visualize and manage page structure'
+            'description' => __('Visualize and manage page structure', 'aiopms')
         ),
         'export' => array(
-            'title' => 'Hierarchy Export',
+            'title' => __('Hierarchy Export', 'aiopms'),
             'icon' => '📤',
-            'description' => 'Export page hierarchy data'
+            'description' => __('Export page hierarchy data', 'aiopms')
         ),
         'keyword-analysis' => array(
-            'title' => 'Keyword Analysis',
+            'title' => __('Keyword Analysis', 'aiopms'),
             'icon' => '🔍',
-            'description' => 'Analyze keyword density and SEO'
+            'description' => __('Analyze keyword density and SEO', 'aiopms')
         ),
         'settings' => array(
-            'title' => 'Settings',
+            'title' => __('Settings', 'aiopms'),
             'icon' => '⚙️',
-            'description' => 'Configure plugin options'
+            'description' => __('Configure plugin options', 'aiopms')
         )
     );
     ?>
     <div class="wrap dg10-brand">
+        <!-- Skip Link for Accessibility - Positioned at page level -->
+        <a href="#page-title" class="skip-link"><?php _e('Skip to main content', 'aiopms'); ?></a>
+        
         <div class="dg10-main-layout">
             <!-- Admin Sidebar -->
-            <div class="dg10-admin-sidebar">
+            <aside class="dg10-admin-sidebar" role="complementary" aria-label="<?php esc_attr_e('AIOPMS Navigation Menu', 'aiopms'); ?>">
                 <div class="dg10-sidebar-header">
                     <div class="dg10-sidebar-title">
-                        <img src="<?php echo AIOPMS_PLUGIN_URL; ?>assets/images/logo.svg" alt="AIOPMS Plugin" style="width: 24px; height: 24px;">
-                        AIOPMS
+                        <img src="<?php echo AIOPMS_PLUGIN_URL; ?>assets/images/logo.svg" alt="<?php esc_attr_e('AIOPMS Plugin Logo', 'aiopms'); ?>" style="width: 24px; height: 24px;" role="img">
+                        <span class="dg10-plugin-name"><?php _e('AIOPMS', 'aiopms'); ?></span>
                     </div>
-                    <p class="dg10-sidebar-subtitle">All In One Page Management System</p>
+                    <p class="dg10-sidebar-subtitle" role="text"><?php _e('All In One Page Management System', 'aiopms'); ?></p>
                 </div>
                 
-                <nav class="dg10-sidebar-nav">
-                    <?php foreach ($menu_items as $tab_key => $item): ?>
-                        <a href="?page=aiopms-page-management&tab=<?php echo esc_attr($tab_key); ?>" 
-                           class="dg10-sidebar-nav-item <?php echo $active_tab == $tab_key ? 'active' : ''; ?>"
-                           title="<?php echo esc_attr($item['description']); ?>">
-                            <span class="nav-icon"><?php echo $item['icon']; ?></span>
-                            <?php echo esc_html($item['title']); ?>
-                        </a>
-                    <?php endforeach; ?>
+                <nav class="dg10-sidebar-nav" role="navigation" aria-label="<?php esc_attr_e('Main Navigation', 'aiopms'); ?>">
+                    <ul role="list">
+                        <?php foreach ($menu_items as $tab_key => $item): ?>
+                            <li role="listitem">
+                                <a href="?page=aiopms-page-management&tab=<?php echo esc_attr($tab_key); ?>" 
+                                   class="dg10-sidebar-nav-item <?php echo $active_tab == $tab_key ? 'active' : ''; ?>"
+                                   role="menuitem"
+                                   aria-label="<?php echo esc_attr($item['title'] . ' - ' . $item['description']); ?>"
+                                   aria-current="<?php echo $active_tab == $tab_key ? 'page' : 'false'; ?>"
+                                   title="<?php echo esc_attr($item['description']); ?>">
+                                    <span class="nav-icon" aria-hidden="true" role="img" aria-label="<?php echo esc_attr($item['title'] . ' icon'); ?>"><?php echo $item['icon']; ?></span>
+                                    <span class="nav-text"><?php echo esc_html($item['title']); ?></span>
+                                </a>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
                 </nav>
-            </div>
+            </aside>
             
             <!-- Main Content Area -->
-            <div class="dg10-main-content">
-                <div class="dg10-card">
-                    <div class="dg10-card-header">
+            <main class="dg10-main-content" role="main" aria-label="<?php esc_attr_e('Main Content Area', 'aiopms'); ?>">
+                <article class="dg10-card" role="article" aria-labelledby="page-title">
+                    <header class="dg10-card-header" role="banner">
                         <div class="dg10-hero-content">
                             <div class="dg10-hero-text">
-                                <h1><?php echo esc_html($menu_items[$active_tab]['title']); ?></h1>
-                                <p class="dg10-hero-description">
+                                <h1 id="page-title" role="heading" aria-level="1"><?php echo esc_html($menu_items[$active_tab]['title']); ?></h1>
+                                <p class="dg10-hero-description" role="text" aria-describedby="page-title">
                                     <?php echo esc_html($menu_items[$active_tab]['description']); ?>
                                 </p>
                             </div>
                         </div>
-                    </div>
-                    <div class="dg10-card-body">
+                    </header>
+                    <div class="dg10-card-body" role="main" aria-label="<?php esc_attr_e('Content Section', 'aiopms'); ?>">
         <?php
         if ($active_tab == 'manual') {
             aiopms_manual_creation_tab();
@@ -130,32 +140,32 @@ function aiopms_admin_page() {
         }
         ?>
                     </div>
-                    <div class="dg10-card-footer">
-                        <div class="dg10-promotion-section">
-                            <div class="dg10-promotion-header">
-                                <img src="<?php echo AIOPMS_PLUGIN_URL; ?>assets/images/dg10-brand-logo.svg" alt="DG10 Agency" class="dg10-promotion-logo">
-                                <h3>About us</h3>
-                            </div>
+                    <footer class="dg10-card-footer" role="contentinfo" aria-label="<?php esc_attr_e('About DG10 Agency', 'aiopms'); ?>">
+                        <section class="dg10-promotion-section" role="region" aria-labelledby="about-us-heading">
+                            <header class="dg10-promotion-header">
+                                <img src="<?php echo AIOPMS_PLUGIN_URL; ?>assets/images/dg10-brand-logo.svg" alt="<?php esc_attr_e('DG10 Agency Logo', 'aiopms'); ?>" class="dg10-promotion-logo" role="img">
+                                <h3 id="about-us-heading" role="heading" aria-level="3"><?php _e('About us', 'aiopms'); ?></h3>
+                            </header>
                             <div class="dg10-promotion-content">
-                                <p>DG10 Agency specializes in creating powerful WordPress and Elementor solutions. We help businesses build custom websites, optimize performance, and implement complex integrations that drive results.</p>
-                                <div class="dg10-promotion-buttons">
-                                    <a href="https://www.dg10.agency" target="_blank" class="dg10-btn dg10-btn-primary">
-                                        Visit Website
-                                        <span class="dg10-btn-icon">→</span>
+                                <p role="text"><?php _e('DG10 Agency specializes in creating powerful WordPress and Elementor solutions. We help businesses build custom websites, optimize performance, and implement complex integrations that drive results.', 'aiopms'); ?></p>
+                                <div class="dg10-promotion-buttons" role="group" aria-label="<?php esc_attr_e('Action Buttons', 'aiopms'); ?>">
+                                    <a href="https://www.dg10.agency" target="_blank" class="dg10-btn dg10-btn-primary" role="button" aria-label="<?php esc_attr_e('Visit DG10 Agency Website - Opens in new tab', 'aiopms'); ?>">
+                                        <span class="btn-text"><?php _e('Visit Website', 'aiopms'); ?></span>
+                                        <span class="dg10-btn-icon" aria-hidden="true" role="img" aria-label="<?php esc_attr_e('External link icon'); ?>">→</span>
                                     </a>
-                                    <a href="https://calendly.com/dg10-agency/30min" target="_blank" class="dg10-btn dg10-btn-outline">
-                                        <span class="dg10-btn-icon">📅</span>
-                                        Book a Free Consultation
+                                    <a href="https://calendly.com/dg10-agency/30min" target="_blank" class="dg10-btn dg10-btn-outline" role="button" aria-label="<?php esc_attr_e('Book a Free Consultation - Opens in new tab', 'aiopms'); ?>">
+                                        <span class="dg10-btn-icon" aria-hidden="true" role="img" aria-label="<?php esc_attr_e('Calendar icon'); ?>">📅</span>
+                                        <span class="btn-text"><?php _e('Book a Free Consultation', 'aiopms'); ?></span>
                                     </a>
                                 </div>
-                                <p class="dg10-promotion-footer">
-                                    This is an open-source project - please <a href="<?php echo esc_url(AIOPMS_GITHUB_URL); ?>" target="_blank">star the repo on GitHub</a>.
+                                <p class="dg10-promotion-footer" role="text">
+                                    <?php printf(__('This is an open-source project - please %s.', 'aiopms'), '<a href="' . esc_url(AIOPMS_GITHUB_URL) . '" target="_blank" role="link" aria-label="' . esc_attr__('Star the repository on GitHub - Opens in new tab', 'aiopms') . '">' . __('star the repo on GitHub', 'aiopms') . '</a>'); ?>
                                 </p>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                        </section>
+                    </footer>
+                </article>
+            </main>
         </div>
     </div>
     
@@ -164,20 +174,20 @@ function aiopms_admin_page() {
     jQuery(document).ready(function($) {
         // Handle sidebar navigation
         $('.dg10-sidebar-nav-item').on('click', function(e) {
-            // Remove active class from all items
-            $('.dg10-sidebar-nav-item').removeClass('active');
-            // Add active class to clicked item
-            $(this).addClass('active');
+            // Remove active class and aria-current from all items
+            $('.dg10-sidebar-nav-item').removeClass('active').attr('aria-current', 'false');
+            // Add active class and aria-current to clicked item
+            $(this).addClass('active').attr('aria-current', 'page');
         });
         
         // Handle responsive sidebar behavior
         function handleSidebarResponsive() {
             if ($(window).width() <= 960) {
                 // Mobile/tablet view - horizontal scroll
-                $('.dg10-sidebar-nav').addClass('mobile-nav');
+                $('.dg10-sidebar-nav').addClass('mobile-nav').attr('aria-orientation', 'horizontal');
             } else {
                 // Desktop view - vertical sidebar
-                $('.dg10-sidebar-nav').removeClass('mobile-nav');
+                $('.dg10-sidebar-nav').removeClass('mobile-nav').attr('aria-orientation', 'vertical');
             }
         }
         
@@ -190,12 +200,46 @@ function aiopms_admin_page() {
             // Optional: Add scroll indicators or other mobile nav enhancements
         });
         
-        // Add keyboard navigation support
+        // Enhanced keyboard navigation support
         $('.dg10-sidebar-nav-item').on('keydown', function(e) {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                $(this).click();
+            var $items = $('.dg10-sidebar-nav-item');
+            var currentIndex = $items.index(this);
+            var $currentItem = $(this);
+            
+            switch(e.key) {
+                case 'Enter':
+                case ' ':
+                    e.preventDefault();
+                    $currentItem.click();
+                    break;
+                case 'ArrowDown':
+                case 'ArrowRight':
+                    e.preventDefault();
+                    var nextIndex = (currentIndex + 1) % $items.length;
+                    $items.eq(nextIndex).focus();
+                    break;
+                case 'ArrowUp':
+                case 'ArrowLeft':
+                    e.preventDefault();
+                    var prevIndex = currentIndex === 0 ? $items.length - 1 : currentIndex - 1;
+                    $items.eq(prevIndex).focus();
+                    break;
+                case 'Home':
+                    e.preventDefault();
+                    $items.first().focus();
+                    break;
+                case 'End':
+                    e.preventDefault();
+                    $items.last().focus();
+                    break;
             }
+        });
+        
+        // Add focus management for better accessibility
+        $('.dg10-sidebar-nav-item').on('focus', function() {
+            $(this).attr('aria-selected', 'true');
+        }).on('blur', function() {
+            $(this).attr('aria-selected', 'false');
         });
         
         // Focus management for accessibility
@@ -243,29 +287,46 @@ function aiopms_admin_page() {
 // Manual creation tab content
 function aiopms_manual_creation_tab() {
     ?>
-    <div class="dg10-card">
+    <section class="dg10-card" role="region" aria-labelledby="manual-creation-heading">
         <div class="dg10-card-body">
-            <form method="post" action="">
+            <form method="post" action="" role="form" aria-label="<?php esc_attr_e('Manual Page Creation Form', 'aiopms'); ?>">
                 <?php wp_nonce_field('aiopms_manual_create_pages'); ?>
-                <div class="dg10-form-group">
-                    <label for="aiopms_titles" class="dg10-form-label">Page Titles</label>
-                    <textarea name="aiopms_titles" id="aiopms_titles" rows="10" class="dg10-form-textarea" placeholder="Enter one page title per line. Use hyphens for nesting..."></textarea>
-                    <div class="dg10-form-help">
-                        <strong>Syntax Guide:</strong><br>
-                        • Use <code>-</code> for child pages (one hyphen per level)<br>
-                        • Use <code>:+</code> for meta description<br>
-                        • Use <code>:*</code> for featured image URL<br>
-                        • Use <code>::template=template-name.php</code> for page template<br>
-                        • Use <code>::status=draft</code> for post status<br>
-                        • <strong>SEO slugs are automatically generated</strong> (max 72 chars)
+                <fieldset class="dg10-form-group">
+                    <legend class="sr-only"><?php _e('Page Creation Settings', 'aiopms'); ?></legend>
+                    <div class="dg10-form-field">
+                        <label for="aiopms_titles" class="dg10-form-label" id="titles-label"><?php _e('Page Titles', 'aiopms'); ?></label>
+                        <textarea name="aiopms_titles" 
+                                  id="aiopms_titles" 
+                                  rows="10" 
+                                  class="dg10-form-textarea" 
+                                  placeholder="<?php esc_attr_e('Enter one page title per line. Use hyphens for nesting...', 'aiopms'); ?>"
+                                  aria-labelledby="titles-label"
+                                  aria-describedby="syntax-guide"
+                                  aria-required="true"
+                                  role="textbox"></textarea>
+                        <div id="syntax-guide" class="dg10-form-help" role="region" aria-label="<?php esc_attr_e('Syntax Guide', 'aiopms'); ?>">
+                            <strong><?php _e('Syntax Guide:', 'aiopms'); ?></strong><br>
+                            • <?php _e('Use', 'aiopms'); ?> <code>-</code> <?php _e('for child pages (one hyphen per level)', 'aiopms'); ?><br>
+                            • <?php _e('Use', 'aiopms'); ?> <code>:+</code> <?php _e('for meta description', 'aiopms'); ?><br>
+                            • <?php _e('Use', 'aiopms'); ?> <code>:*</code> <?php _e('for featured image URL', 'aiopms'); ?><br>
+                            • <?php _e('Use', 'aiopms'); ?> <code>::template=template-name.php</code> <?php _e('for page template', 'aiopms'); ?><br>
+                            • <?php _e('Use', 'aiopms'); ?> <code>::status=draft</code> <?php _e('for post status', 'aiopms'); ?><br>
+                            • <strong><?php _e('SEO slugs are automatically generated', 'aiopms'); ?></strong> (<?php _e('max 72 chars', 'aiopms'); ?>)
+                        </div>
                     </div>
-                </div>
-                <button type="submit" name="submit" class="dg10-btn dg10-btn-primary">
-                    🚀 Create Pages
+                </fieldset>
+                <div class="dg10-form-actions">
+                    <button type="submit" 
+                            name="submit" 
+                            class="dg10-btn dg10-btn-primary"
+                            role="button"
+                            aria-label="<?php esc_attr_e('Create Pages from Titles', 'aiopms'); ?>">
+                        <span class="btn-icon" aria-hidden="true" role="img" aria-label="<?php esc_attr_e('Rocket icon'); ?>">🚀</span>
+                        <span class="btn-text"><?php _e('Create Pages', 'aiopms'); ?></span>
                 </button>
             </form>
         </div>
-    </div>
+    </section>
     <?php
     if (isset($_POST['submit']) && check_admin_referer('aiopms_manual_create_pages')) {
         aiopms_create_pages_manually($_POST['aiopms_titles']);
@@ -275,29 +336,59 @@ function aiopms_manual_creation_tab() {
 // CSV upload tab content
 function aiopms_csv_upload_tab() {
     ?>
-    <form method="post" action="" enctype="multipart/form-data">
-        <?php wp_nonce_field('aiopms_csv_upload'); ?>
-        <table class="form-table">
-            <tr valign="top">
-                <th scope="row">CSV File</th>
-                <td>
-                    <input type="file" name="aiopms_csv_file" id="aiopms_csv_file" accept=".csv">
-                    <p class="description">
-                        Upload a CSV file with the following columns: <code>post_title</code>, <code>slug</code> (optional), <code>post_parent</code>, <code>meta_description</code>, <code>featured_image</code>, <code>page_template</code>, <code>post_status</code>.
-                        <br>The <code>post_parent</code> column should contain the title of the parent page.
-                        <br><code>slug</code> is optional - if empty, SEO-optimized slugs are automatically generated.
-                    </p>
-                </td>
-            </tr>
-        </table>
-        <?php submit_button('Upload and Create Pages'); ?>
-    </form>
+    <section class="dg10-card" role="region" aria-labelledby="csv-upload-heading">
+        <div class="dg10-card-body">
+            <form method="post" action="" enctype="multipart/form-data" role="form" aria-label="<?php esc_attr_e('CSV File Upload Form', 'aiopms'); ?>">
+                <?php wp_nonce_field('aiopms_csv_upload'); ?>
+                <fieldset class="dg10-form-group">
+                    <legend class="sr-only"><?php _e('CSV Upload Settings', 'aiopms'); ?></legend>
+                    <div class="dg10-form-field">
+                        <label for="aiopms_csv_file" class="dg10-form-label" id="csv-file-label"><?php _e('CSV File', 'aiopms'); ?></label>
+                        <input type="file" 
+                               name="aiopms_csv_file" 
+                               id="aiopms_csv_file" 
+                               accept=".csv"
+                               aria-labelledby="csv-file-label"
+                               aria-describedby="csv-instructions"
+                               aria-required="true"
+                               role="button">
+                        <div id="csv-instructions" class="dg10-form-help" role="region" aria-label="<?php esc_attr_e('CSV File Instructions', 'aiopms'); ?>">
+                            <p><?php printf(__('Upload a CSV file with the following columns: %s, %s (optional), %s, %s, %s, %s, %s.', 'aiopms'), 
+                                '<code>post_title</code>', 
+                                '<code>slug</code>', 
+                                '<code>post_parent</code>', 
+                                '<code>meta_description</code>', 
+                                '<code>featured_image</code>', 
+                                '<code>page_template</code>', 
+                                '<code>post_status</code>'); ?></p>
+                            <ul>
+                                <li><?php printf(__('The %s column should contain the title of the parent page.', 'aiopms'), '<code>post_parent</code>'); ?></li>
+                                <li><?php printf(__('%s is optional - if empty, SEO-optimized slugs are automatically generated.', 'aiopms'), '<code>slug</code>'); ?></li>
+                                <li><strong><?php echo esc_html(aiopms_get_max_file_size_display()); ?></strong></li>
+                                <li><?php _e('Maximum rows: 10,000', 'aiopms'); ?></li>
+                            </ul>
+                        </div>
+                    </div>
+                </fieldset>
+                <div class="dg10-form-actions">
+                    <button type="submit" 
+                            name="submit" 
+                            class="dg10-btn dg10-btn-primary"
+                            role="button"
+                            aria-label="<?php esc_attr_e('Upload CSV File and Create Pages', 'aiopms'); ?>">
+                        <span class="btn-icon" aria-hidden="true" role="img" aria-label="<?php esc_attr_e('Upload icon'); ?>">📤</span>
+                        <span class="btn-text"><?php _e('Upload and Create Pages', 'aiopms'); ?></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
     <?php
     if (isset($_POST['submit']) && check_admin_referer('aiopms_csv_upload')) {
         if (isset($_FILES['aiopms_csv_file']) && !empty($_FILES['aiopms_csv_file']['tmp_name'])) {
             aiopms_create_pages_from_csv($_FILES['aiopms_csv_file']);
         } else {
-            echo '<div class="notice notice-error"><p>Please select a CSV file to upload.</p></div>';
+            echo '<div class="notice notice-error"><p>' . __('Please select a CSV file to upload.', 'aiopms') . '</p></div>';
         }
     }
 }
@@ -312,89 +403,90 @@ function aiopms_menu_generator_tab() {
             case 'universal_bottom':
                 $result = aiopms_generate_universal_bottom_menu();
                 if ($result) {
-                    echo '<div class="notice notice-success is-dismissible"><p>Universal Bottom Menu created successfully!</p></div>';
+                    echo '<div class="notice notice-success is-dismissible"><p>' . __('Universal Bottom Menu created successfully!', 'aiopms') . '</p></div>';
                 } else {
-                    echo '<div class="notice notice-error is-dismissible"><p>Failed to create Universal Bottom Menu.</p></div>';
+                    echo '<div class="notice notice-error is-dismissible"><p>' . __('Failed to create Universal Bottom Menu.', 'aiopms') . '</p></div>';
                 }
                 break;
 
             case 'services':
                 $result = aiopms_generate_services_menu();
                 if ($result) {
-                    echo '<div class="notice notice-success is-dismissible"><p>Services Menu created successfully!</p></div>';
+                    echo '<div class="notice notice-success is-dismissible"><p>' . __('Services Menu created successfully!', 'aiopms') . '</p></div>';
                 } else {
-                    echo '<div class="notice notice-warning is-dismissible"><p>No service pages found to create Services Menu.</p></div>';
+                    echo '<div class="notice notice-warning is-dismissible"><p>' . __('No service pages found to create Services Menu.', 'aiopms') . '</p></div>';
                 }
                 break;
 
             case 'company':
                 $result = aiopms_generate_company_menu();
                 if ($result) {
-                    echo '<div class="notice notice-success is-dismissible"><p>Company Menu created successfully!</p></div>';
+                    echo '<div class="notice notice-success is-dismissible"><p>' . __('Company Menu created successfully!', 'aiopms') . '</p></div>';
                 } else {
-                    echo '<div class="notice notice-warning is-dismissible"><p>No company pages found to create Company Menu.</p></div>';
+                    echo '<div class="notice notice-warning is-dismissible"><p>' . __('No company pages found to create Company Menu.', 'aiopms') . '</p></div>';
                 }
                 break;
 
             case 'main_navigation':
                 $result = aiopms_generate_main_navigation_menu();
                 if ($result) {
-                    echo '<div class="notice notice-success is-dismissible"><p>Main Navigation Menu created successfully!</p></div>';
+                    echo '<div class="notice notice-success is-dismissible"><p>' . __('Main Navigation Menu created successfully!', 'aiopms') . '</p></div>';
                 } else {
-                    echo '<div class="notice notice-error is-dismissible"><p>Failed to create Main Navigation Menu.</p></div>';
+                    echo '<div class="notice notice-error is-dismissible"><p>' . __('Failed to create Main Navigation Menu.', 'aiopms') . '</p></div>';
                 }
                 break;
 
             case 'resources':
                 $result = aiopms_generate_resources_menu();
                 if ($result) {
-                    echo '<div class="notice notice-success is-dismissible"><p>Resources Menu created successfully!</p></div>';
+                    echo '<div class="notice notice-success is-dismissible"><p>' . __('Resources Menu created successfully!', 'aiopms') . '</p></div>';
                 } else {
-                    echo '<div class="notice notice-error is-dismissible"><p>Failed to create Resources Menu.</p></div>';
+                    echo '<div class="notice notice-error is-dismissible"><p>' . __('Failed to create Resources Menu.', 'aiopms') . '</p></div>';
                 }
                 break;
 
             case 'footer_quick_links':
                 $result = aiopms_generate_footer_quick_links_menu();
                 if ($result) {
-                    echo '<div class="notice notice-success is-dismissible"><p>Footer Quick Links Menu created successfully!</p></div>';
+                    echo '<div class="notice notice-success is-dismissible"><p>' . __('Footer Quick Links Menu created successfully!', 'aiopms') . '</p></div>';
                 } else {
-                    echo '<div class="notice notice-error is-dismissible"><p>Failed to create Footer Quick Links Menu.</p></div>';
+                    echo '<div class="notice notice-error is-dismissible"><p>' . __('Failed to create Footer Quick Links Menu.', 'aiopms') . '</p></div>';
                 }
                 break;
 
             case 'social_media':
                 $result = aiopms_generate_social_media_menu();
                 if ($result) {
-                    echo '<div class="notice notice-success is-dismissible"><p>Social Media Menu created successfully!</p></div>';
+                    echo '<div class="notice notice-success is-dismissible"><p>' . __('Social Media Menu created successfully!', 'aiopms') . '</p></div>';
                 } else {
-                    echo '<div class="notice notice-error is-dismissible"><p>Failed to create Social Media Menu.</p></div>';
+                    echo '<div class="notice notice-error is-dismissible"><p>' . __('Failed to create Social Media Menu.', 'aiopms') . '</p></div>';
                 }
                 break;
 
             case 'support':
                 $result = aiopms_generate_support_menu();
                 if ($result) {
-                    echo '<div class="notice notice-success is-dismissible"><p>Support Menu created successfully!</p></div>';
+                    echo '<div class="notice notice-success is-dismissible"><p>' . __('Support Menu created successfully!', 'aiopms') . '</p></div>';
                 } else {
-                    echo '<div class="notice notice-error is-dismissible"><p>Failed to create Support Menu.</p></div>';
+                    echo '<div class="notice notice-error is-dismissible"><p>' . __('Failed to create Support Menu.', 'aiopms') . '</p></div>';
                 }
                 break;
 
             case 'products':
                 $result = aiopms_generate_products_menu();
                 if ($result) {
-                    echo '<div class="notice notice-success is-dismissible"><p>Products Menu created successfully!</p></div>';
+                    echo '<div class="notice notice-success is-dismissible"><p>' . __('Products Menu created successfully!', 'aiopms') . '</p></div>';
                 } else {
-                    echo '<div class="notice notice-warning is-dismissible"><p>No product pages found to create Products Menu.</p></div>';
+                    echo '<div class="notice notice-warning is-dismissible"><p>' . __('No product pages found to create Products Menu.', 'aiopms') . '</p></div>';
                 }
                 break;
         }
     }
     ?>
-    <div class="wrap">
-        <h2>Menu Generator</h2>
-        <p>Automatically generate WordPress menus based on your created pages.</p>
+    <section class="dg10-card" role="region" aria-labelledby="menu-generator-heading">
+        <div class="dg10-card-body">
+            <h2 id="menu-generator-heading"><?php _e('Menu Generator', 'aiopms'); ?></h2>
+            <p><?php _e('Automatically generate WordPress menus based on your created pages.', 'aiopms'); ?></p>
         
         <div class="menu-generator-options">
             <!-- Primary Navigation Menus -->
@@ -581,7 +673,8 @@ function aiopms_menu_generator_tab() {
             <h3>Note:</h3>
             <p>Make sure you have created pages before generating menus. The generator detects pages based on their titles and content.</p>
         </div>
-    </div>
+        </div>
+    </section>
     
     <style>
     .menu-generator-options {
@@ -718,9 +811,10 @@ function aiopms_menu_generator_tab() {
 // Hierarchy Export tab content
 function aiopms_hierarchy_export_tab() {
     ?>
-    <div class="wrap">
-        <h2>Hierarchy Export Tools</h2>
-        <p>Export and copy your page hierarchy for documentation, planning, or analysis purposes.</p>
+    <section class="dg10-card" role="region" aria-labelledby="hierarchy-export-heading">
+        <div class="dg10-card-body">
+            <h2 id="hierarchy-export-heading">Hierarchy Export Tools</h2>
+            <p>Export and copy your page hierarchy for documentation, planning, or analysis purposes.</p>
 
         <div class="aiopms-export-section">
             <div class="aiopms-export-info">
@@ -808,7 +902,8 @@ function aiopms_hierarchy_export_tab() {
 
         <!-- Toast notifications container -->
         <div id="aiopms-export-toast-container"></div>
-    </div>
+        </div>
+    </section>
 
     <style>
     .aiopms-export-section {
@@ -1118,7 +1213,7 @@ function aiopms_hierarchy_export_tab() {
 // Keyword Analysis tab content
 function aiopms_keyword_analysis_tab() {
     ?>
-    <div class="dg10-card">
+    <section class="dg10-card" role="region" aria-labelledby="keyword-analysis-heading">
         <div class="dg10-card-body">
             <form id="aiopms-keyword-analysis-form">
                 <?php wp_nonce_field('aiopms_keyword_analysis', 'aiopms_keyword_nonce'); ?>
@@ -1189,6 +1284,7 @@ function aiopms_keyword_analysis_tab() {
                                             <th>Count</th>
                                             <th>Density</th>
                                             <th>Status</th>
+                                            <th>Relevance</th>
                                             <th>Areas Found</th>
                                             <th>Context</th>
                                         </tr>
@@ -1207,7 +1303,7 @@ function aiopms_keyword_analysis_tab() {
                 </div>
             </div>
         </div>
-    </div>
+    </section>
     
     <style>
     .analysis-actions {
@@ -1366,6 +1462,11 @@ function aiopms_keyword_analysis_tab() {
         color: var(--dg10-white);
     }
     
+    .status-none {
+        background: #6B7280;
+        color: var(--dg10-white);
+    }
+    
     .areas-found {
         font-size: var(--dg10-font-size-xs);
         color: var(--dg10-neutral);
@@ -1404,6 +1505,293 @@ function aiopms_keyword_analysis_tab() {
         border-radius: var(--dg10-radius-lg);
     }
     
+    /* SEO Score Styles */
+    .seo-excellent {
+        color: #10B981 !important;
+    }
+    
+    .seo-good {
+        color: #3B82F6 !important;
+    }
+    
+    .seo-fair {
+        color: #F59E0B !important;
+    }
+    
+    .seo-poor {
+        color: #EF4444 !important;
+    }
+    
+    /* Performance Metrics */
+    .performance-metrics {
+        margin-top: var(--dg10-spacing-lg);
+        padding: var(--dg10-spacing-md);
+        background: var(--dg10-light-gray);
+        border-radius: var(--dg10-radius-md);
+    }
+    
+    .performance-metrics h5 {
+        margin: 0 0 var(--dg10-spacing-md) 0;
+        color: var(--dg10-dark-blue);
+        font-size: var(--dg10-font-size-md);
+    }
+    
+    .metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: var(--dg10-spacing-sm);
+    }
+    
+    .metric-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: var(--dg10-spacing-sm);
+        background: var(--dg10-white);
+        border-radius: var(--dg10-radius-sm);
+        font-size: var(--dg10-font-size-sm);
+    }
+    
+    .metric-label {
+        color: var(--dg10-neutral);
+        font-weight: 500;
+    }
+    
+    .metric-value {
+        font-weight: 600;
+        padding: 2px 8px;
+        border-radius: var(--dg10-radius-sm);
+    }
+    
+    .metric-value.good {
+        background: #D1FAE5;
+        color: #065F46;
+    }
+    
+    .metric-value.warning {
+        background: #FEF3C7;
+        color: #92400E;
+    }
+    
+    .metric-value.info {
+        background: #DBEAFE;
+        color: #1E40AF;
+    }
+    
+    .metric-value.error {
+        background: #FEE2E2;
+        color: #991B1B;
+    }
+    
+    /* Relevance Score */
+    .relevance-cell {
+        text-align: center;
+    }
+    
+    .relevance-score {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 24px;
+        border-radius: var(--dg10-radius-sm);
+        font-size: var(--dg10-font-size-xs);
+        font-weight: 600;
+    }
+    
+    .relevance-high {
+        background: #D1FAE5;
+        color: #065F46;
+    }
+    
+    .relevance-medium {
+        background: #FEF3C7;
+        color: #92400E;
+    }
+    
+    .relevance-low {
+        background: #FEE2E2;
+        color: #991B1B;
+    }
+    
+    /* Enhanced Recommendations */
+    .recommendations-container {
+        display: flex;
+        flex-direction: column;
+        gap: var(--dg10-spacing-md);
+    }
+    
+    .recommendation-item {
+        padding: var(--dg10-spacing-md);
+        border-radius: var(--dg10-radius-md);
+        border-left: 4px solid;
+    }
+    
+    .recommendation-simple {
+        background: var(--dg10-light-gray);
+        border-left-color: var(--dg10-primary);
+    }
+    
+    .recommendation-success {
+        background: #F0FDF4;
+        border-left-color: #10B981;
+    }
+    
+    .recommendation-warning {
+        background: #FFFBEB;
+        border-left-color: #F59E0B;
+    }
+    
+    .recommendation-error {
+        background: #FEF2F2;
+        border-left-color: #EF4444;
+    }
+    
+    .recommendation-info {
+        background: #EFF6FF;
+        border-left-color: #3B82F6;
+    }
+    
+    .recommendation-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--dg10-spacing-sm);
+    }
+    
+    .recommendation-title {
+        margin: 0;
+        font-size: var(--dg10-font-size-md);
+        font-weight: 600;
+        color: var(--dg10-dark-blue);
+    }
+    
+    .recommendation-type {
+        padding: 2px 8px;
+        border-radius: var(--dg10-radius-sm);
+        font-size: var(--dg10-font-size-xs);
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+    
+    .recommendation-success .recommendation-type {
+        background: #D1FAE5;
+        color: #065F46;
+    }
+    
+    .recommendation-warning .recommendation-type {
+        background: #FEF3C7;
+        color: #92400E;
+    }
+    
+    .recommendation-error .recommendation-type {
+        background: #FEE2E2;
+        color: #991B1B;
+    }
+    
+    .recommendation-info .recommendation-type {
+        background: #DBEAFE;
+        color: #1E40AF;
+    }
+    
+    .recommendation-message {
+        margin: 0 0 var(--dg10-spacing-sm) 0;
+        font-size: var(--dg10-font-size-sm);
+        line-height: 1.5;
+        color: var(--dg10-neutral);
+    }
+    
+    .recommendation-keywords,
+    .recommendation-action {
+        margin-top: var(--dg10-spacing-sm);
+        padding: var(--dg10-spacing-sm);
+        background: rgba(255, 255, 255, 0.7);
+        border-radius: var(--dg10-radius-sm);
+        font-size: var(--dg10-font-size-sm);
+    }
+    
+    .recommendation-keywords strong,
+    .recommendation-action strong {
+        color: var(--dg10-dark-blue);
+    }
+    
+    /* Notification System */
+    .aiopms-notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        max-width: 400px;
+        padding: var(--dg10-spacing-md);
+        border-radius: var(--dg10-radius-md);
+        box-shadow: var(--dg10-shadow-lg);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--dg10-spacing-sm);
+        animation: slideInRight 0.3s ease-out;
+    }
+    
+    .notification-success {
+        background: #F0FDF4;
+        border: 1px solid #10B981;
+        color: #065F46;
+    }
+    
+    .notification-error {
+        background: #FEF2F2;
+        border: 1px solid #EF4444;
+        color: #991B1B;
+    }
+    
+    .notification-warning {
+        background: #FFFBEB;
+        border: 1px solid #F59E0B;
+        color: #92400E;
+    }
+    
+    .notification-info {
+        background: #EFF6FF;
+        border: 1px solid #3B82F6;
+        color: #1E40AF;
+    }
+    
+    .notification-message {
+        flex: 1;
+        font-size: var(--dg10-font-size-sm);
+        font-weight: 500;
+    }
+    
+    .notification-close {
+        background: none;
+        border: none;
+        font-size: var(--dg10-font-size-lg);
+        cursor: pointer;
+        padding: 0;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: background-color 0.2s;
+    }
+    
+    .notification-close:hover {
+        background: rgba(0, 0, 0, 0.1);
+    }
+    
+    @keyframes slideInRight {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    
     @media (max-width: 768px) {
         .analysis-actions {
             flex-direction: column;
@@ -1427,6 +1815,57 @@ function aiopms_keyword_analysis_tab() {
         
         .context-preview {
             max-width: 150px;
+        }
+        
+        .metrics-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .recommendation-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: var(--dg10-spacing-xs);
+        }
+        
+        .recommendation-type {
+            align-self: flex-end;
+        }
+        
+        .aiopms-notification {
+            top: 10px;
+            right: 10px;
+            left: 10px;
+            max-width: none;
+        }
+    }
+    
+    /* Laptop view optimizations */
+    @media (min-width: 769px) and (max-width: 1366px) {
+        #aiopms_page_select {
+            min-width: 250px;
+            font-size: var(--dg10-font-size-sm);
+        }
+        
+        #aiopms_keywords_input {
+            min-height: 120px;
+        }
+        
+        .dg10-form-group {
+            margin-bottom: var(--dg10-spacing-lg);
+        }
+        
+        .analysis-actions {
+            flex-wrap: wrap;
+            gap: var(--dg10-spacing-sm);
+        }
+        
+        .dg10-table {
+            font-size: var(--dg10-font-size-sm);
+        }
+        
+        .dg10-table th,
+        .dg10-table td {
+            padding: var(--dg10-spacing-sm) var(--dg10-spacing-md);
         }
     }
     </style>
@@ -1541,6 +1980,31 @@ function aiopms_keyword_analysis_tab() {
             });
         }
         
+        function showNotification(message, type = 'info') {
+            const notification = $(`
+                <div class="aiopms-notification notification-${type}">
+                    <span class="notification-message">${message}</span>
+                    <button class="notification-close" aria-label="Close notification">&times;</button>
+                </div>
+            `);
+            
+            $('body').append(notification);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                notification.fadeOut(300, function() {
+                    $(this).remove();
+                });
+            }, 5000);
+            
+            // Manual close
+            notification.find('.notification-close').on('click', function() {
+                notification.fadeOut(300, function() {
+                    $(this).remove();
+                });
+            });
+        }
+        
         function displayResults(data) {
             // Display page info
             displayPageInfo(data.page_info);
@@ -1571,6 +2035,14 @@ function aiopms_keyword_analysis_tab() {
                         <div class="page-info-value">${pageInfo.word_count.toLocaleString()}</div>
                     </div>
                     <div class="page-info-item">
+                        <div class="page-info-label">Content Size</div>
+                        <div class="page-info-value">${(pageInfo.content_size / 1024).toFixed(1)} KB</div>
+                    </div>
+                    <div class="page-info-item">
+                        <div class="page-info-label">Memory Used</div>
+                        <div class="page-info-value">${pageInfo.memory_used} MB</div>
+                    </div>
+                    <div class="page-info-item">
                         <div class="page-info-label">Analysis Date</div>
                         <div class="page-info-value">${pageInfo.analysis_date}</div>
                     </div>
@@ -1580,6 +2052,10 @@ function aiopms_keyword_analysis_tab() {
         }
         
         function displaySummary(summary) {
+            const seoScoreClass = summary.seo_score >= 80 ? 'seo-excellent' : 
+                                 summary.seo_score >= 60 ? 'seo-good' : 
+                                 summary.seo_score >= 40 ? 'seo-fair' : 'seo-poor';
+            
             const content = `
                 <div class="summary-grid">
                     <div class="summary-item">
@@ -1595,10 +2071,42 @@ function aiopms_keyword_analysis_tab() {
                         <div class="summary-label">Avg Density</div>
                     </div>
                     <div class="summary-item">
+                        <div class="summary-number">${summary.average_relevance || 'N/A'}</div>
+                        <div class="summary-label">Avg Relevance</div>
+                    </div>
+                    <div class="summary-item seo-score-item">
+                        <div class="summary-number ${seoScoreClass}">${summary.seo_score || 'N/A'}</div>
+                        <div class="summary-label">SEO Score</div>
+                    </div>
+                    <div class="summary-item">
                         <div class="summary-number">${summary.total_words.toLocaleString()}</div>
                         <div class="summary-label">Total Words</div>
                     </div>
                 </div>
+                
+                ${summary.performance_metrics ? `
+                <div class="performance-metrics">
+                    <h5>Performance Metrics</h5>
+                    <div class="metrics-grid">
+                        <div class="metric-item">
+                            <span class="metric-label">Well Optimized:</span>
+                            <span class="metric-value good">${summary.performance_metrics.well_optimized}</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">Over Optimized:</span>
+                            <span class="metric-value warning">${summary.performance_metrics.over_optimized}</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">Under Optimized:</span>
+                            <span class="metric-value info">${summary.performance_metrics.under_optimized}</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">Not Found:</span>
+                            <span class="metric-value error">${summary.performance_metrics.not_found}</span>
+                        </div>
+                    </div>
+                </div>
+                ` : ''}
             `;
             $('#summary-content').html(content);
         }
@@ -1618,12 +2126,19 @@ function aiopms_keyword_analysis_tab() {
                 const context = keyword.context.length > 0 ? 
                     keyword.context[0].substring(0, 100) + '...' : 'No context found';
                 
+                const relevanceScore = keyword.relevance_score || 0;
+                const relevanceClass = relevanceScore >= 70 ? 'relevance-high' : 
+                                     relevanceScore >= 40 ? 'relevance-medium' : 'relevance-low';
+                
                 const row = `
                     <tr>
                         <td class="keyword-cell">${keyword.keyword}</td>
                         <td class="count-cell">${keyword.count}</td>
                         <td class="density-cell">${keyword.density}%</td>
                         <td><span class="status-badge status-${keyword.status}">${keyword.status}</span></td>
+                        <td class="relevance-cell">
+                            <span class="relevance-score ${relevanceClass}">${relevanceScore}</span>
+                        </td>
                         <td class="areas-found">${areas.join(', ') || 'Not found'}</td>
                         <td class="context-preview">${context}</td>
                     </tr>
@@ -1633,10 +2148,42 @@ function aiopms_keyword_analysis_tab() {
         }
         
         function displayRecommendations(recommendations) {
+            if (!recommendations || recommendations.length === 0) {
+                $('#recommendations-content').html('<p>No specific recommendations available.</p>');
+                return;
+            }
+            
             const content = `
-                <ul class="recommendations-list">
-                    ${recommendations.map(rec => `<li>${rec}</li>`).join('')}
-                </ul>
+                <div class="recommendations-container">
+                    ${recommendations.map(rec => {
+                        if (typeof rec === 'string') {
+                            return `<div class="recommendation-item recommendation-simple">
+                                <p>${rec}</p>
+                            </div>`;
+                        } else {
+                            const typeClass = rec.type || 'info';
+                            const priorityClass = rec.priority || 'medium';
+                            const keywordsList = rec.keywords && rec.keywords.length > 0 ? 
+                                `<div class="recommendation-keywords">
+                                    <strong>Keywords:</strong> ${rec.keywords.join(', ')}
+                                </div>` : '';
+                            
+                            return `<div class="recommendation-item recommendation-${typeClass} priority-${priorityClass}">
+                                <div class="recommendation-header">
+                                    <h5 class="recommendation-title">${rec.title || 'Recommendation'}</h5>
+                                    <span class="recommendation-type">${rec.type || 'info'}</span>
+                                </div>
+                                <div class="recommendation-content">
+                                    <p class="recommendation-message">${rec.message || rec}</p>
+                                    ${keywordsList}
+                                    ${rec.action ? `<div class="recommendation-action">
+                                        <strong>Action:</strong> ${rec.action}
+                                    </div>` : ''}
+                                </div>
+                            </div>`;
+                        }
+                    }).join('')}
+                </div>
             `;
             $('#recommendations-content').html(content);
         }
@@ -1680,5 +2227,110 @@ function aiopms_keyword_analysis_tab() {
         }
     });
     </script>
+    
+    <!-- Accessibility CSS -->
+    <style>
+    /* Screen reader only content */
+    .sr-only {
+        position: absolute !important;
+        width: 1px !important;
+        height: 1px !important;
+        padding: 0 !important;
+        margin: -1px !important;
+        overflow: hidden !important;
+        clip: rect(0, 0, 0, 0) !important;
+        white-space: nowrap !important;
+        border: 0 !important;
+    }
+    
+    /* Focus management */
+    .dg10-sidebar-nav-item:focus,
+    .dg10-btn:focus,
+    input:focus,
+    textarea:focus,
+    select:focus {
+        outline: 2px solid #0073aa !important;
+        outline-offset: 2px !important;
+    }
+    
+    /* Focus visible for keyboard navigation */
+    .dg10-sidebar-nav-item:focus-visible {
+        outline: 2px solid #0073aa !important;
+        outline-offset: 2px !important;
+    }
+    
+    /* Skip link for keyboard navigation */
+    .skip-link {
+        position: absolute;
+        left: -9999px;
+        top: 0;
+        z-index: 999999;
+        padding: 8px 16px;
+        background: #0073aa;
+        color: white;
+        text-decoration: none;
+        border-radius: 0 0 4px 4px;
+    }
+    
+    .skip-link:focus {
+        left: 0;
+    }
+    
+    /* High contrast mode support */
+    @media (prefers-contrast: high) {
+        .dg10-sidebar-nav-item {
+            border: 2px solid currentColor;
+        }
+        
+        .dg10-btn {
+            border: 2px solid currentColor;
+        }
+    }
+    
+    /* Reduced motion support */
+    @media (prefers-reduced-motion: reduce) {
+        * {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+    
+    /* Form field focus indicators */
+    .dg10-form-textarea:focus,
+    .dg10-form-input:focus {
+        border-color: #0073aa !important;
+        box-shadow: 0 0 0 2px rgba(0, 115, 170, 0.2) !important;
+    }
+    
+    /* Button focus states */
+    .dg10-btn:focus {
+        box-shadow: 0 0 0 2px rgba(0, 115, 170, 0.2) !important;
+    }
+    
+    /* Navigation focus states */
+    .dg10-sidebar-nav-item.focused {
+        background-color: rgba(0, 115, 170, 0.1) !important;
+    }
+    
+    /* Error message accessibility */
+    .notice {
+        border-left: 4px solid #dc3232;
+        padding: 12px;
+        margin: 15px 0;
+    }
+    
+    .notice-success {
+        border-left-color: #46b450;
+    }
+    
+    .notice-warning {
+        border-left-color: #ffb900;
+    }
+    
+    .notice-info {
+        border-left-color: #00a0d2;
+    }
+    </style>
     <?php
 }

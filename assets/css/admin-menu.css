@@ -379,6 +379,36 @@
     color: var(--dg10-primary) !important;
 }
 
+/* Force dark text for all content areas */
+.dg10-brand .dg10-main-content,
+.dg10-brand .dg10-main-content *,
+.dg10-brand .dg10-card-body,
+.dg10-brand .dg10-card-body *,
+.dg10-brand .dg10-main-content p,
+.dg10-brand .dg10-main-content span,
+.dg10-brand .dg10-main-content div,
+.dg10-brand .dg10-main-content label,
+.dg10-brand .dg10-main-content .description,
+.dg10-brand .dg10-main-content .form-field,
+.dg10-brand .dg10-main-content .field-description {
+    color: #1F2937 !important; /* Force dark text for white backgrounds */
+}
+
+/* WordPress admin specific overrides */
+.dg10-brand .wrap,
+.dg10-brand .wrap *,
+.dg10-brand .form-table,
+.dg10-brand .form-table *,
+.dg10-brand .form-table th,
+.dg10-brand .form-table td,
+.dg10-brand .form-table label,
+.dg10-brand .form-table .description,
+.dg10-brand .notice,
+.dg10-brand .notice *,
+.dg10-brand .notice p {
+    color: #1F2937 !important;
+}
+
 .dg10-brand .dg10-nav-tab.active {
     color: var(--dg10-primary) !important;
 }

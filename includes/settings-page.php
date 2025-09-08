@@ -32,14 +32,14 @@ function aiopms_settings_tab() {
 function aiopms_settings_init() {
     add_settings_section(
         'aiopms_settings_section',
-        'AI Settings',
+        __('AI Settings', 'aiopms'),
         'aiopms_settings_section_callback',
         'aiopms-page-management'
     );
 
     add_settings_field(
         'aiopms_ai_provider',
-        'AI Provider',
+        __('AI Provider', 'aiopms'),
         'aiopms_ai_provider_callback',
         'aiopms-page-management',
         'aiopms_settings_section'
@@ -47,7 +47,7 @@ function aiopms_settings_init() {
 
     add_settings_field(
         'aiopms_openai_api_key',
-        'OpenAI API Key',
+        __('OpenAI API Key', 'aiopms'),
         'aiopms_openai_api_key_callback',
         'aiopms-page-management',
         'aiopms_settings_section'
@@ -55,7 +55,7 @@ function aiopms_settings_init() {
 
     add_settings_field(
         'aiopms_gemini_api_key',
-        'Gemini API Key',
+        __('Gemini API Key', 'aiopms'),
         'aiopms_gemini_api_key_callback',
         'aiopms-page-management',
         'aiopms_settings_section'
@@ -63,7 +63,7 @@ function aiopms_settings_init() {
 
     add_settings_field(
         'aiopms_deepseek_api_key',
-        'DeepSeek API Key',
+        __('DeepSeek API Key', 'aiopms'),
         'aiopms_deepseek_api_key_callback',
         'aiopms-page-management',
         'aiopms_settings_section'
@@ -71,7 +71,7 @@ function aiopms_settings_init() {
 
     add_settings_field(
         'aiopms_brand_color',
-        'Brand Color',
+        __('Brand Color', 'aiopms'),
         'aiopms_brand_color_callback',
         'aiopms-page-management',
         'aiopms_settings_section'
@@ -79,7 +79,7 @@ function aiopms_settings_init() {
 
     add_settings_field(
         'aiopms_sitemap_url',
-        'Sitemap URL',
+        __('Sitemap URL', 'aiopms'),
         'aiopms_sitemap_url_callback',
         'aiopms-page-management',
         'aiopms_settings_section'
@@ -88,14 +88,14 @@ function aiopms_settings_init() {
     // Schema settings section
     add_settings_section(
         'aiopms_schema_settings_section',
-        'Schema Settings',
+        __('Schema Settings', 'aiopms'),
         'aiopms_schema_settings_section_callback',
         'aiopms-page-management'
     );
 
     add_settings_field(
         'aiopms_auto_schema_generation',
-        'Auto Schema Generation',
+        __('Auto Schema Generation', 'aiopms'),
         'aiopms_auto_schema_generation_callback',
         'aiopms-page-management',
         'aiopms_schema_settings_section'
@@ -105,18 +105,19 @@ add_action('admin_init', 'aiopms_settings_init');
 
 // Section callback
 function aiopms_settings_section_callback() {
-    echo '<p>Select your preferred AI provider and enter the corresponding API key. Set your brand color for AI-generated featured images and configure the sitemap URL for menu generation.</p>';
+    echo '<p>' . __('Select your preferred AI provider and enter the corresponding API key. Set your brand color for AI-generated featured images and configure the sitemap URL for menu generation.', 'aiopms') . '</p>';
 }
 
 // AI Provider field callback
 function aiopms_ai_provider_callback() {
     $provider = get_option('aiopms_ai_provider', 'openai');
     ?>
-    <select name="aiopms_ai_provider">
-        <option value="openai" <?php selected($provider, 'openai'); ?>>OpenAI</option>
-        <option value="gemini" <?php selected($provider, 'gemini'); ?>>Gemini</option>
-        <option value="deepseek" <?php selected($provider, 'deepseek'); ?>>DeepSeek</option>
+    <select name="aiopms_ai_provider" class="aiopms-ai-provider-select">
+        <option value="openai" <?php selected($provider, 'openai'); ?>>🤖 OpenAI (GPT-4)</option>
+        <option value="gemini" <?php selected($provider, 'gemini'); ?>>🧠 Google Gemini</option>
+        <option value="deepseek" <?php selected($provider, 'deepseek'); ?>>⚡ DeepSeek</option>
     </select>
+    <p class="description">Choose your preferred AI provider. Each has different strengths and pricing models.</p>
     <?php
 }
 
@@ -143,7 +144,7 @@ function aiopms_brand_color_callback() {
     $brand_color = get_option('aiopms_brand_color', '#b47cfd');
     ?>
     <input type="color" name="aiopms_brand_color" value="<?php echo esc_attr($brand_color); ?>" class="regular-text">
-    <p class="description">Select your brand's primary color. This will be used for AI-generated featured images.</p>
+    <p class="description"><?php _e('Select your brand\'s primary color. This will be used for AI-generated featured images.', 'aiopms'); ?></p>
     <?php
 }
 

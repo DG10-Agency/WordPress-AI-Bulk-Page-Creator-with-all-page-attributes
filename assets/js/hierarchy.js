@@ -5,7 +5,7 @@ jQuery(document).ready(function($) {
     console.log('AIOPMS: D3 available:', typeof d3 !== 'undefined');
     
     let hierarchyData = null; // To store fetched data
-    let currentView = 'tree'; // Default view
+    let currentView = 'grid'; // Default view
 
     // 1. Initialize the hierarchy visualization
     function initHierarchy() {
@@ -27,8 +27,15 @@ jQuery(document).ready(function($) {
             return;
         }
         
-        // Set initial loading message for the default view
-        $('#abpcwa-hierarchy-tree').html('<div class="abpcwa-loading">' + aiopmsHierarchy.strings.loading + '</div>');
+        // Set initial loading message for the default view with better UX
+        const loadingHtml = `
+            <div class="abpcwa-loading" style="text-align: center; padding: 60px 20px; color: #6b7280;">
+                <div style="width: 40px; height: 40px; border: 4px solid #e5e7eb; border-top: 4px solid #8b5cf6; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px;"></div>
+                <h3 style="margin: 0 0 10px 0; color: #374151; font-size: 18px;">Loading Page Hierarchy</h3>
+                <p style="margin: 0; font-size: 14px; opacity: 0.8;">Fetching and organizing your pages...</p>
+            </div>
+        `;
+        $('#abpcwa-hierarchy-grid').html(loadingHtml);
 
         // Fetch hierarchy data from REST API
         console.log('AIOPMS: Fetching hierarchy data from:', aiopmsHierarchy.rest_url + 'hierarchy');
@@ -39,30 +46,47 @@ jQuery(document).ready(function($) {
             method: 'GET',
             beforeSend: function(xhr) {
                 xhr.setRequestHeader('X-WP-Nonce', aiopmsHierarchy.nonce);
-                $('#abpcwa-hierarchy-spinner').addClass('is-active');
             },
             success: function(data) {
                 console.log('AIOPMS: Hierarchy data received:', data);
-                $('#abpcwa-hierarchy-spinner').removeClass('is-active');
                 hierarchyData = data;
                 // Render the default view
                 switchView(currentView);
             },
             error: function(xhr, status, error) {
                 console.error('AIOPMS: Hierarchy fetch error:', xhr, status, error);
-                $('#abpcwa-hierarchy-spinner').removeClass('is-active');
-                var errorMessage = 'Error loading hierarchy: ' + error;
+                
+                let errorMessage = 'Error loading hierarchy: ' + error;
+                let errorDetails = '';
+                
                 if (xhr.status === 403) {
-                    errorMessage += ' (Forbidden - check user permissions and nonce validation)';
+                    errorMessage = 'Access Denied';
+                    errorDetails = 'You do not have permission to view the page hierarchy. Please contact your administrator.';
                 } else if (xhr.status === 404) {
-                    errorMessage += ' (REST API endpoint not found)';
+                    errorMessage = 'Service Not Found';
+                    errorDetails = 'The hierarchy service is not available. Please refresh the page and try again.';
                 } else if (xhr.status === 500) {
-                    errorMessage += ' (Server error - check PHP error logs)';
+                    errorMessage = 'Server Error';
+                    errorDetails = 'There was a server error while loading the hierarchy. Please try again later.';
+                } else if (xhr.status === 0) {
+                    errorMessage = 'Connection Error';
+                    errorDetails = 'Unable to connect to the server. Please check your internet connection.';
+                } else {
+                    errorDetails = 'Status: ' + xhr.status + '<br>Response: ' + (xhr.responseText || 'No response');
                 }
-                // Display error in the active view container
-                $('.abpcwa-hierarchy-view.active-view').html(
-                    '<div class="abpcwa-error">' + errorMessage + '<br>Status: ' + xhr.status + '<br>Response: ' + xhr.responseText + '</div>'
-                );
+                
+                // Display user-friendly error message
+                const errorHtml = `
+                    <div class="abpcwa-error" style="text-align: center; padding: 40px; background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; color: #991b1b;">
+                        <h3 style="margin: 0 0 15px 0; color: #dc2626;">⚠️ ${errorMessage}</h3>
+                        <p style="margin: 0 0 20px 0; line-height: 1.5;">${errorDetails}</p>
+                        <button onclick="location.reload()" class="button button-primary" style="background: #dc2626; border-color: #dc2626; color: white;">
+                            🔄 Retry
+                        </button>
+                    </div>
+                `;
+                
+                $('.abpcwa-hierarchy-view.active-view').html(errorHtml);
                 console.error('Hierarchy Error:', xhr);
             }
         });
@@ -455,6 +479,11 @@ jQuery(document).ready(function($) {
                     const card = $('<div class="aiopms-grid-card level-' + level + '"></div>')
                         .attr('data-page-id', page.id)
                         .attr('data-level', level);
+                    
+                    // Add homepage data attribute if this is the homepage
+                    if (page.meta && page.meta.is_homepage) {
+                        card.attr('data-is-homepage', 'true');
+                    }
 
                     // Add level badge for non-root levels
                     if (level > 0) {
@@ -554,8 +583,19 @@ jQuery(document).ready(function($) {
                     parentCard.append(childrenContainer);
                 }
 
-                // Sort root pages by title
-                rootPages.sort((a, b) => a.text.localeCompare(b.text));
+                // Sort root pages with homepage first, then alphabetically
+                rootPages.sort((a, b) => {
+                    // Check if either page is the homepage
+                    const aIsHomepage = a.meta && a.meta.is_homepage;
+                    const bIsHomepage = b.meta && b.meta.is_homepage;
+                    
+                    // Homepage always comes first
+                    if (aIsHomepage && !bIsHomepage) return -1;
+                    if (!aIsHomepage && bIsHomepage) return 1;
+                    
+                    // If both are homepage or neither is homepage, sort alphabetically
+                    return a.text.localeCompare(b.text);
+                });
 
                 // Create cards for root pages
                 rootPages.forEach(rootPage => {
@@ -638,19 +678,6 @@ jQuery(document).ready(function($) {
             }
         });
 
-        // Expand all button
-        $('#abpcwa-expand-all').on('click', function() {
-            if (currentView === 'tree') {
-                $('#abpcwa-hierarchy-tree').jstree('open_all');
-            }
-        });
-
-        // Collapse all button
-        $('#abpcwa-collapse-all').on('click', function() {
-            if (currentView === 'tree') {
-                $('#abpcwa-hierarchy-tree').jstree('close_all');
-            }
-        });
 
         // Search functionality
         $('#abpcwa-hierarchy-search').keyup(function() {
@@ -665,18 +692,6 @@ jQuery(document).ready(function($) {
             }, 250);
         });
 
-        // Copy, and Export buttons
-        $('#abpcwa-copy-hierarchy').on('click', function() {
-            copyHierarchyToClipboard();
-        });
-
-        $('#abpcwa-export-csv').on('click', function() {
-            exportHierarchy('csv');
-        });
-
-        $('#abpcwa-export-markdown').on('click', function() {
-            exportHierarchy('markdown');
-        });
     }
 
     // 5. Copy hierarchy to clipboard

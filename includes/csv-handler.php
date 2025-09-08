@@ -5,24 +5,145 @@ if (!defined('ABSPATH')) {
 
 // Create pages from CSV file
 function aiopms_create_pages_from_csv($file) {
-    // 1. Validate file upload
-    if (!is_uploaded_file($file['tmp_name']) || $file['error'] !== UPLOAD_ERR_OK) {
-        echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__('File upload failed. Please try again.', 'aiopms') . '</p></div>';
+    try {
+        // 1. Validate file upload
+        if (!is_uploaded_file($file['tmp_name']) || $file['error'] !== UPLOAD_ERR_OK) {
+            $error_message = aiopms_get_upload_error_message($file['error']);
+            echo '<div class="notice notice-error is-dismissible"><p>' . esc_html($error_message) . '</p></div>';
+            return;
+        }
+
+        // 2. Check file size (5MB limit)
+        $max_file_size = 5 * 1024 * 1024; // 5MB in bytes
+        if ($file['size'] > $max_file_size) {
+            $file_size_mb = round($file['size'] / (1024 * 1024), 2);
+            $max_size_mb = round($max_file_size / (1024 * 1024), 2);
+            echo '<div class="notice notice-error is-dismissible"><p>' . 
+                sprintf(
+                    esc_html__('File size too large. Your file is %s MB, but the maximum allowed size is %s MB. Please reduce the file size and try again.', 'aiopms'),
+                    $file_size_mb,
+                    $max_size_mb
+                ) . '</p></div>';
+            return;
+        }
+
+        // 3. Additional file size validation using filesize()
+        $actual_file_size = filesize($file['tmp_name']);
+        if ($actual_file_size === false) {
+            echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__('Unable to determine file size. Please try again.', 'aiopms') . '</p></div>';
+            return;
+        }
+
+        if ($actual_file_size > $max_file_size) {
+            $file_size_mb = round($actual_file_size / (1024 * 1024), 2);
+            $max_size_mb = round($max_file_size / (1024 * 1024), 2);
+            echo '<div class="notice notice-error is-dismissible"><p>' . 
+                sprintf(
+                    esc_html__('File size too large. Your file is %s MB, but the maximum allowed size is %s MB. Please reduce the file size and try again.', 'aiopms'),
+                    $file_size_mb,
+                    $max_size_mb
+                ) . '</p></div>';
+            return;
+        }
+
+        // 4. Check if file is empty
+        if ($actual_file_size === 0) {
+            echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__('The uploaded file is empty. Please upload a valid CSV file with content.', 'aiopms') . '</p></div>';
+            return;
+        }
+
+        // 5. Check file type
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        if ($finfo === false) {
+            echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__('Unable to verify file type. Please try again.', 'aiopms') . '</p></div>';
+            return;
+        }
+
+        $mime_type = finfo_file($finfo, $file['tmp_name']);
+        finfo_close($finfo);
+        
+        if ($mime_type === false) {
+            echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__('Unable to read file type. Please try again.', 'aiopms') . '</p></div>';
+            return;
+        }
+
+        // Allow various CSV MIME types
+        $allowed_mime_types = [
+            'text/csv',
+            'application/csv',
+            'text/plain',
+            'application/vnd.ms-excel',
+            'text/comma-separated-values'
+        ];
+
+        if (!in_array($mime_type, $allowed_mime_types)) {
+            echo '<div class="notice notice-error is-dismissible"><p>' . 
+                sprintf(
+                    esc_html__('Invalid file type. Expected CSV file, but received %s. Please upload a valid CSV file.', 'aiopms'),
+                    esc_html($mime_type)
+                ) . '</p></div>';
+            return;
+        }
+
+        // 6. Additional file extension check
+        $file_extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        if ($file_extension !== 'csv') {
+            echo '<div class="notice notice-error is-dismissible"><p>' . 
+                sprintf(
+                    esc_html__('Invalid file extension. Expected .csv file, but received .%s. Please upload a valid CSV file.', 'aiopms'),
+                    esc_html($file_extension)
+                ) . '</p></div>';
+            return;
+        }
+
+    } catch (Exception $e) {
+        echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__('An error occurred during file validation. Please try again.', 'aiopms') . '</p></div>';
+        error_log('AIOPMS CSV File Validation Error: ' . $e->getMessage());
         return;
     }
 
-    // 2. Check file type
-    $finfo = finfo_open(FILEINFO_MIME_TYPE);
-    $mime_type = finfo_file($finfo, $file['tmp_name']);
-    finfo_close($finfo);
-    if ($mime_type !== 'text/csv' && $mime_type !== 'application/csv') {
-         echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__('Invalid file type. Please upload a valid CSV file.', 'aiopms') . '</p></div>';
-        return;
-    }
+    // 7. Read and validate CSV content
+    try {
+        $csv_content = file_get_contents($file['tmp_name']);
+        if ($csv_content === false) {
+            echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__('Unable to read CSV file content. Please try again.', 'aiopms') . '</p></div>';
+            return;
+        }
 
-    $csv_data = array_map('str_getcsv', file($file['tmp_name']));
-    if (empty($csv_data)) {
-        echo '<div class="notice notice-warning is-dismissible"><p>' . esc_html__('The CSV file is empty.', 'aiopms') . '</p></div>';
+        // Check if file content is too large (additional safety check)
+        if (strlen($csv_content) > $max_file_size) {
+            $content_size_mb = round(strlen($csv_content) / (1024 * 1024), 2);
+            $max_size_mb = round($max_file_size / (1024 * 1024), 2);
+            echo '<div class="notice notice-error is-dismissible"><p>' . 
+                sprintf(
+                    esc_html__('CSV content too large. File content is %s MB, but the maximum allowed size is %s MB. Please reduce the file size and try again.', 'aiopms'),
+                    $content_size_mb,
+                    $max_size_mb
+                ) . '</p></div>';
+            return;
+        }
+
+        $csv_data = array_map('str_getcsv', file($file['tmp_name']));
+        if (empty($csv_data)) {
+            echo '<div class="notice notice-warning is-dismissible"><p>' . esc_html__('The CSV file is empty.', 'aiopms') . '</p></div>';
+            return;
+        }
+
+        // 8. Validate CSV structure and size
+        $max_rows = 10000; // Limit to prevent memory issues
+        if (count($csv_data) > $max_rows) {
+            echo '<div class="notice notice-error is-dismissible"><p>' . 
+                sprintf(
+                    esc_html__('CSV file has too many rows. Maximum allowed: %d rows, but your file has %d rows. Please reduce the number of rows and try again.', 'aiopms'),
+                    $max_rows,
+                    count($csv_data)
+                ) . '</p></div>';
+            return;
+        }
+
+    } catch (Exception $e) {
+        echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__('An error occurred while reading the CSV file. Please try again.', 'aiopms') . '</p></div>';
+        error_log('AIOPMS CSV Reading Error: ' . $e->getMessage());
         return;
     }
 
@@ -95,4 +216,32 @@ function aiopms_create_pages_from_csv($file) {
     } else {
         echo '<div class="notice notice-warning is-dismissible"><p>' . esc_html__('No pages were created from the CSV file. Please check the file format and content.', 'aiopms') . '</p></div>';
     }
+}
+
+// Get user-friendly upload error message
+function aiopms_get_upload_error_message($error_code) {
+    $error_messages = [
+        UPLOAD_ERR_INI_SIZE => __('File exceeds the maximum upload size allowed by the server configuration.', 'aiopms'),
+        UPLOAD_ERR_FORM_SIZE => __('File exceeds the maximum upload size specified in the form.', 'aiopms'),
+        UPLOAD_ERR_PARTIAL => __('File was only partially uploaded. Please try again.', 'aiopms'),
+        UPLOAD_ERR_NO_FILE => __('No file was uploaded. Please select a file to upload.', 'aiopms'),
+        UPLOAD_ERR_NO_TMP_DIR => __('Missing temporary folder on the server. Please contact the administrator.', 'aiopms'),
+        UPLOAD_ERR_CANT_WRITE => __('Failed to write file to disk. Please try again.', 'aiopms'),
+        UPLOAD_ERR_EXTENSION => __('File upload was stopped by a PHP extension. Please contact the administrator.', 'aiopms'),
+    ];
+
+    return isset($error_messages[$error_code]) ? $error_messages[$error_code] : __('Unknown upload error occurred. Please try again.', 'aiopms');
+}
+
+// Get maximum allowed file size for display
+function aiopms_get_max_file_size_display() {
+    $max_file_size = 5 * 1024 * 1024; // 5MB in bytes
+    $max_size_mb = round($max_file_size / (1024 * 1024), 2);
+    return sprintf(__('Maximum file size: %s MB', 'aiopms'), $max_size_mb);
+}
+
+// Validate file size before upload (client-side validation helper)
+function aiopms_validate_file_size_before_upload($file_size) {
+    $max_file_size = 5 * 1024 * 1024; // 5MB in bytes
+    return $file_size <= $max_file_size;
 }

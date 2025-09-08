@@ -451,6 +451,15 @@
 
 .dg10-card-body {
     padding: var(--dg10-spacing-lg);
+    color: #1F2937; /* Dark text for light background */
+}
+
+.dg10-card-body p,
+.dg10-card-body span,
+.dg10-card-body div,
+.dg10-card-body label,
+.dg10-card-body .description {
+    color: #1F2937; /* Dark text for light background */
 }
 
 .dg10-card-footer {
@@ -707,6 +716,19 @@
    UTILITY CLASSES
    ========================================================================== */
 
+/* Screen reader only content - accessible everywhere */
+.sr-only {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
 .dg10-text-center { text-align: center; }
 .dg10-text-left { text-align: left; }
 .dg10-text-right { text-align: right; }
@@ -811,6 +833,34 @@
    ACCESSIBILITY ENHANCEMENTS
    ========================================================================== */
 
+/* Skip Link - Hidden by default, visible on focus */
+.skip-link {
+    position: fixed;
+    left: -9999px;
+    top: 0;
+    z-index: 999999;
+    padding: 8px 16px;
+    background: var(--dg10-primary);
+    color: var(--dg10-white);
+    text-decoration: none;
+    font-weight: 600;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease;
+}
+
+.skip-link:focus {
+    left: 6px;
+    top: 6px;
+    outline: 3px solid var(--dg10-white);
+    outline-offset: 2px;
+}
+
+.skip-link:hover {
+    background: var(--dg10-dark-purple);
+    color: var(--dg10-white);
+}
+
 /* High contrast mode support */
 @media (prefers-contrast: high) {
     :root {
@@ -833,6 +883,11 @@
         background: var(--dg10-gradient-dark) !important; /* Force dark gradient background */
         color: #FFFFFF !important; /* Force white text for dark backgrounds */
         text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5); /* Enhanced shadow for high contrast */
+    }
+    
+    .skip-link {
+        background: var(--dg10-primary);
+        border: 2px solid var(--dg10-white);
     }
 }
 
@@ -868,6 +923,29 @@
 /* ==========================================================================
    RESPONSIVE DESIGN
    ========================================================================== */
+
+/* Laptop view optimizations (1024px - 1366px) */
+@media (min-width: 769px) and (max-width: 1366px) {
+    .dg10-form-select {
+        min-width: 200px;
+        max-width: 100%;
+    }
+    
+    .dg10-form-group {
+        margin-bottom: var(--dg10-spacing-lg);
+    }
+    
+    .dg10-form-select option {
+        padding: var(--dg10-spacing-sm);
+        font-size: var(--dg10-font-size-sm);
+    }
+    
+    /* Ensure dropdown is properly visible on laptop screens */
+    .dg10-form-select:focus {
+        z-index: 10;
+        position: relative;
+    }
+}
 
 @media (max-width: 768px) {
     /* Sidebar responsive layout */
@@ -998,6 +1076,11 @@
     .dg10-sidebar-header h3 {
         font-size: var(--dg10-font-size-lg);
         font-weight: 700; /* Ensure proper weight on small screens */
+    }
+    
+    .dg10-plugin-name {
+        font-size: var(--dg10-font-size-xl);
+        font-weight: 700;
     }
     
     .dg10-sidebar-btn {
@@ -1426,15 +1509,23 @@
 }
 
 .dg10-promotion-footer a {
-    color: var(--dg10-info);
+    color: var(--dg10-primary) !important; /* Use brand purple color for GitHub link */
     text-decoration: none;
-    font-weight: 600; /* Increased weight for better contrast */
-    transition: color var(--dg10-transition-fast);
+    font-weight: 700; /* Increased weight for better visibility */
+    transition: all var(--dg10-transition-fast);
+    border-bottom: 1px solid transparent;
+    padding: 2px 4px;
+    border-radius: 3px;
+    background: rgba(139, 92, 246, 0.1);
 }
 
 .dg10-promotion-footer a:hover {
-    color: var(--dg10-info-dark);
-    text-decoration: underline;
+    color: var(--dg10-white) !important; /* White text on hover */
+    background: var(--dg10-primary) !important; /* Purple background on hover */
+    text-decoration: none;
+    border-bottom-color: var(--dg10-primary);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(139, 92, 246, 0.3);
 }
 
 /* Legacy footer promo styles for backward compatibility */
@@ -1511,6 +1602,17 @@
 
 .dg10-main-content {
     min-width: 0; /* Prevents grid overflow */
+    color: #1F2937; /* Dark text for light background */
+}
+
+.dg10-main-content p,
+.dg10-main-content span,
+.dg10-main-content div,
+.dg10-main-content label,
+.dg10-main-content .description,
+.dg10-main-content .form-field,
+.dg10-main-content .field-description {
+    color: #1F2937; /* Dark text for light background */
 }
 
 /* ==========================================================================
@@ -1561,9 +1663,65 @@
     line-height: 1.3;
 }
 
+/* Plugin name styling in sidebar */
+.dg10-plugin-name {
+    font-size: var(--dg10-font-size-2xl);
+    font-weight: 700;
+    color: var(--dg10-dark-blue);
+    line-height: 1.2;
+    margin-left: var(--dg10-spacing-sm);
+}
+
 .dg10-sidebar-content {
     padding: var(--dg10-spacing-xl);
     border-bottom: 1px solid #E5E7EB;
+}
+
+/* Sidebar navigation styling */
+.dg10-sidebar-nav {
+    max-height: none; /* Remove any height restrictions */
+    overflow: visible; /* Allow content to flow naturally */
+}
+
+.dg10-sidebar-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.dg10-sidebar-nav li {
+    margin: 0;
+    padding: 0;
+}
+
+.dg10-sidebar-nav a {
+    display: flex;
+    align-items: center;
+    gap: var(--dg10-spacing-sm);
+    padding: var(--dg10-spacing-md) var(--dg10-spacing-lg);
+    color: var(--dg10-neutral);
+    text-decoration: none;
+    border-radius: var(--dg10-radius-md);
+    transition: all var(--dg10-transition-fast);
+    font-weight: 500;
+}
+
+.dg10-sidebar-nav a:hover {
+    background: rgba(139, 92, 246, 0.1);
+    color: var(--dg10-primary);
+    text-decoration: none;
+}
+
+.dg10-sidebar-nav a.active {
+    background: var(--dg10-primary);
+    color: var(--dg10-white);
+    font-weight: 600;
+}
+
+.dg10-sidebar-nav a.active::after {
+    content: '→';
+    margin-left: auto;
+    font-weight: bold;
 }
 
 .dg10-sidebar-content p {
@@ -1969,6 +2127,104 @@
 .dg10-brand .dg10-hero-description {
     color: #6B7280 !important; /* Force medium gray text for white backgrounds */
     text-shadow: none !important; /* Remove shadows for clean look on white backgrounds */
+}
+
+/* Force dark text for all content in main area */
+.dg10-brand .dg10-main-content,
+.dg10-brand .dg10-main-content *,
+.dg10-brand .dg10-card-body,
+.dg10-brand .dg10-card-body *,
+.dg10-brand .dg10-main-content p,
+.dg10-brand .dg10-main-content span,
+.dg10-brand .dg10-main-content div,
+.dg10-brand .dg10-main-content label,
+.dg10-brand .dg10-main-content .description,
+.dg10-brand .dg10-main-content .form-field,
+.dg10-brand .dg10-main-content .field-description {
+    color: #1F2937 !important; /* Force dark text for white backgrounds */
+}
+
+/* Specific styling for form elements */
+.dg10-brand .dg10-main-content input[type="text"],
+.dg10-brand .dg10-main-content input[type="email"],
+.dg10-brand .dg10-main-content input[type="password"],
+.dg10-brand .dg10-main-content textarea,
+.dg10-brand .dg10-main-content select {
+    color: #1F2937 !important;
+    background: #ffffff !important;
+    border: 2px solid #9CA3AF !important;
+}
+
+/* Enhanced dropdown styling for AI provider selection */
+.dg10-brand select[name="aiopms_ai_provider"],
+.dg10-brand .aiopms-ai-provider-select {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 12px center !important;
+    background-size: 16px 16px !important;
+    padding-right: 40px !important;
+    cursor: pointer !important;
+    transition: all var(--dg10-transition-fast) !important;
+    border-radius: var(--dg10-radius-md) !important;
+    font-weight: 500 !important;
+    min-width: 200px !important;
+}
+
+.dg10-brand select[name="aiopms_ai_provider"]:hover,
+.dg10-brand .aiopms-ai-provider-select:hover {
+    border-color: var(--dg10-primary) !important;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1) !important;
+}
+
+.dg10-brand select[name="aiopms_ai_provider"]:focus,
+.dg10-brand .aiopms-ai-provider-select:focus {
+    outline: none !important;
+    border-color: var(--dg10-primary) !important;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2) !important;
+}
+
+/* Add a subtle hint text below the dropdown */
+.dg10-brand .form-table tr:has(select[name="aiopms_ai_provider"]) td {
+    position: relative;
+}
+
+.dg10-brand .form-table tr:has(select[name="aiopms_ai_provider"]) td::after {
+    content: "Click to select your preferred AI provider";
+    display: block;
+    font-size: var(--dg10-font-size-xs);
+    color: #6B7280;
+    margin-top: 4px;
+    font-style: italic;
+}
+
+/* WordPress admin specific overrides */
+.dg10-brand .wrap,
+.dg10-brand .wrap *,
+.dg10-brand .form-table,
+.dg10-brand .form-table *,
+.dg10-brand .form-table th,
+.dg10-brand .form-table td,
+.dg10-brand .form-table label,
+.dg10-brand .form-table .description,
+.dg10-brand .notice,
+.dg10-brand .notice *,
+.dg10-brand .notice p {
+    color: #1F2937 !important;
+}
+
+/* Ensure all text in the main content area is visible */
+.dg10-brand .dg10-main-content .wrap,
+.dg10-brand .dg10-main-content .wrap *,
+.dg10-brand .dg10-main-content .form-table,
+.dg10-brand .dg10-main-content .form-table *,
+.dg10-brand .dg10-main-content .form-table th,
+.dg10-brand .dg10-main-content .form-table td,
+.dg10-brand .dg10-main-content .form-table label,
+.dg10-brand .dg10-main-content .form-table .description {
+    color: #1F2937 !important;
 }
 
 

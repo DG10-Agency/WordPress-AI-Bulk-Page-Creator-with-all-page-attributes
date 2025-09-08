@@ -182,12 +182,12 @@ function aiopms_cpt_list_tab() {
     
     ?>
     <div class="aiopms-cpt-list">
-        <p>Manage custom post types created by the AIOPMS Advanced Mode.</p>
+        <p>Manage custom post types created by the AIOPMS plugin.</p>
         
         <?php if (empty($dynamic_cpts)): ?>
             <div class="no-cpts">
                 <p>No dynamic custom post types have been created yet.</p>
-                <p>Use the <a href="?page=aiopms-page-management&tab=ai">AI Generation</a> tab with Advanced Mode enabled to create custom post types.</p>
+                <p>Use the <a href="?page=aiopms-cpt-management&tab=create">Create New CPT</a> tab to manually create custom post types.</p>
             </div>
         <?php else: ?>
             <table class="widefat striped">
