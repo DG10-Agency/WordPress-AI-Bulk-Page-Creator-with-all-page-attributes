@@ -81,6 +81,9 @@
     border: 1px solid #ccd0d4;
     border-radius: 4px;
     animation: fadeIn 0.5s;
+    overflow: visible; /* Prevent clipping of indicators */
+    margin: 0 auto; /* Center the container */
+    max-width: 100%; /* Ensure responsive behavior */
 }
 
 .abpcwa-hierarchy-view.active-view {
@@ -216,7 +219,9 @@
     display: flex;
     flex-direction: column;
     gap: 15px;
-    padding: 10px;
+    padding: 10px 40px 10px 40px; /* Balanced padding on both sides for center alignment */
+    overflow: visible; /* Ensure nothing gets clipped */
+    max-width: 100%; /* Ensure proper container width */
 }
 
 .aiopms-grid-card {
@@ -225,9 +230,42 @@
     border: 1px solid #dcdcde;
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
     cursor: pointer;
     position: relative;
+    overflow: visible; /* Allow indicators to show outside */
+    margin: 0 20px 0 30px; /* Balanced margins: right margin for symmetry, left for indicator space */
+}
+
+/* Add hierarchy connection lines for non-root cards */
+.aiopms-grid-card:not(.level-0) {
+    position: relative;
+}
+
+.aiopms-grid-card:not(.level-0)::before {
+    content: '';
+    position: absolute;
+    left: -20px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, #1D4ED8, #3B82F6);
+    opacity: 0.6;
+    z-index: 1;
+}
+
+/* Horizontal connector line */
+.aiopms-grid-card:not(.level-0)::after {
+    content: '';
+    position: absolute;
+    left: -20px;
+    top: 50%;
+    width: 15px;
+    height: 2px;
+    background: #1D4ED8;
+    transform: translateY(-50%);
+    opacity: 0.8;
+    z-index: 2;
 }
 
 .aiopms-grid-card:hover {
@@ -242,27 +280,98 @@
     border-color: #72aee6;
 }
 
+/* Enhanced level-based styling with better hierarchy indicators */
 .aiopms-grid-card.level-0 {
     background: #e8f0fe;
-    border-left: 4px solid #2271b1;
+    border-left: 6px solid #1D4ED8; /* Thicker, more prominent border */
+    position: relative;
+    margin: 0 20px 0 30px; /* Balanced margins for center alignment */
+}
+
+/* Level indicators using a different approach to avoid conflicts */
+.aiopms-grid-card.level-0::after {
+    content: 'ROOT';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: #1D4ED8;
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    z-index: 10;
 }
 
 .aiopms-grid-card.level-1 {
     background: #f6f7f7;
-    border-left: 4px solid #72aee6;
-    margin-left: 30px;
+    border-left: 6px solid #3B82F6; /* More vibrant blue */
+    margin: 0 20px 0 65px; /* Balanced margins with increased left indentation */
+    position: relative;
+}
+
+.aiopms-grid-card.level-1 .level-badge {
+    content: 'LEVEL 1';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: #3B82F6;
+    color: white;
+    font-size: 9px;
+    font-weight: 600;
+    padding: 2px 5px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    z-index: 10;
 }
 
 .aiopms-grid-card.level-2 {
     background: #f9f9f9;
-    border-left: 4px solid #a7aaad;
-    margin-left: 60px;
+    border-left: 6px solid #60A5FA; /* Lighter blue for hierarchy */
+    margin: 0 20px 0 100px; /* Balanced margins with increased left indentation */
+    position: relative;
+}
+
+.aiopms-grid-card.level-2 .level-badge {
+    content: 'LEVEL 2';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: #60A5FA;
+    color: white;
+    font-size: 9px;
+    font-weight: 600;
+    padding: 2px 5px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    z-index: 10;
 }
 
 .aiopms-grid-card.level-3 {
     background: #fcfcfc;
-    border-left: 4px solid #dcdcde;
-    margin-left: 90px;
+    border-left: 6px solid #93C5FD; /* Even lighter blue */
+    margin: 0 20px 0 135px; /* Balanced margins with increased left indentation */
+    position: relative;
+}
+
+.aiopms-grid-card.level-3 .level-badge {
+    content: 'LEVEL 3';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: #93C5FD;
+    color: white;
+    font-size: 9px;
+    font-weight: 600;
+    padding: 2px 5px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    z-index: 10;
 }
 
 .aiopms-grid-title {
@@ -429,30 +538,125 @@
     display: none;
     flex-direction: column;
     gap: 15px;
+    padding-left: 20px;
+    border-left: 2px dashed rgba(29, 78, 216, 0.3);
+    margin-left: 10px;
 }
 
 .aiopms-grid-children.expanded {
     display: flex;
-    animation: fadeIn 0.3s ease;
+    animation: slideDown 0.4s ease;
 }
 
-/* Add expand/collapse indicator */
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        max-height: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        max-height: 1000px;
+        transform: translateY(0);
+    }
+}
+
+/* Enhanced expand/collapse indicator */
 .aiopms-grid-card:has(> .aiopms-grid-children)::before {
     content: '▶';
     position: absolute;
-    left: -20px;
+    left: -30px; /* Moved further left to ensure full visibility */
     top: 50%;
     transform: translateY(-50%);
-    font-size: 12px; /* Increased size for better visibility */
+    font-size: 16px; /* Much larger for better visibility */
     color: #1D4ED8; /* Dark blue for better contrast */
-    font-weight: 700; /* Bold for better visibility */
-    transition: transform 0.2s ease;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* Subtle shadow for definition */
+    font-weight: 900; /* Extra bold for maximum visibility */
+    transition: all 0.3s ease;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Stronger shadow for definition */
+    background: rgba(29, 78, 216, 0.1); /* Light background circle */
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #1D4ED8;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.aiopms-grid-card:has(> .aiopms-grid-children):hover::before {
+    background: rgba(29, 78, 216, 0.2);
+    border-color: #1E40AF;
+    color: #1E40AF;
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 4px 8px rgba(29, 78, 216, 0.3);
 }
 
 .aiopms-grid-card.has-expanded-children::before {
     transform: translateY(-50%) rotate(90deg);
     color: #1E40AF; /* Slightly darker blue when expanded */
+    background: rgba(30, 64, 175, 0.15);
+    border-color: #1E40AF;
+}
+
+.aiopms-grid-card.has-expanded-children:hover::before {
+    background: rgba(30, 64, 175, 0.25);
+    transform: translateY(-50%) rotate(90deg) scale(1.1);
+    box-shadow: 0 4px 8px rgba(30, 64, 175, 0.3);
+}
+
+/* Additional hover and interaction effects */
+.aiopms-grid-card.hover-expandable {
+    background: #f0f6fc !important;
+    border-color: #72aee6 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(29, 78, 216, 0.15);
+}
+
+.aiopms-grid-card.clicked {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+}
+
+/* Enhanced visual feedback for expandable cards */
+.aiopms-grid-card:has(> .aiopms-grid-children) {
+    cursor: pointer;
+    position: relative;
+}
+
+.aiopms-grid-card:has(> .aiopms-grid-children):hover {
+    background: #f0f6fc;
+    border-color: #72aee6;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(29, 78, 216, 0.1);
+}
+
+/* Add a subtle pulse animation for expandable indicators */
+.aiopms-grid-card:has(> .aiopms-grid-children)::before {
+    animation: subtlePulse 2s ease-in-out infinite;
+}
+
+@keyframes subtlePulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+/* Child count indicator */
+.aiopms-grid-card:has(> .aiopms-grid-children) .aiopms-grid-title::after {
+    content: attr(data-child-count);
+    display: inline-block;
+    background: #1D4ED8;
+    color: white;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 10px;
+    margin-left: 8px;
+    vertical-align: middle;
+    min-width: 18px;
+    text-align: center;
+    line-height: 1.2;
 }
 
 @keyframes fadeIn {

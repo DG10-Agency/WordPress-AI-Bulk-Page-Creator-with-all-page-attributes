@@ -453,7 +453,13 @@ jQuery(document).ready(function($) {
                 // Create simple grid cards with hierarchy
                 function createGridCard(page, level = 0) {
                     const card = $('<div class="aiopms-grid-card level-' + level + '"></div>')
-                        .attr('data-page-id', page.id);
+                        .attr('data-page-id', page.id)
+                        .attr('data-level', level);
+
+                    // Add level badge for non-root levels
+                    if (level > 0) {
+                        card.append($('<div class="level-badge">LEVEL ' + level + '</div>'));
+                    }
 
                     // Title with link
                     const titleDiv = $('<div class="aiopms-grid-title"></div>');
@@ -575,9 +581,41 @@ jQuery(document).ready(function($) {
 
                     const card = $(this);
                     const children = card.find('> .aiopms-grid-children');
+                    const isExpanded = children.hasClass('expanded');
 
-                    children.toggleClass('expanded');
-                    card.toggleClass('has-expanded-children');
+                    // Toggle with smooth animation
+                    if (isExpanded) {
+                        children.removeClass('expanded');
+                        card.removeClass('has-expanded-children');
+                    } else {
+                        children.addClass('expanded');
+                        card.addClass('has-expanded-children');
+                    }
+
+                    // Add visual feedback
+                    card.addClass('clicked');
+                    setTimeout(() => card.removeClass('clicked'), 200);
+                });
+
+                // Add hover effects for better UX
+                container.on('mouseenter', '.aiopms-grid-card:has(> .aiopms-grid-children)', function() {
+                    $(this).addClass('hover-expandable');
+                }).on('mouseleave', '.aiopms-grid-card:has(> .aiopms-grid-children)', function() {
+                    $(this).removeClass('hover-expandable');
+                });
+
+                // Add tooltip and child count for expandable cards
+                container.find('.aiopms-grid-card:has(> .aiopms-grid-children)').each(function() {
+                    const card = $(this);
+                    const children = card.find('> .aiopms-grid-children');
+                    const childCount = children.find('.aiopms-grid-card').length;
+                    
+                    // Add child count to title
+                    const titleDiv = card.find('.aiopms-grid-title');
+                    titleDiv.attr('data-child-count', childCount);
+                    
+                    // Add tooltip
+                    card.attr('title', `Click to expand/collapse ${childCount} child page${childCount !== 1 ? 's' : ''}`);
                 });
 
             } catch (error) {
