@@ -244,6 +244,29 @@ function aiopms_enqueue_assets() {
     wp_enqueue_style('aiopms-admin-menu', AIOPMS_PLUGIN_URL . 'assets/css/admin-menu.css', array('aiopms-dg10-brand'), '3.0');
     wp_enqueue_style('aiopms-schema-column', AIOPMS_PLUGIN_URL . 'assets/css/schema-column.css', array('aiopms-dg10-brand'), '3.0');
     wp_enqueue_style('aiopms-hierarchy', AIOPMS_PLUGIN_URL . 'assets/css/hierarchy.css', array('aiopms-dg10-brand'), '3.0');
+    
+    // Enqueue CPT management assets on CPT management pages
+    $current_screen = get_current_screen();
+    if ($current_screen && strpos($current_screen->id, 'aiopms-cpt-management') !== false) {
+        wp_enqueue_style('aiopms-cpt-management', AIOPMS_PLUGIN_URL . 'assets/css/cpt-management.css', array('aiopms-dg10-brand'), '3.0');
+        wp_enqueue_script('aiopms-cpt-management', AIOPMS_PLUGIN_URL . 'assets/js/cpt-management.js', array('jquery'), '3.0', true);
+        
+        // Localize CPT management script
+        wp_localize_script('aiopms-cpt-management', 'aiopms_cpt_data', array(
+            'ajaxurl' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('aiopms_cpt_ajax'),
+            'plugin_url' => AIOPMS_PLUGIN_URL,
+            'strings' => array(
+                'confirm_delete' => __('Are you sure you want to delete this custom post type? This action cannot be undone.', 'aiopms'),
+                'confirm_bulk_delete' => __('Are you sure you want to delete the selected custom post types? This action cannot be undone.', 'aiopms'),
+                'loading' => __('Loading...', 'aiopms'),
+                'success' => __('Success!', 'aiopms'),
+                'error' => __('An error occurred.', 'aiopms'),
+                'network_error' => __('Network error occurred. Please try again.', 'aiopms')
+            )
+        ));
+    }
+    
     wp_enqueue_script('aiopms-scripts', AIOPMS_PLUGIN_URL . 'assets/js/scripts.js', array('jquery'), '3.0', true);
     
     // Localize script with plugin URL

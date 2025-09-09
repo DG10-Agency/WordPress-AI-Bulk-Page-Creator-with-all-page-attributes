@@ -2165,141 +2165,14 @@ function aiopms_create_advanced_content($pages, $custom_post_types, $generate_im
     }
 }
 
-// Register dynamic custom post type
-function aiopms_register_dynamic_custom_post_type($cpt_data) {
-    $post_type = sanitize_key($cpt_data['name']);
-    $label = sanitize_text_field($cpt_data['label']);
-    $description = sanitize_text_field($cpt_data['description']);
+// Note: aiopms_register_dynamic_custom_post_type function has been moved to custom-post-type-manager.php
+// This ensures proper integration between AI generation and CPT management
 
-    $args = array(
-        'label' => $label,
-        'labels' => array(
-            'name' => $label,
-            'singular_name' => $label,
-            'add_new' => 'Add New',
-            'add_new_item' => 'Add New ' . $label,
-            'edit_item' => 'Edit ' . $label,
-            'new_item' => 'New ' . $label,
-            'view_item' => 'View ' . $label,
-            'search_items' => 'Search ' . $label,
-            'not_found' => 'No ' . strtolower($label) . ' found',
-            'not_found_in_trash' => 'No ' . strtolower($label) . ' found in Trash',
-        ),
-        'public' => true,
-        'publicly_queryable' => true,
-        'show_ui' => true,
-        'show_in_menu' => true,
-        'show_in_nav_menus' => true,
-        'show_in_admin_bar' => true,
-        'show_in_rest' => true,
-        'rest_base' => $post_type,
-        'rest_controller_class' => 'WP_REST_Posts_Controller',
-        'has_archive' => true,
-        'hierarchical' => false,
-        'supports' => array('title', 'editor', 'excerpt', 'thumbnail', 'custom-fields'),
-        'menu_icon' => 'dashicons-admin-post',
-        'description' => $description,
-    );
+// Note: aiopms_register_custom_fields function has been moved to custom-post-type-manager.php
+// This ensures proper integration and eliminates code duplication
 
-    $result = register_post_type($post_type, $args);
-    
-    if ($result && !is_wp_error($result)) {
-        // Register custom fields
-        if (!empty($cpt_data['custom_fields'])) {
-            aiopms_register_custom_fields($post_type, $cpt_data['custom_fields']);
-        }
-        
-        // Store CPT data for later use
-        $existing_cpts = get_option('aiopms_dynamic_cpts', []);
-        $existing_cpts[$post_type] = $cpt_data;
-        update_option('aiopms_dynamic_cpts', $existing_cpts);
-        
-        return true;
-    }
-
-    return false;
-}
-
-// Register custom fields for a post type
-function aiopms_register_custom_fields($post_type, $fields) {
-    foreach ($fields as $field) {
-        $field_name = sanitize_key($field['name']);
-        $field_label = sanitize_text_field($field['label']);
-        $field_type = sanitize_key($field['type']);
-        $field_description = sanitize_text_field($field['description']);
-        $field_required = (bool) $field['required'];
-
-        // Add meta box for custom fields
-        add_action('add_meta_boxes', function() use ($post_type, $field_name, $field_label, $field_type, $field_description, $field_required) {
-            add_meta_box(
-                'aiopms_' . $field_name,
-                $field_label,
-                function($post) use ($field_name, $field_type, $field_description, $field_required) {
-                    aiopms_render_custom_field($post, $field_name, $field_type, $field_description, $field_required);
-                },
-                $post_type,
-                'normal',
-                'high'
-            );
-        });
-
-        // Save custom field data
-        add_action('save_post', function($post_id) use ($post_type, $field_name, $field_required) {
-            if (get_post_type($post_id) !== $post_type) return;
-            if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
-            if (!current_user_can('edit_post', $post_id)) return;
-
-            if (isset($_POST[$field_name])) {
-                $value = sanitize_text_field(wp_unslash($_POST[$field_name]));
-                update_post_meta($post_id, $field_name, $value);
-            }
-        });
-    }
-}
-
-// Render custom field in admin
-function aiopms_render_custom_field($post, $field_name, $field_type, $field_description, $field_required) {
-    $value = get_post_meta($post->ID, $field_name, true);
-    $required_attr = $field_required ? 'required' : '';
-    
-    echo '<table class="form-table">';
-    echo '<tr>';
-    echo '<th scope="row"><label for="' . esc_attr($field_name) . '">' . esc_html($field_name) . '</label></th>';
-    echo '<td>';
-    
-    switch ($field_type) {
-        case 'textarea':
-            echo '<textarea name="' . esc_attr($field_name) . '" id="' . esc_attr($field_name) . '" rows="4" cols="50" ' . $required_attr . '>' . esc_textarea($value) . '</textarea>';
-            break;
-        case 'select':
-            // For now, create a simple text input. In a full implementation, you'd want to define options
-            echo '<input type="text" name="' . esc_attr($field_name) . '" id="' . esc_attr($field_name) . '" value="' . esc_attr($value) . '" class="regular-text" ' . $required_attr . '>';
-            break;
-        case 'image':
-            echo '<input type="url" name="' . esc_attr($field_name) . '" id="' . esc_attr($field_name) . '" value="' . esc_attr($value) . '" class="regular-text" placeholder="Image URL" ' . $required_attr . '>';
-            break;
-        case 'url':
-            echo '<input type="url" name="' . esc_attr($field_name) . '" id="' . esc_attr($field_name) . '" value="' . esc_attr($value) . '" class="regular-text" placeholder="https://" ' . $required_attr . '>';
-            break;
-        case 'number':
-            echo '<input type="number" name="' . esc_attr($field_name) . '" id="' . esc_attr($field_name) . '" value="' . esc_attr($value) . '" class="small-text" ' . $required_attr . '>';
-            break;
-        case 'date':
-            echo '<input type="date" name="' . esc_attr($field_name) . '" id="' . esc_attr($field_name) . '" value="' . esc_attr($value) . '" ' . $required_attr . '>';
-            break;
-        default: // text
-            echo '<input type="text" name="' . esc_attr($field_name) . '" id="' . esc_attr($field_name) . '" value="' . esc_attr($value) . '" class="regular-text" ' . $required_attr . '>';
-            break;
-    }
-    
-    if (!empty($field_description)) {
-        echo '<p class="description">' . esc_html($field_description) . '</p>';
-    }
-    
-    echo '</td>';
-    echo '</tr>';
-    echo '</table>';
-}
+// Note: Custom field rendering has been moved to custom-post-type-manager.php
+// The new implementation includes enhanced security, accessibility, and more field types
 
 // Create sample entries for custom post types
 function aiopms_create_sample_cpt_entries($cpt_data) {

@@ -308,4 +308,80 @@ jQuery(document).ready(function($) {
     if (window.history && window.history.replaceState) {
         window.history.replaceState(null, null, window.location.href);
     }
+
+    // ===== AI GENERATOR ADVANCED MODE FUNCTIONALITY =====
+    
+    // Handle Advanced Mode toggle
+    $('#aiopms_advanced_mode').on('change', function() {
+        const isAdvancedMode = $(this).is(':checked');
+        const $description = $(this).closest('td').find('.description');
+        
+        if (isAdvancedMode) {
+            // Show advanced mode description
+            $description.html(`
+                <strong>Standard Mode:</strong> Creates standard pages only<br>
+                <strong>Advanced Mode:</strong> Analyzes your business and suggests custom post types with relevant fields<br>
+                <em style="color: #2271b1; font-weight: bold;">✓ Advanced Mode enabled - AI will analyze your business and suggest custom post types below</em>
+            `);
+            
+            // Add visual indicator
+            $(this).closest('tr').addClass('advanced-mode-active');
+            
+            // Show additional fields if needed
+            showAdvancedModeFields();
+        } else {
+            // Show standard mode description
+            $description.html(`
+                <strong>Standard Mode:</strong> Creates standard pages only<br>
+                <strong>Advanced Mode:</strong> Analyzes your business and suggests custom post types with relevant fields<br>
+                <em>Advanced Mode will show business analysis and custom post type suggestions below</em>
+            `);
+            
+            // Remove visual indicator
+            $(this).closest('tr').removeClass('advanced-mode-active');
+            
+            // Hide additional fields
+            hideAdvancedModeFields();
+        }
+    });
+    
+    // Show additional fields for Advanced Mode
+    function showAdvancedModeFields() {
+        // Add any additional fields that should appear in Advanced Mode
+        // This could include more detailed business analysis options
+    }
+    
+    // Hide additional fields for Standard Mode
+    function hideAdvancedModeFields() {
+        // Hide any Advanced Mode specific fields
+    }
+    
+    // Enhanced form submission for Advanced Mode
+    $('form').on('submit', function(e) {
+        const isAdvancedMode = $('#aiopms_advanced_mode').is(':checked');
+        
+        if (isAdvancedMode) {
+            // Add loading state for Advanced Mode
+            const $submitBtn = $(this).find('input[type="submit"]');
+            const originalText = $submitBtn.val();
+            
+            $submitBtn.val('🤖 AI is analyzing your business...').prop('disabled', true);
+            
+            // Add progress indicator
+            if (!$('#ai-analyzing-indicator').length) {
+                $('<div id="ai-analyzing-indicator" class="aiopms-ai-progress">' +
+                  '<div class="aiopms-progress-bar">' +
+                  '<div class="aiopms-progress-fill"></div>' +
+                  '</div>' +
+                  '<p>AI is analyzing your business and generating custom post type suggestions...</p>' +
+                  '</div>').insertAfter($submitBtn);
+            }
+            
+            // Reset button after 3 seconds (in case of errors)
+            setTimeout(() => {
+                $submitBtn.val(originalText).prop('disabled', false);
+                $('#ai-analyzing-indicator').remove();
+            }, 3000);
+        }
+    });
 });
